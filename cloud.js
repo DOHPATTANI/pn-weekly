@@ -1,7 +1,0 @@
-const KEY='pn-weekly-cloud';
-export const config=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null');}catch{return null;}};
-export function setConfig(url,key){url=url.trim().replace(/\/$/,'');key=key.trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url))throw Error('ใช้ URL รูปแบบ https://project.supabase.co');if(!key||key.startsWith('sb_secret_'))throw Error('ใช้ publishable key หรือ anon key');try{const claims=JSON.parse(atob(key.split('.')[1]));if(claims.role==='service_role')throw Error('ใช้ publishable / anon key ไม่ใช่ service-role key');}catch(e){if(e.message.includes('service-role'))throw e;}localStorage.setItem(KEY,JSON.stringify({url,key}));}
-async function request(name,body){const c=config();if(!c)throw Error('ยังไม่ได้ตั้งค่า Supabase');const res=await fetch(c.url+'/rest/v1/rpc/'+name,{method:'POST',signal:AbortSignal.timeout(30000),headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify(body)});let data;try{data=await res.json();}catch{throw Error('Supabase ตอบกลับไม่ถูกต้อง HTTP '+res.status);}if(!res.ok)throw Error(data.message||data.error_description||'เชื่อมต่อฐานข้อมูลไม่สำเร็จ HTTP '+res.status);return data;}
-export const loadCloud=()=>request('pn2_load_workspace',{});
-export const saveCloud=(state,revision)=>request('pn2_save_workspace',{payload:state,expected_revision:revision});
-export function disconnect(){localStorage.removeItem(KEY);}
