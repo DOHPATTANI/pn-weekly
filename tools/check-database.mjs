@@ -1,0 +1,13 @@
+// Optional: npm install --no-save @electric-sql/pglite@0.5.8
+// In-memory test only; no hosted Supabase connection.
+import path from'node:path';import{fileURLToPath}from'node:url';const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+import{PGlite}from'@electric-sql/pglite';import fs from'node:fs/promises';import assert from'node:assert/strict';import{createReport,clone}from'../model.js';
+const sql=await fs.readFile(path.join(root,'01-schema.sql'),'utf8'),seed=JSON.parse(await fs.readFile(path.join(root,'original-data.json'),'utf8'));
+const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(sql);await db.exec(sql);console.log('PASS schema runs twice, with no Auth schema or user');
+await db.exec('set role anon');assert.equal((await db.query('select public.pn2_load_workspace() data')).rows[0].data,null);
+const empty=JSON.parse(await fs.readFile(path.join(root,'seed.empty.json'),'utf8'));await db.query('select public.pn2_save_workspace($1::jsonb,0)',[JSON.stringify(empty)]);console.log('PASS anonymous empty bootstrap');
+await db.query('select public.pn2_save_workspace($1::jsonb,1)',[JSON.stringify(seed)]);const counts=(await db.query('select (select count(*)::int from pn2_contracts) contracts,(select count(*)::int from pn2_reports) reports,(select count(*)::int from pn2_entries) entries')).rows[0];assert.deepEqual(counts,{contracts:61,reports:57,entries:2780});console.log('PASS anonymous full JSON import',counts);
+assert.equal((await db.query('select public.pn2_load_workspace() data')).rows[0].data.projects.length,61);await assert.rejects(()=>db.query('select public.pn2_save_workspace($1::jsonb,0)',[JSON.stringify(seed)]));console.log('PASS conflict protection');
+const bad=clone(seed);bad.reports[0].title='tampered';await assert.rejects(()=>db.query('select public.pn2_save_workspace($1::jsonb,2)',[JSON.stringify(bad)]));console.log('PASS closed report data integrity');
+const r=createReport(seed,{start:'2026-09-29',end:'2026-10-05',reference:'2026-10-05'},2568);seed.reports.unshift(r);await db.query('select public.pn2_save_workspace($1::jsonb,2)',[JSON.stringify(seed)]);for(const[id,e]of Object.entries(r.entries)){e.confirmed=true;r.snapshots[id]=clone(seed.projects.find(p=>p.id===id));}r.locked=true;r.settingsSnapshot=clone(seed.settings);await db.query('select public.pn2_save_workspace($1::jsonb,3)',[JSON.stringify(seed)]);console.log('PASS anonymous create draft and close report');
+await db.exec('reset role');await db.exec(sql);assert.equal((await db.query('select count(*)::int n from pn2_contracts')).rows[0].n,61);console.log('PASS schema rerun preserves imported data');await db.close();
