@@ -1,0 +1,14 @@
+{
+  "name": "pn-weekly",
+  "version": "5.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node tools.mjs serve",
+    "test": "node tools.mjs test",
+    "build": "node tools.mjs build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
