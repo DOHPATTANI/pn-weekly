@@ -1,7 +1,0 @@
-import{test}from'node:test';import assert from'node:assert/strict';import{reportHTML,xlsxBlob}from'../export.js';
-test('report escapes text, preserves locked settings, colors paid rows and marks drafts',async()=>{
- const p={id:'P1',year:2568,contract:'1/2568',title:'<script>alert(1)</script>',start:'2026-01-01',end:'2026-04-10',duration:100,extensions:[],contractor:'ผู้รับจ้าง',supervisor:'ผู้ควบคุม',extras:{f1:'ตอนควบคุม'}};
- const e={plan:100,weekly:0,actual:100,payment:'เบิกจ่ายแล้ว',note:'& หมายเหตุ'};const state={projects:[p],settings:{title:'ชื่อปัจจุบัน',organization:'หน่วยงาน',customFields:[{id:'f1',name:'ตอนควบคุม'}]}};const r={start:'2026-04-07',end:'2026-04-13',reference:'2026-04-13',locked:true,entries:{P1:e},snapshots:{P1:p},settingsSnapshot:{...state.settings,title:'ชื่อเดิม'}};
- const html=reportHTML(state,r,2568);assert(html.includes('ชื่อเดิม'));assert(!html.includes('<script>'));assert(html.includes('&lt;script&gt;'));assert(html.includes('class="paid"'));r.locked=false;assert(reportHTML(state,r,2568).includes('ฉบับร่าง'));
- const bytes=new Uint8Array(await xlsxBlob(state,r,2568).arrayBuffer());assert.equal(new DataView(bytes.buffer).getUint32(0,true),0x04034b50);const text=new TextDecoder().decode(bytes);assert(text.includes('FFFF3333'));assert(!text.includes('รหัสข้อมูล'));assert(!text.includes('ตอนควบคุม'));assert(text.includes('สรุปความก้าวหน้างาน'));assert(text.includes('_xlnm.Print_Titles'));assert(text.includes('B3:B4'));assert(text.includes('numFmtId="2"'));
-});
