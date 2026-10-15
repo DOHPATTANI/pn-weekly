@@ -79,6 +79,41 @@ test('import history shows escaped old/new values, removals and bounded paginati
 test('replacing master CSV archives referenced omissions and removes unreferenced ones',()=>{const s=importFixture();s.contractors.push({id:'FREE',name:'ไม่ใช้งาน',code:'C000005'});const preview=App.previewMasterCSV(s,'contractors','ชื่อ\nใหม่');const result=App.replaceMasterCSV(s,'contractors',preview);assert.equal(result.archived,1);assert.equal(result.removed,1);assert(s.contractors.some(x=>x.name==='ก'&&x.archived));assert(s.contractors.some(x=>x.name==='ใหม่'));assert(!s.contractors.some(x=>x.id==='FREE'));});
 test('replacing registry CSV stays within funding/year and preserves closed snapshots',()=>{const s=importFixture();s.projects.push({...clone(s.projects[0]),id:'OTHER',contract:'2/2569',funding:'PROVINCE'});normalizeState(s);const before=JSON.stringify(s.reports);const rows=[{contract:'3/2569',title:'ใหม่',start:'2026-01-01',end:'2026-03-31',duration:90}];const preview=App.previewRegistryImport(s,rows,2569,'DOH');const result=App.replaceRegistryCSV(s,preview);assert.equal(result.removed,1);assert.equal(JSON.stringify(result.state.reports),before);assert(result.state.contractRegistry.some(x=>x.funding==='PROVINCE'&&!x.archived));assert(result.state.projects.find(x=>x.id==='LEGACY-P').archived);});
 
+test('CSV parser handles trailing blank lines, whitespace before quotes, and whitespace-only numeric cells as missing',()=>{
+ const table=App.parseCSVTable('\ufeff"รหัส", "ชื่อ"\r\n"C000001", "บริษัท ก"\r\n   ');
+ assert.equal(table.length,2);assert.equal(table[1][1],'บริษัท ก');
+ const regCsv='"เลขสัญญา","ชื่องาน","เริ่มต้นสัญญา","วันสิ้นสุดปัจจุบัน","ระยะเวลาเดิม (วัน)","วงเงินค่างานตามสัญญา (บาท)","ค่าก่อสร้างจริง (บาท)"\r\n"1/2569","งานทาง","2026-01-01","2026-03-31"," 90 ","   ","0"\r\n';
+ const parsed=App.parseRegistryCSV(regCsv);
+ assert.equal(parsed[0].duration,90);assert.equal(parsed[0].contractValue,'');assert.equal(parsed[0].actualCost,0);
+});
+
+test('registry CSV preview validates optional Thai dates and date order, and re-import unarchives omitted contracts',()=>{
+ const s=importFixture();
+ const badDates=App.previewRegistryImport(s,[{contract:'9/2569',title:'งาน',start:'2026-01-01',end:'2026-03-31',duration:90,deliveryDate:'2026-04-10',acceptanceDate:'2026-04-05'}],2569,'DOH');
+ assert(badDates[0].errors.some(e=>e.includes('ตรวจรับ')));
+ const thaiDates=App.previewRegistryImport(s,[{contract:'9/2569',title:'งาน',start:'1 ม.ค. 2569',end:'31 มี.ค. 2569',duration:90,signedAt:'25 ธ.ค. 2568',deliveryDate:'30 มี.ค. 2569',acceptanceDate:'31 มี.ค. 2569'}],2569,'DOH');
+ assert.equal(thaiDates[0].errors.length,0);assert.equal(thaiDates[0].record.signedAt,'2025-12-25');
+ const step1=App.replaceRegistryCSV(s,thaiDates);
+ assert(step1.state.contractRegistry.find(x=>x.contract==='1/2569').archived);
+ const reimport=App.previewRegistryImport(step1.state,[{contract:'1/2569',title:'งานคืนชีพ',start:'2026-01-01',end:'2026-03-31',duration:90}],2569,'DOH');
+ const step2=App.replaceRegistryCSV(step1.state,reimport,{0:'overwrite'});
+ assert.equal(step2.state.contractRegistry.find(x=>x.contract==='1/2569').archived,false);
+ assert.equal(step2.state.projects.find(x=>x.id==='LEGACY-P').archived,false);
+});
+
+test('master CSV years overwrite, lowercase codes, and compact import history labels',()=>{
+ const s=importFixture();s.contractors.push(...Array.from({length:100},(_,i)=>({id:'C-'+i,name:'ผู้รับจ้าง '+i})));normalizeState(s);
+ const pYears=App.previewMasterCSV(s,'years','รหัส,ชื่อ\ny000001,2569\ny000009,2571');
+ assert.equal(pYears[0].errors.length,0);assert.equal(pYears[0].code,'Y000001');
+ const rYears=App.replaceMasterCSV(s,'years',pYears,{0:'overwrite',1:'add'});
+ assert.equal(rYears.updated,1);assert.equal(rYears.added,1);assert(s.years.includes(2571));
+ const next=clone(s);next.contractors[0].name='เปลี่ยนชื่อผู้รับจ้าง 0';
+ const run=App.recordImport(s,next,{fileName:'contractors.csv',format:'CSV'});
+ assert.equal(Object.keys(run.labels).length,1);
+ const csvOut=App.importHistoryCSV(next.importHistory);
+ assert(csvOut.includes('ผู้รับจ้าง / เปลี่ยนชื่อผู้รับจ้าง 0 / ชื่อ'));
+});
+
 }else if(mode==='build'){
  const dist=path.join(root,'dist');await fs.mkdir(dist,{recursive:true});for(const file of ['index.html','styles.css','app.js','THSarabun.ttf']){try{await fs.copyFile(path.join(root,file),path.join(dist,file));}catch(e){throw Error('ไฟล์ GitHub ไม่ครบ: '+file,{cause:e});}}console.log('Built dist: one JavaScript bundle, no real contract data; public anon configuration included');
 }else if(mode==='serve'){
