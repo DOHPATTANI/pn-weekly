@@ -174,3 +174,5 @@ CSV imports show loading, old/new differences, visible dialog errors and retry c
 Cold snapshots/history are authoritative in dedicated tables; scope loading includes the selected snapshot, six recent entry sets and explicit prior carry values. Opening old reports fetches one detail. Full JSON backup hydrates all cold data. Security and login behavior remain outside this change.
 
 The local cache stores import history under a separate IndexedDB key and writes it only when its immutable reference changes, preserving immediate atomic cache commits. Compact CSV imports append one cold history row; unchanged projection collections and obsolete entry-key scans are skipped. Report compaction uses a single aggregate rather than repeatedly extending an array.
+
+- v8.1 registry: primary Excel import/export/template; text contract/code columns, numeric amounts, date cells, hidden retained identity. No forced manual master matching; preview states newly added types. Legacy CSV stays available.
