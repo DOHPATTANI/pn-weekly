@@ -24,7 +24,7 @@ test('new report carries previous entry but resets weekly and confirmation',()=>
 
 test('Supabase RPC works without Auth endpoints, user JWT, password or UID',async()=>{
  const m=new Map();globalThis.localStorage={getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};const calls=[];
- globalThis.fetch=async(url,opts)=>{calls.push({url,...opts});if(url.endsWith('pn2_load_active_workspace'))return new Response(JSON.stringify({version:1,revision:4}));const b=JSON.parse(opts.body);return new Response(JSON.stringify(b.expected_revision===4?{revision:5}:{message:'revision conflict'}),{status:b.expected_revision===4?200:409});};
+ globalThis.fetch=async(url,opts)=>{calls.push({url,...opts});if(url.endsWith('pn2_load_scope'))return new Response(JSON.stringify({version:1,revision:4}));const b=JSON.parse(opts.body);return new Response(JSON.stringify(b.expected_revision===4?{revision:5}:{message:'revision conflict'}),{status:b.expected_revision===4?200:409});};
  const c=App.cloud;c.setConfig('https://example.supabase.co','sb_publishable_test');assert.equal((await c.loadCloud()).revision,4);assert.equal((await c.saveCloud({version:1},4)).revision,5);assert.equal(calls.at(-1).headers.apikey,'sb_publishable_test');assert.equal(calls.at(-1).headers.Authorization,undefined);assert(calls.every(x=>!x.url.includes('/auth/')));assert(!('login'in c));await assert.rejects(()=>c.saveCloud({},1),/revision conflict/);c.disconnect();assert.equal(c.config(),null);
 });
 
@@ -172,7 +172,19 @@ test('ordinary mutation isolates editable state without cloning immutable import
 });
 test('ordinary RPC saves omit heavy history while full backup and audit remain available',async()=>{
  const oldFetch=globalThis.fetch,c=App.cloud;const calls=[];globalThis.fetch=async(url,opts)=>{calls.push({url,body:JSON.parse(opts.body)});return new Response(JSON.stringify({revision:9}));};
- try{c.setConfig('https://example.supabase.co','sb_publishable_test');await c.saveCloud({version:1,importHistory:[{id:'large'}],importHistoryDeferred:true},8);assert(!('importHistory'in calls[0].body.payload));assert(!('importHistoryDeferred'in calls[0].body.payload));await c.loadCloud();assert(calls.at(-1).url.endsWith('pn2_load_active_workspace'));await c.loadFullCloud();assert(calls.at(-1).url.endsWith('pn2_load_workspace'));await c.loadHistoryCloud();assert(calls.at(-1).url.endsWith('pn2_load_import_history'));}finally{globalThis.fetch=oldFetch;c.disconnect();}
+ try{c.setConfig('https://example.supabase.co','sb_publishable_test');await c.saveCloud({version:1,importHistory:[{id:'large'}],importHistoryDeferred:true},8);assert(!('importHistory'in calls[0].body.payload));assert(!('importHistoryDeferred'in calls[0].body.payload));await c.loadCloud();assert(calls.at(-1).url.endsWith('pn2_load_scope'));await c.loadFullCloud();assert(calls.at(-1).url.endsWith('pn2_load_workspace'));await c.loadHistoryCloud();assert(calls.at(-1).url.endsWith('pn2_load_import_history'));}finally{globalThis.fetch=oldFetch;c.disconnect();}
+});
+
+
+test('workspace delta includes only changed collections and excludes unloaded historical reports',()=>{
+ const before=importFixture();before.reports.push({id:'UNLOADED',_unloaded:true,entries:{},snapshots:{}});before.importHistory=[{id:'large'}];const next=clone(before);next.projects[0].title='new title';next.reports[1].title='metadata only';
+ const delta=App.workspaceChanges(before,next);assert.equal(delta.collections.projects.upsert.length,1);assert(!delta.collections.reports);assert(!delta.values.importHistory);assert(!delta.values.audit);
+});
+test('quality review groups missing payment days by contract and leaves source history untouched',()=>{
+ const s=importFixture(),r=s.reports[0],p=s.projects[0];r.funding='DOH';r.year=2569;r.entries[p.id]={plan:100,actual:100,weekly:0,payment:'เบิกจ่ายแล้ว',paymentDate:'',confirmed:true};s.reports.push({...clone(r),id:'OTHER-ROUND'});const before=JSON.stringify(s);const issues=App.qualityIssues(s,2569,'DOH');assert.equal(issues.filter(x=>x.type==='วันที่เบิกจ่ายไม่ครบ').length,1);assert(issues.some(x=>x.label.includes('2 รายงาน')));assert(issues.some(x=>x.type.includes('ซ้ำ')));assert.equal(JSON.stringify(s),before);
+});
+test('failed device storage explicitly reports temporary memory storage',async()=>{
+ const result=await App.writeStore({version:1,projects:[],reports:[]});assert.equal(result.durable,false);
 });
 
 }else if(mode==='build'){
