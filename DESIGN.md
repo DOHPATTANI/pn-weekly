@@ -1,14 +1,16 @@
 ---
 version: alpha
 name: "PN Weekly"
-description: "Thai highway weekly contract reporting, quiet operational archive"
+description: "Thai highway weekly contract reporting, highway operations dashboard and operational archive"
 colors:
   primary: "#145d47"
-  text: "#142e29"
-  muted: "#50665e"
-  background: "#f6f8f6"
+  text: "#173a32"
+  muted: "#526b62"
+  background: "#f3f5f1"
   surface: "#ffffff"
-  border: "#cddbd4"
+  border: "#d9e3dc"
+  sidebar: "#103e32"
+  accent: "#b79850"
   delivery: "#177245"
   payment: "#1455aa"
   paid: "#e22222"
@@ -24,17 +26,15 @@ spacing:
   page: "38px"
   phone: "14px"
 components:
-  archive:
-    pageSize: 10
   button:
-    borderRadius: "8px"
+    rounded: "8px"
 ---
 
 # PN Weekly design and behavior contract
 
 ## Overview
 
-Product/admin surface for one Thai highway officer preparing weekly management reports. Preserve the existing green/white identity. The report itself follows the supplied institutional table. The archive is a chronological register rather than a dashboard of cards. Avoid repeated actions, decorative tiles and unnecessary status columns.
+Product/admin surface for one Thai highway officer preparing weekly management reports. The user-approved v7.4 redesign uses a forest-green navigation shell, brass accents and paper-white operational surfaces. The visual reference is highway operations and Thai institutional documents; these palette choices are not a claim of official brand specifications. The report itself follows the supplied institutional table. The archive is a chronological register rather than a dashboard of cards. Avoid repeated actions, decorative tiles and unnecessary status columns.
 
 Authoritative business decisions are the user's requests in this chat and the installation/user manual. The user explicitly chose one shared workspace without login and direct historical editing without reason or extra confirmation. Older v3 immutable-history behavior is superseded through the audited amendment workflow; silent wholesale overwriting is still rejected.
 
@@ -52,7 +52,7 @@ Desktop sidebar + document-scrolling content. Archive: group/year filters, local
 
 ## Elevation & Depth
 
-Keep white bordered panels, small radius and restrained existing dialog elevation. No new shadows or hero graphics. Uploaded PNG logo uses a white, borderless container; transparent pixels stay transparent.
+Use white bordered panels with 10–12px corners and very subtle elevation. The dashboard alone has a dark-green summary band with a brass progress line; avoid decorative imagery. Use the uploaded organizational seal on a white backing for contrast against the dark sidebar. Keep report/export presentation unchanged.
 
 ## Shapes
 
@@ -143,3 +143,11 @@ Ordinary changes use a whitelisted delta RPC with optimistic revision. Unloaded 
 The shared save queue serializes weekly edits, preserves newer typed values across renders, and retains failed drafts on the device for explicit retry. The status bar announces loading, queued saves, completion and failure. Unsaved drafts warn on exit; recovered drafts are shown for review. Clearing pending values requires the shared destructive confirmation. Modal close/cancel/Escape are blocked during submission. Failed IndexedDB writes produce a persistent temporary-storage notice instead of an implicit durable-save claim.
 
 The `ตรวจข้อมูล` surface reuses periodBar, native tables, shared notices, pagination (25 rows), Open Report and registry-edit owners. Missing payment days are grouped by contract with affected report counts. Duplicate source periods and nonstandard source ranges are review items, never silently repaired. Settings counts reflect live catalogue totals, and internal PKs are hidden in weekly rows.
+
+## v7.4 highway dashboard — user-authorized redesign
+
+The dashboard is the canonical visual reference for the app shell. Runtime palette remains canonical in styles.css; --sidebar and --gold join the existing role variables. The dark navigation and brass active marker carry identity. White content surfaces, readable Thai text, native controls, lifecycle semantics and existing interaction owners remain shared across routes. Larger Latin numerals use Arial; Thai labels use Noto Sans Thai/Tahoma. No runtime dependency or database schema change.
+
+Dashboard summary and charts use the selected funding/year/report. Status counters navigate into the weekly table with matching filters. Historical chart buttons use the existing lazy-load report opener before showing rows. Attention rows use the existing contract dialog. The average is explicitly unweighted per contract; no invented finance or trend data. Empty charts and zero totals remain truthful. Paid red remains semantic and export fonts/layout remain untouched. Desktop has four summary metrics and two analytical columns; tablet/phone use two metrics per row and a single analytical column. Keyboard focus, reduced motion, mobile menu and recoverable save status remain functional.
+
+Reconciled intentional drift: the prior white sidebar/no-summary-band rule is superseded by the user-requested institutional dashboard redesign; the archive remains a chronological register and report documents retain their original style. No lifecycle or permission decision changes.
