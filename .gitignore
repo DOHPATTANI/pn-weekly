@@ -13,3 +13,5 @@ raw-workbook.json
 dist/
 
 original-data.json
+
+supabase/.temp/

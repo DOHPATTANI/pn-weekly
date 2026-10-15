@@ -24,7 +24,7 @@ test('new report carries previous entry but resets weekly and confirmation',()=>
 
 test('Supabase RPC works without Auth endpoints, user JWT, password or UID',async()=>{
  const m=new Map();globalThis.localStorage={getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};const calls=[];
- globalThis.fetch=async(url,opts)=>{calls.push({url,...opts});if(url.endsWith('pn2_load_workspace'))return new Response(JSON.stringify({version:1,revision:4}));const b=JSON.parse(opts.body);return new Response(JSON.stringify(b.expected_revision===4?{revision:5}:{message:'revision conflict'}),{status:b.expected_revision===4?200:409});};
+ globalThis.fetch=async(url,opts)=>{calls.push({url,...opts});if(url.endsWith('pn2_load_active_workspace'))return new Response(JSON.stringify({version:1,revision:4}));const b=JSON.parse(opts.body);return new Response(JSON.stringify(b.expected_revision===4?{revision:5}:{message:'revision conflict'}),{status:b.expected_revision===4?200:409});};
  const c=App.cloud;c.setConfig('https://example.supabase.co','sb_publishable_test');assert.equal((await c.loadCloud()).revision,4);assert.equal((await c.saveCloud({version:1},4)).revision,5);assert.equal(calls.at(-1).headers.apikey,'sb_publishable_test');assert.equal(calls.at(-1).headers.Authorization,undefined);assert(calls.every(x=>!x.url.includes('/auth/')));assert(!('login'in c));await assert.rejects(()=>c.saveCloud({},1),/revision conflict/);c.disconnect();assert.equal(c.config(),null);
 });
 
@@ -150,6 +150,29 @@ test('multi-funding 2569 JSON import separates DOH and PROVINCE, handles W017/W0
  assert.equal(onlyProv.projects.filter(p=>p.year===2569&&p.funding==='PROVINCE').length,1);
  assert.equal(onlyProv.projects.filter(p=>p.year===2569&&p.funding==='DOH').length,0);
  assert.deepEqual(App.parseThaiWeekRange('ระหว่างวันที่ 30 ธ.ค พ.ศ. 2568 - 5 ม.ค. พ.ศ. 2569',2569),{start:'2025-12-30',end:'2026-01-05',reference:'2026-01-05'});
+});
+
+
+test('legacy paid rows keep unknown dates in drafts and recover only documented dates',()=>{
+ const s=importFixture();const p=s.projects[0],r=s.reports[0];
+ r.start='2026-10-06';r.end='2026-10-12';r.reference=r.end;r.funding='DOH';r.year=2569;
+ r.entries[p.id]={plan:100,actual:100,weekly:0,payment:'เบิกจ่ายแล้ว',paymentDate:'',note:'เบิกจ่ายแล้ว',confirmed:true};
+ const range={start:'2026-10-13',end:'2026-10-19',reference:'2026-10-19'};
+ let next=App.createReport(clone(s),range,2569,'DOH');assert.equal(next.entries[p.id].paymentDate,'');assert.equal(App.missingPaymentDates(next).length,1);
+ const documented=clone(s);documented.reports[0].entries[p.id].note='เบิกจ่ายแล้ว วันที่ 12 พฤภาคม 2569';
+ next=App.createReport(documented,range,2569,'DOH');assert.equal(next.entries[p.id].paymentDate,'2026-05-12');
+ const registered=clone(s);normalizeState(registered);registered.contractRegistry.find(x=>x.projectId===p.id).finalPaymentDate='2026-07-01';
+ next=App.createReport(registered,range,2569,'DOH');assert.equal(next.entries[p.id].paymentDate,'2026-07-01');
+ assert.equal(App.parsePaymentDate('วันที่ 31 กุมภาพันธ์ 2569'),'');assert.equal(App.parsePaymentDate('เบิกจ่ายแล้ว'),'');
+ assert.equal(s.reports[0].entries[p.id].paymentDate,'');
+});
+test('ordinary mutation isolates editable state without cloning immutable import history',()=>{
+ const s=importFixture();s.importHistory=[{id:'audit',changes:[{before:'old',after:'new'}]}];const next=App.cloneForMutation(s);
+ assert.equal(next.importHistory,s.importHistory);assert.notEqual(next.projects,s.projects);next.projects[0].title='edited';assert.notEqual(s.projects[0].title,next.projects[0].title);
+});
+test('ordinary RPC saves omit heavy history while full backup and audit remain available',async()=>{
+ const oldFetch=globalThis.fetch,c=App.cloud;const calls=[];globalThis.fetch=async(url,opts)=>{calls.push({url,body:JSON.parse(opts.body)});return new Response(JSON.stringify({revision:9}));};
+ try{c.setConfig('https://example.supabase.co','sb_publishable_test');await c.saveCloud({version:1,importHistory:[{id:'large'}],importHistoryDeferred:true},8);assert(!('importHistory'in calls[0].body.payload));assert(!('importHistoryDeferred'in calls[0].body.payload));await c.loadCloud();assert(calls.at(-1).url.endsWith('pn2_load_active_workspace'));await c.loadFullCloud();assert(calls.at(-1).url.endsWith('pn2_load_workspace'));await c.loadHistoryCloud();assert(calls.at(-1).url.endsWith('pn2_load_import_history'));}finally{globalThis.fetch=oldFetch;c.disconnect();}
 });
 
 }else if(mode==='build'){
