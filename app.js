@@ -208,9 +208,37 @@ export function prepareWeeklyImport(current,incoming,targetFunding,targetYear){
  for(const [items,retained]of [[incoming.projects,retainedProjects],[incoming.reports,retainedReports]])if(items.some(x=>retained.some(y=>y.id===x.id)))throw Error('รหัสในไฟล์ชนกับข้อมูลของอีกกลุ่มหรืออีกปี');
  const masters=['categories','contractors','supervisors','workTypes','workNames','workCodes','budgetAccounts','fundingSources'];
  for(const k of masters)for(const x of incoming[k]||[]){const old=(current[k]||[]).find(y=>y.id===x.id);if(old&&old.name!==x.name)throw Error('ข้อมูลพื้นฐานในไฟล์ใช้รหัสเดียวกับชื่ออื่น: '+x.name);}
+ // Weekly files are progress updates. Keep the system's contract/registry/master
+ // records as the source of truth and overlay only report-period values.
  const prepared=prepareWorkspaceImport(current,incoming),next=clone(current);
- next.projects=[...retainedProjects.map(clone),...prepared.projects];next.reports=[...retainedReports.map(clone),...prepared.reports];
- next.contractRegistry=[...(current.contractRegistry||[]).filter(r=>!inScope(r)).map(clone),...(prepared.contractRegistry||[])];
+ const contractIdentity=x=>`${x.funding||'DOH'}|${x.year}|${contractKey(x.contract||'')}`;
+ const currentProjects=current.projects.filter(p=>inScope(p));
+ const projectByIdentity=new Map(currentProjects.map(p=>[contractIdentity(p),p]));
+ const incomingIdToCurrent=new Map();
+ for(const p of prepared.projects.filter(inScope)){
+   const existing=projectByIdentity.get(contractIdentity(p));
+   if(existing) incomingIdToCurrent.set(p.id,existing.id);
+   else incomingIdToCurrent.set(p.id,p.id);
+ }
+ const weeklyFields=['plan','weekly','actual','note','payment','paymentDate','deliveryDate','acceptanceDate','confirmed'];
+ const existingReports=current.reports.filter(r=>r.id!=='EMPTY'&&reportInScope(r,current.projects));
+ const reportFor=r=>existingReports.find(x=>x.start===r.start&&x.end===r.end&&x.sourceSheet&&r.sourceSheet&&x.sourceSheet===r.sourceSheet)
+   ||existingReports.find(x=>x.start===r.start&&x.end===r.end&&(!x.sourceSheet||!r.sourceSheet));
+ const weeklyReports=prepared.reports.filter(r=>reportInScope(r,prepared.projects,true)).map(r=>{
+   const old=reportFor(r),out={...clone(r),id:old?.id||r.id,entries:{},snapshots:{}};
+   for(const [incomingId,value] of Object.entries(r.entries||{})){
+     const pid=incomingIdToCurrent.get(incomingId);if(!pid)continue;
+     const oldEntry=old?.entries?.[pid]||entryFor({entries:{}},pid),updated=clone(oldEntry);
+     for(const field of weeklyFields)if(Object.prototype.hasOwnProperty.call(value,field))updated[field]=clone(value[field]);
+     out.entries[pid]=updated;
+     const project=currentProjects.find(p=>p.id===pid)||prepared.projects.find(p=>p.id===pid);if(project)out.snapshots[pid]=clone(project);
+   }
+   return out;
+ });
+ const newProjects=prepared.projects.filter(inScope).filter(p=>!projectByIdentity.has(contractIdentity(p)));
+ next.projects=[...retainedProjects.map(clone),...currentProjects.map(clone),...newProjects.map(clone)];
+ next.reports=[...retainedReports.map(clone),...weeklyReports];
+ next.contractRegistry=[...(current.contractRegistry||[]).map(clone)];
  for(const k of masters){const present=new Set((current[k]||[]).map(x=>x.id));next[k]=[...clone(current[k]||[]),...(prepared[k]||[]).filter(x=>!present.has(x.id))];}
  next.years=[...new Set([...current.years,...prepared.years])].sort();next.yearCodes={...prepared.yearCodes,...current.yearCodes};next.masterSequences={...prepared.masterSequences};
  for(const [k,v]of Object.entries(current.masterSequences||{}))next.masterSequences[k]=Math.max(v,next.masterSequences[k]||0);
