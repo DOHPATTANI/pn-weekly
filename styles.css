@@ -67,3 +67,6 @@ body{line-height:1.65}.sidebar{background:var(--sidebar);border:0;padding:30px 1
 /* CSV identity and change review share the existing import dialogs. */
 .csv-diff{font-size:12px;margin-top:8px;max-width:420px}.csv-diff summary{cursor:pointer;color:var(--green);font-weight:600}.csv-diff dl{margin:8px 0;display:grid;gap:8px}.csv-diff dt{font-weight:600}.csv-diff dd{margin:0;overflow-wrap:anywhere}.csv-diff dd span,.csv-diff dd strong{display:block;white-space:pre-wrap;font-weight:400}.csv-diff dd span{color:var(--muted)}.csv-diff dd strong{color:#145d47}.csv-unchanged{display:block;font-size:12px;color:#526b62;margin-top:6px}
 #master-preview table{width:100%;min-width:0;table-layout:fixed}#master-preview th:first-child{width:36%}#master-preview td,#master-preview th{white-space:normal;overflow-wrap:anywhere;vertical-align:top}#master-preview .csv-diff summary{white-space:normal;overflow-wrap:anywhere}#master-preview small.sub{font-size:10px;line-height:1.5}
+
+/* v8 basic-data contacts remain readable inside the responsive table. */
+.catalog-table .contact-address{white-space:pre-line;min-width:220px;max-width:360px;overflow-wrap:anywhere}.form-status{margin-top:16px}.catalog-table td{vertical-align:top}

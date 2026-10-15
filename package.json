@@ -1,14 +1,19 @@
 {
   "name": "pn-weekly",
-  "version": "7.5.2",
+  "version": "8.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node tools.mjs serve",
     "test": "node tools.mjs test",
-    "build": "node tools.mjs build"
+    "build": "node tools.mjs build",
+    "qa": "node tools.mjs qa"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.9",
+    "playwright": "1.64.0"
   }
 }
