@@ -79,9 +79,79 @@ test('import history shows escaped old/new values, removals and bounded paginati
 test('replacing master CSV archives referenced omissions and removes unreferenced ones',()=>{const s=importFixture();s.contractors.push({id:'FREE',name:'ไม่ใช้งาน',code:'C000005'});const preview=App.previewMasterCSV(s,'contractors','ชื่อ\nใหม่');const result=App.replaceMasterCSV(s,'contractors',preview);assert.equal(result.archived,1);assert.equal(result.removed,1);assert(s.contractors.some(x=>x.name==='ก'&&x.archived));assert(s.contractors.some(x=>x.name==='ใหม่'));assert(!s.contractors.some(x=>x.id==='FREE'));});
 test('replacing registry CSV stays within funding/year and preserves closed snapshots',()=>{const s=importFixture();s.projects.push({...clone(s.projects[0]),id:'OTHER',contract:'2/2569',funding:'PROVINCE'});normalizeState(s);const before=JSON.stringify(s.reports);const rows=[{contract:'3/2569',title:'ใหม่',start:'2026-01-01',end:'2026-03-31',duration:90}];const preview=App.previewRegistryImport(s,rows,2569,'DOH');const result=App.replaceRegistryCSV(s,preview);assert.equal(result.removed,1);assert.equal(JSON.stringify(result.state.reports),before);assert(result.state.contractRegistry.some(x=>x.funding==='PROVINCE'&&!x.archived));assert(result.state.projects.find(x=>x.id==='LEGACY-P').archived);});
 
-test('weekly JSON import preserves another funding group and year while replacing only selected scope',()=>{const current=importFixture(),incoming=importFixture();const project=incoming.projects[0];project.id='PROV-P';project.funding='PROVINCE';incoming.contractRegistry=[];const report=incoming.reports[0];report.id='PROV-R';report.funding='PROVINCE';report.entries={'PROV-P':report.entries['LEGACY-P']};report.snapshots={'PROV-P':clone(project)};incoming.importScope={type:'weekly',funding:'PROVINCE',year:2569};normalizeState(incoming);const frozen=clone(current);const next=App.prepareWeeklyImport(current,incoming,'PROVINCE',2569);assert.equal(next.projects.length,2);assert.equal(next.reports.length,2);assert.deepEqual(next.reports.find(r=>r.id==='LEGACY-R'),frozen.reports[0]);assert.deepEqual(next.settings,frozen.settings);assert.throws(()=>App.prepareWeeklyImport(current,incoming,'DOH',2569),/กลุ่มงบ|เลือก/);assert.throws(()=>App.prepareWeeklyImport(current,incoming,'PROVINCE',2570),/ปี|เลือก/);});
-test('historical sheets with duplicate periods remain distinct on import and reimport',()=>{const current=importFixture(),incoming=clone(current);incoming.reports.push({...clone(incoming.reports[0]),id:'OTHER-R',title:'รอบที่ 2'});const first=App.prepareWorkspaceImport(current,incoming);assert.equal(first.reports.length,2);assert.equal(new Set(first.reports.map(r=>r.id)).size,2);const again=App.prepareWorkspaceImport(first,incoming);assert.equal(again.reports.length,2);assert.equal(new Set(again.reports.map(r=>r.id)).size,2);});
-test('dedicated weekly file cannot pass full workspace restore on older versions',()=>{const incoming=importFixture();incoming.version=2;incoming.importScope={type:'weekly',funding:'DOH',year:2569};assert.throws(()=>App.validateBackup(incoming),/รูปแบบ/);const imported=App.prepareWeeklyImport(importFixture(),incoming,'DOH',2569);assert.equal(imported.version,1);assert.equal(imported.reports.length,1);});
+test('CSV parser handles trailing blank lines, whitespace before quotes, and whitespace-only numeric cells as missing',()=>{
+ const table=App.parseCSVTable('\ufeff"รหัส", "ชื่อ"\r\n"C000001", "บริษัท ก"\r\n   ');
+ assert.equal(table.length,2);assert.equal(table[1][1],'บริษัท ก');
+ const regCsv='"เลขสัญญา","ชื่องาน","เริ่มต้นสัญญา","วันสิ้นสุดปัจจุบัน","ระยะเวลาเดิม (วัน)","วงเงินค่างานตามสัญญา (บาท)","ค่าก่อสร้างจริง (บาท)"\r\n"1/2569","งานทาง","2026-01-01","2026-03-31"," 90 ","   ","0"\r\n';
+ const parsed=App.parseRegistryCSV(regCsv);
+ assert.equal(parsed[0].duration,90);assert.equal(parsed[0].contractValue,'');assert.equal(parsed[0].actualCost,0);
+});
+
+test('registry CSV preview validates optional Thai dates and date order, and re-import unarchives omitted contracts',()=>{
+ const s=importFixture();
+ const badDates=App.previewRegistryImport(s,[{contract:'9/2569',title:'งาน',start:'2026-01-01',end:'2026-03-31',duration:90,deliveryDate:'2026-04-10',acceptanceDate:'2026-04-05'}],2569,'DOH');
+ assert(badDates[0].errors.some(e=>e.includes('ตรวจรับ')));
+ const thaiDates=App.previewRegistryImport(s,[{contract:'9/2569',title:'งาน',start:'1 ม.ค. 2569',end:'31 มี.ค. 2569',duration:90,signedAt:'25 ธ.ค. 2568',deliveryDate:'30 มี.ค. 2569',acceptanceDate:'31 มี.ค. 2569'}],2569,'DOH');
+ assert.equal(thaiDates[0].errors.length,0);assert.equal(thaiDates[0].record.signedAt,'2025-12-25');
+ const step1=App.replaceRegistryCSV(s,thaiDates);
+ assert(step1.state.contractRegistry.find(x=>x.contract==='1/2569').archived);
+ const reimport=App.previewRegistryImport(step1.state,[{contract:'1/2569',title:'งานคืนชีพ',start:'2026-01-01',end:'2026-03-31',duration:90}],2569,'DOH');
+ const step2=App.replaceRegistryCSV(step1.state,reimport,{0:'overwrite'});
+ assert.equal(step2.state.contractRegistry.find(x=>x.contract==='1/2569').archived,false);
+ assert.equal(step2.state.projects.find(x=>x.id==='LEGACY-P').archived,false);
+});
+
+test('master CSV years overwrite, lowercase codes, and compact import history labels',()=>{
+ const s=importFixture();normalizeState(s);
+ const pYears=App.previewMasterCSV(s,'years','รหัส,ชื่อ\ny000001,2569\ny000009,2571');
+ assert.equal(pYears[0].errors.length,0);assert.equal(pYears[0].code,'Y000001');
+ const rYears=App.replaceMasterCSV(s,'years',pYears,{0:'overwrite',1:'add'});
+ assert.equal(rYears.updated,1);assert.equal(rYears.added,1);assert(s.years.includes(2571));
+ const next=clone(s);next.contractors[0].name='เปลี่ยนชื่อผู้รับจ้าง 0';
+ const run=App.recordImport(s,next,{fileName:'contractors.csv',format:'CSV'});
+ assert.equal(Object.keys(run.labels).length,1);
+ const csvOut=App.importHistoryCSV(next.importHistory);
+ assert(csvOut.includes('ผู้รับจ้าง / เปลี่ยนชื่อผู้รับจ้าง 0 / ชื่อ'));
+});
+
+
+test('multi-funding 2569 JSON import separates DOH and PROVINCE, handles W017/W018 duplicate dates, and preserves other years',()=>{
+ const existing2568={version:1,revision:3,projects:[{id:'P-2568',contract:'1/2568',year:2568,funding:'DOH',title:'งานปี 2568',category:'CAT-001',start:'2025-01-01',end:'2025-03-31',duration:90,contractor:'หจก.เดิม',supervisor:'นาย ก',extensions:[],archived:false}],reports:[{id:'R-2568',year:2568,funding:'DOH',title:'รอบที่ 1',start:'2025-02-04',end:'2025-02-10',reference:'2025-02-10',locked:true,imported:true,entries:{'P-2568':{plan:50,weekly:10,actual:50,note:'',payment:'รอส่งมอบงาน',confirmed:true}},snapshots:{'P-2568':{id:'P-2568',contract:'1/2568',year:2568,funding:'DOH',title:'งานปี 2568',category:'CAT-001',start:'2025-01-01',end:'2025-03-31',duration:90,contractor:'หจก.เดิม',supervisor:'นาย ก',extensions:[],archived:false}}}],years:[2568],categories:[{id:'CAT-001',name:'งานก่อสร้างทาง'}],audit:[],settings:{organization:'แขวงทางหลวงปัตตานี',title:'รายงานความก้าวหน้างาน พรบ.'}};
+ normalizeState(existing2568);
+ const pProv={id:'XLSX-PROVINCE-2569-C41-2569',contract:'41/2569',year:2569,funding:'PROVINCE',title:'งานติดตั้งราวกันอันตราย',category:'CAT-001',start:'2026-03-25',end:'2026-06-22',duration:90,contractor:'บ.เอ ที ซี ทราฟฟิค จำกัด',supervisor:'นายกรรมสิทธิ์',contractorId:'CTR-46b1425',supervisorId:'SUP-7a3e2fe9',workNameId:'JOB-bd04c8e0',extensions:[],archived:false};
+ const pDoh={id:'XLSX-DOH-2569-C17-2569',contract:'17/2569',year:2569,funding:'DOH',title:'กิจกรรมบูรณะโครงข่ายทางหลวง',category:'CAT-001',start:'2025-12-18',end:'2026-04-16',duration:120,contractor:'หจก.ปะนาเระก่อสร้าง',supervisor:'ชม.ขท.ปะนาเระ',contractorId:'CTR-4f7e6b01',supervisorId:'SUP-a9b6133c',workNameId:'JOB-8a80dc71',extensions:[],archived:false};
+ const incoming2569={version:1,revision:0,projects:[pProv,pDoh],reports:[
+  {id:'XLSX-PROVINCE-2569-W029',title:'รอบที่ 29 (งบจังหวัด)',year:2569,funding:'PROVINCE',start:'2026-10-06',end:'2026-10-12',reference:'2026-10-12',locked:true,imported:true,entries:{[pProv.id]:{plan:100,weekly:0,actual:100,note:'เบิกจ่ายแล้ว',payment:'เบิกจ่ายแล้ว',paymentDate:'2026-07-09',confirmed:true}},snapshots:{[pProv.id]:clone(pProv)}},
+  {id:'XLSX-DOH-2569-W018',title:'รอบที่ 18',year:2569,funding:'DOH',start:'2026-04-07',end:'2026-04-13',reference:'2026-04-13',locked:true,imported:true,entries:{[pDoh.id]:{plan:100,weekly:56.07,actual:98.86,note:'',payment:'รอส่งมอบงาน',confirmed:true}},snapshots:{[pDoh.id]:clone(pDoh)}},
+  {id:'XLSX-DOH-2569-W017',title:'รอบที่ 17',year:2569,funding:'DOH',start:'2026-04-07',end:'2026-04-13',reference:'2026-04-13',locked:true,imported:true,entries:{[pDoh.id]:{plan:98.86,weekly:31.56,actual:42.79,note:'',payment:'รอส่งมอบงาน',confirmed:true}},snapshots:{[pDoh.id]:clone(pDoh)}}
+ ],categories:[{id:'CAT-001',name:'งานก่อสร้างทาง'}],years:[2569],audit:[],issues:[{'กลุ่มงบ':'PROVINCE','แผ่นงาน':'รอบที่ 8 (งบจังหวัด)','แถว':1,'ประเด็น':'ช่วงรายงานเดิมไม่ใช่อังคาร–จันทร์ 7 วัน','รายละเอียด':'คงวันที่ต้นฉบับ'}]};
+ App.validateBackup(incoming2569);
+ const summary=App.summarizeWorkspaceImport(incoming2569);
+ assert.equal(summary.length,2);
+ const dohSum=summary.find(x=>x.funding==='DOH'),provSum=summary.find(x=>x.funding==='PROVINCE');
+ assert.equal(dohSum.contractsCount,1);assert.equal(dohSum.reportsCount,2);assert.equal(dohSum.uniqueWeeksCount,1);assert.equal(dohSum.duplicateWeeksCount,1);
+ assert.equal(provSum.contractsCount,1);assert.equal(provSum.reportsCount,1);
+ // Mode 1: keep all sheets (including W017 & W018 sharing 2026-04-07..2026-04-13) while preserving 2568
+ const kept=App.prepareWorkspaceImport(existing2568,incoming2569,{targetFunding:'all',mergeByDateRange:false});
+ assert(kept.years.includes(2568)&&kept.years.includes(2569));
+ assert.equal(kept.projects.filter(p=>p.year===2568).length,1);
+ assert.equal(kept.projects.filter(p=>p.year===2569&&p.funding==='PROVINCE').length,1);
+ assert.equal(kept.projects.filter(p=>p.year===2569&&p.funding==='DOH').length,1);
+ assert.equal(kept.reports.filter(r=>r.year===2569&&r.funding==='DOH').length,2);
+ assert(kept.contractors.some(c=>c.name==='บ.เอ ที ซี ทราฟฟิค จำกัด'));
+ assert(kept.supervisors.some(s=>s.name==='นายกรรมสิทธิ์'));
+ // Mode 2: merge by reporting week range (1 report per unique start-end, W018 wins over W017)
+ const merged=App.prepareWorkspaceImport(existing2568,incoming2569,{targetFunding:'all',mergeByDateRange:true});
+ const dohReports=merged.reports.filter(r=>r.year===2569&&r.funding==='DOH');
+ assert.equal(dohReports.length,1);
+ assert.equal(dohReports[0].entries[pDoh.id].actual,98.86);
+ // Mode 3: import only PROVINCE
+ const onlyProv=App.prepareWorkspaceImport(existing2568,incoming2569,{targetFunding:'PROVINCE'});
+ assert.equal(onlyProv.projects.filter(p=>p.year===2569&&p.funding==='PROVINCE').length,1);
+ assert.equal(onlyProv.projects.filter(p=>p.year===2569&&p.funding==='DOH').length,0);
+ assert.deepEqual(App.parseThaiWeekRange('ระหว่างวันที่ 30 ธ.ค พ.ศ. 2568 - 5 ม.ค. พ.ศ. 2569',2569),{start:'2025-12-30',end:'2026-01-05',reference:'2026-01-05'});
+});
+
 }else if(mode==='build'){
  const dist=path.join(root,'dist');await fs.mkdir(dist,{recursive:true});for(const file of ['index.html','styles.css','app.js','THSarabun.ttf']){try{await fs.copyFile(path.join(root,file),path.join(dist,file));}catch(e){throw Error('ไฟล์ GitHub ไม่ครบ: '+file,{cause:e});}}console.log('Built dist: one JavaScript bundle, no real contract data; public anon configuration included');
 }else if(mode==='serve'){

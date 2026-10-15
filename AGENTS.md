@@ -21,5 +21,3 @@
 - Read คู่มือย้ายไปCloud.md and the v7 manual in the attached handoff before continuing. Treat the latest Supabase JSON backup as current data, not the original import JSON. Cloud cannot read old C:/ or D:/ paths unless their files are supplied.
 
 - Latest user decision: v7.1 CSV/JSON imports may overwrite confirmed/closed data and replace their destination scope. Preserve all old/new field values and omitted-record data in audited import history. Use pn2_import_workspace; ordinary saves retain their existing closed-history protection. CSV scope is the chosen master tab or registry funding/year; preserve referenced omissions through archiving. JSON replaces the active workspace with PK/FK remapping.
-
-- v7.1.1: separate weekly JSON files by funding/year; import them from the Weekly screen, preserving the other scopes, settings and shared masters. Marked weekly files must not go through whole-workspace settings restore. Keep duplicate-period historical sheets distinct by their source identity.
