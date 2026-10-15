@@ -1,43 +1,24 @@
-# PN Weekly database performance patch
+# PN Weekly v8 database
 
-Apply `migrations/20261015070325_optimize_workspace_timeouts.sql` to the existing v7.1+ database. This patch was applied to the live pn-weekly project on 15 October 2026. It does not import or replace business data.
+The live pn-weekly project was migrated on 15 October 2026. Existing business data was preserved: the hydrated JSON backup matched the pre-migration document exactly, at revision 78 with 111 projects, 130 reports and 5 import-history runs.
 
-The old save function expanded the complete report array for every historical report and every lookup. On the live 130-report workspace, a save benchmark took 71,939 ms and wrote 158,852 temporary blocks. The patch caches report arrays and ID maps once, preserves the closed-history guard, and reuses validation for byte-identical locked reports. Changed reports continue through the existing validation. Load returns the stored document directly when its revision already matches the authoritative revision.
+For a fresh database, apply `schema.sql`, then `migrations/*.sql` in filename order. The delivery's `02-Supabase/ติดตั้งระบบ.sql` combines this sequence. Do not reapply a fresh-install script to the live database. MCP-applied migration timestamps can differ from local creation timestamps; reconcile the migration ledger before using CLI push against an existing deployment.
 
-PostgREST RPC timeouts are set on individual functions: load 15 seconds; save, import and amendment 25 seconds. The browser's existing request timeout is 30 seconds. The default role limits and access grants remain unchanged. The migration notifies PostgREST to reload its schema cache.
+Current behavior:
 
-Validation on 15 October 2026:
+- `pn2_import_changes` accepts small audited CSV/XLSX deltas. Identical imports do not advance the revision. New import archives retain field-level before/after deltas instead of repeated full documents; existing archives remain intact.
+- `pn2_patch_workspace` merges whitelisted ID-based changes under the shared revision/advisory lock. Domain validation and closed-report protections remain active.
+- `pn2_save_workspace` conditionally upserts relational rows and removes only records absent from the authoritative payload. It no longer clears and rebuilds projection tables. Weekly edits leave unchanged contract rows untouched.
+- `pn2_save_entry` merges one draft entry server-side, then uses the normal validated patch path. `pn2_amend_report_delta` retains audited historical-edit logic and returns only changed entries/metadata and lifecycle changes. Later cumulative actuals and frozen snapshots remain preserved.
+- `pn2_import_runs` and `pn2_report_snapshots` hold cold history and frozen snapshots. Both have primary keys and workspace foreign keys; snapshots also reference their report. The work-code linkage has a uniqueness constraint enforcing one job per official work code.
+- `pn2_load_scope` returns the report catalogue, selected snapshot, six recent entry sets and explicit carry context. Quality metadata retains missing-date identities without repeated entry notes. `pn2_load_report_detail` loads one older report and its prior entries.
+- `pn2_load_workspace` hydrates all cold data for full JSON backup. Revision is inserted before attaching the large history; collections are materialized once. Complete backup/history RPCs allow 25 seconds, scope/active reads 15 seconds, with the existing 30-second browser request limit. Access grants, login behavior and role-wide limits remain unchanged.
+- Contractor address/phone are stored in both source data and relational columns, with length checks. The `archived` database columns remain for compatibility with legacy schema/snapshots; v8 has no basic-data archive controls or archive CSV column. Referenced contract deletion retains history using `deletedAt` tombstones.
 
-- Live PostgreSQL save benchmark after patch: 2,850 ms (transaction rolled back), about 25 times faster. Temporary blocks written fell to 3,021.
-- Live regression SQL passed as both administrator and `anon`, with every write rolled back. It verifies settings save preserves reports/import history, rejects stale revisions and unauthorized history edits/deletions, and keeps identical imports idempotent.
-- Full-size local PostgreSQL tests passed for changed imports, invalid-import rollback, audited amendments and preserved snapshots.
-- Existing application tests: 42 passed; production build passed.
-- Live HTTP load passed. HTTP write verification from the managed environment was blocked by its credential proxy with `401 Unauthorized: authentication failed for integration`; it did not reach the database. Database writes were verified separately through the Supabase plugin under the `anon` role. Actual browser write performance remains to be observed.
+Verification:
 
-Run `tests/workspace_timeout.sql` through an SQL connection or the Supabase SQL editor against an existing populated workspace. It ends in `ROLLBACK`. To exercise client permissions, add `SET LOCAL ROLE anon` immediately after `BEGIN`.
+`npm test` runs 62 unit tests. `npm run qa` creates a local PGlite database with synthetic data, starts a local server, intercepts remote RPCs, and runs Chromium at desktop/mobile sizes. It covers all six master tabs, no-op reimport, failed-import retry, old-report detail and audited amendment. It never writes test records to the live database. Install development dependencies and Chromium as described in `MANUAL.md`.
 
-Supabase security advisors were checked. Existing anonymous SECURITY DEFINER endpoints reflect this project's chosen shared workspace without login. The private import archive intentionally has RLS and no client policy. Advisor explanations: [anonymous SECURITY DEFINER endpoints](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable), [private table without a client policy](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+Additional release tests against a private copy of the full workspace cover granular entry saves, rapid queued edits, failure/reload recovery, full JSON backup, both funding groups, unknown legacy payment dates, closing/newly-paid date gates, invalid-entry rollback and unchanged frozen history. Release measurements and live deployment evidence are supplied in `05-Verification` of the delivery. Local and HTTP timings depend on data, cache and network conditions; they are not fixed latency guarantees.
 
-The patch still rebuilds the relational projection when saving. Incremental projection updates are a possible next step if the workspace grows; they are not required for this fix. Database elapsed times above exclude network transfer.
-
-## v7.2.1 — weekly report creation
-
-`20261015073328_fix_weekly_report_creation.sql` fixes draft creation when a prior imported row says paid but has no documented payment day. Such rows remain unknown in drafts; newly paid rows and closing a new report still require dates. Prior entries are indexed once per changed report instead of repeatedly expanding all reports per contract. Ordinary saves preserve server-authored import history even when the client omits it.
-
-The new invoker RPCs `pn2_load_active_workspace` and `pn2_load_import_history` split operational data from audit details. The original `pn2_load_workspace` remains the full backup endpoint for backward compatibility. On the current workspace, UTF-8 operational JSON falls from 13,243,425 to 4,725,781 bytes (about 64% smaller). Historical reports, snapshots and import archives remain intact.
-
-`tests/report_creation.sql` verifies legacy draft creation, deferred history and the closing gate in a rolled-back transaction; it passed on the live database as `anon`. Local PostgreSQL tests additionally cover both funding groups, correcting one missing date while others remain unknown, rejecting a newly paid undated row, and retaining locked history. The application has 45 passing unit tests. Desktop 1500×1000 and mobile 390×844 browser tests exercise the rendered create/open/date-correction/audit/backup flows using the current workspace against local PostgreSQL, without writes to production.
-
-## v7.3 — scoped report loading and atomic delta writes
-
-Apply the v7.3 migrations in filename order. `pn2_load_scope(text,integer,text)` returns a complete report catalogue, progress history for the chosen funding/year and full snapshots for the selected report only. The latest fiscal year with projects is the default. Full backup and audited import RPCs remain compatible.
-
-`pn2_patch_workspace(jsonb,bigint,text)` merges whitelisted values and ID-based collection deltas into the authoritative document under the same advisory/revision lock. It preserves audit history and invokes the normal validation/closed-history guard. Settings deltas merge individual fields, retaining the existing logo. Empty deltas do not advance revision. Requests cannot submit unloaded report stubs. Ordinary report/settings changes incrementally refresh only changed relational reports/entries when projects/masters are unchanged. Changes to structural metadata retain the full rebuild path.
-
-The second v7.3 migration reduces validation to the reports merged by this server-side patch wrapper; full-save clients continue validating the complete workspace. Previous entries are still read from complete history. The wrapper restores its transaction-local optimization flag before returning. Direct clients cannot set this flag through the application RPC arguments.
-
-Evidence: 48 application unit tests and build pass. `tests/scoped_patch.sql` passed on the live database as anon inside a rolled-back transaction, including creation, entry updates, unchanged report/history preservation, projection synchronization, settings-logo preservation, stale revisions, locked-report removal, invalid percentages and no-op revision behavior. Local PostgreSQL tests also exercise structural-project fallback after delta saves.
-
-On the current Province 2569 scope, the operational response is about 819 KB instead of 4.73 MB. A typical changed draft report request is about 2.5 KB; a creation request is about 11 KB. These are dataset-dependent payload sizes, not guaranteed network latency. Desktop/mobile browser tests cover rapid queued edits, a failed request, reload recovery, explicit retry, quality review, frozen historical report opening and complete backup export. Offline mode retains edits pending reconnect and blocks incomplete backup exports.
-
-No recurring external backup schedule is configured by this patch. A full recoverable pre-deployment snapshot was saved separately; existing audited import archives and the full JSON backup endpoint are retained.
+The older SQL regression files in `tests/` document their original v7 migration context. Use the v8 QA and current schema for release verification. See `MANUAL.md` for current user workflows and limits.
