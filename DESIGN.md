@@ -154,3 +154,11 @@ Reconciled intentional drift: the prior white sidebar/no-summary-band rule is su
 
 ## v7.4.1 release identity
 The sidebar displays a visible version and dashboard identity for support verification. Deployment rejects an outdated commit when using the updated workflow. On 15 October an old v7.3 workflow was rerun after v7.4 and replaced the live site; this was a release rollback, not evidence of a browser cache issue. To publish current main, start a new workflow, not a rerun of an old deployment.
+
+## v7.5 CSV identity and upsert — user decision
+
+CSV exports for all seven catalog tabs and the contract registry include ID and workspace_id. Fiscal years export their year as ID; registry exports also include funding/year. The combined workspace and ID represent the database primary key (workspace/year for fiscal years). Import history CSV includes the import-run ID and raw key path alongside human-readable labels.
+
+CSV imports match explicit ID first, falling back to legacy business names/codes or scoped contract number only when no ID is supplied. Conflicting IDs, duplicated IDs, mismatched workspaces and wrong registry scopes are rejected in preview. Supplied new IDs are retained. Fiscal-year IDs are immutable; a new year must be added. CSV now adds/updates rows and preserves omitted records, superseding earlier CSV replacement semantics. JSON replacement and audited import retention remain unchanged. Blank registry values continue to preserve old values; CSV is not a full workspace backup.
+
+The existing import dialogs own the workflow. Per-row details show old/new values, identical data is labeled unchanged, and successful unchanged CSV imports do not issue write RPCs or create a new revision. Registry timestamps and optional absent empty fields do not produce false changes. Changed imports still use the audited import RPC. Closed reports and snapshots remain unchanged by registry/master CSV import. No database migration or access-setting change in this release.

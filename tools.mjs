@@ -106,7 +106,7 @@ test('master CSV years overwrite, lowercase codes, and compact import history la
  const pYears=App.previewMasterCSV(s,'years','รหัส,ชื่อ\ny000001,2569\ny000009,2571');
  assert.equal(pYears[0].errors.length,0);assert.equal(pYears[0].code,'Y000001');
  const rYears=App.replaceMasterCSV(s,'years',pYears,{0:'overwrite',1:'add'});
- assert.equal(rYears.updated,1);assert.equal(rYears.added,1);assert(s.years.includes(2571));
+ assert.equal(rYears.updated,0);assert.equal(rYears.unchanged,1);assert.equal(rYears.added,1);assert(s.years.includes(2571));
  const next=clone(s);next.contractors[0].name='เปลี่ยนชื่อผู้รับจ้าง 0';
  const run=App.recordImport(s,next,{fileName:'contractors.csv',format:'CSV'});
  assert.equal(Object.keys(run.labels).length,1);
@@ -185,6 +185,29 @@ test('quality review groups missing payment days by contract and leaves source h
 });
 test('failed device storage explicitly reports temporary memory storage',async()=>{
  const result=await App.writeStore({version:1,projects:[],reports:[]});assert.equal(result.durable,false);
+});
+
+test('CSV exports primary key and workspace and matches renamed masters by ID',()=>{
+ const s=importFixture(),x=s.contractors[0],id=x.id;const out=App.parseCSVTable(App.masterCSV(s,'contractors'));assert.equal(out[0][0],'ID');assert.equal(out[1][0],id);assert.equal(out[1][1],App.CSV_WORKSPACE_ID);
+ const p=App.previewMasterCSV(s,'contractors',`ID,ชื่อ\n${id},ชื่อใหม่`);assert.equal(p[0].matchId,id);assert.equal(p[0].errors.length,0);const before=JSON.stringify(s.reports),r=App.applyMasterCSV(s,'contractors',p,{0:'overwrite'});assert.equal(r.updated,1);assert.equal(s.contractors[0].id,id);assert.equal(s.projects[0].contractor,'ชื่อใหม่');assert.equal(JSON.stringify(s.reports),before);
+});
+test('master CSV identical rows do not update; new IDs retained and omitted masters remain',()=>{
+ const s=importFixture(),p=App.previewMasterCSV(s,'contractors',App.masterCSV(s,'contractors')),before=JSON.stringify(s.contractors);const r=App.applyMasterCSV(s,'contractors',p,Object.fromEntries(p.map(x=>[x.index,'overwrite'])));assert.equal(r.updated,0);assert.equal(r.unchanged,p.length);assert.equal(JSON.stringify(s.contractors),before);
+ const next=App.previewMasterCSV(s,'contractors','ID,ชื่อ\nNEW-CTR,ผู้รับจ้างเพิ่ม');App.applyMasterCSV(s,'contractors',next);assert(s.contractors.some(x=>x.id==='NEW-CTR'));assert(s.contractors.length>1);
+});
+test('CSV rejects duplicate IDs, conflicting identities, wrong workspaces and year key edits',()=>{
+ const s=importFixture(),id=s.contractors[0].id;assert(App.previewMasterCSV(s,'contractors',`ID,ชื่อ\n${id},ก\n${id},ข`)[1].errors.length);assert(App.previewMasterCSV(s,'contractors','ID,ชื่อ\nWRONG,ก')[0].errors.length);assert(App.previewMasterCSV(s,'contractors',`ID,workspace_id,ชื่อ\n${id},OTHER,ก`)[0].errors.length);assert(App.previewMasterCSV(s,'years','ID,ชื่อ\n2569,2570')[0].errors.length);
+ const rows=App.parseRegistryCSV(App.registryCSV(s.contractRegistry));rows[0].workspaceId='OTHER';assert(App.previewRegistryImport(s,rows,2569,'DOH')[0].errors.length);rows[0].workspaceId=App.CSV_WORKSPACE_ID;assert(App.previewRegistryImport(s,rows,2570,'DOH')[0].errors.length);
+});
+test('registry CSV primary key rename preserves ID, project link, and historical reports',()=>{
+ const s=importFixture(),r=s.contractRegistry[0],before=JSON.stringify(s.reports),p=App.parseRegistryCSV(App.registryCSV([r]));assert.equal(p[0].id,r.id);p[0].contract='99/2569';p[0].title='งานปรับชื่อ';const preview=App.previewRegistryImport(s,p,2569,'DOH');assert.equal(preview[0].duplicateId,r.id);assert.equal(preview[0].errors.length,0);const result=App.applyRegistryImport(s,preview,{0:'overwrite'});assert.equal(result.updated,1);assert.equal(result.state.contractRegistry[0].id,r.id);assert.equal(result.state.contractRegistry[0].projectId,r.projectId);assert.equal(result.state.contractRegistry[0].contract,'99/2569');assert.equal(JSON.stringify(result.state.reports),before);
+});
+test('registry primary key reimport is no-op and new supplied ID is retained',()=>{
+ const s=importFixture(),r=s.contractRegistry[0],p=App.previewRegistryImport(s,App.parseRegistryCSV(App.registryCSV([r])),2569,'DOH'),before=JSON.stringify(s.contractRegistry);const result=App.applyRegistryImport(s,p,{0:'overwrite'});assert.equal(result.updated,0);assert.equal(result.unchanged,1);assert.equal(JSON.stringify(result.state.contractRegistry),before);
+ const add={...r,id:'NEW-REG',contract:'2/2569'};const preview=App.previewRegistryImport(s,App.parseRegistryCSV(App.registryCSV([add])),2569,'DOH');const added=App.applyRegistryImport(s,preview).state;assert(added.contractRegistry.some(x=>x.id==='NEW-REG'));assert(added.contractRegistry.some(x=>x.id===r.id));
+});
+test('CSV change previews show original and new values, and history exports exact key paths',()=>{
+ const s=importFixture(),id=s.contractors[0].id,p=App.previewMasterCSV(s,'contractors',`ID,ชื่อ\n${id},ชื่อใหม่`);const changes=App.csvPreviewChanges(s,'contractors',p[0]);assert(changes.some(c=>c.path==='name'&&c.after==='ชื่อใหม่'));assert(App.csvChangeHTML(changes).includes('เดิม:'));assert(App.csvChangeHTML([]).includes('ไม่เขียนทับ'));const run={id:'IMPORT-1',fileName:'x.csv',at:'today',labels:{},changes:[{path:'contractors / '+id+' / name',before:'ก',after:'ใหม่',kind:'updated'}]};const csv=App.parseCSVTable(App.importHistoryCSV([run]));assert.equal(csv[1][0],run.id);assert(csv[1][2].includes(id));
 });
 
 }else if(mode==='build'){
