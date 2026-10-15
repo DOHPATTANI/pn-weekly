@@ -192,7 +192,7 @@ test('CSV exports primary key and workspace and matches renamed masters by ID',(
  const p=App.previewMasterCSV(s,'contractors',`ID,ชื่อ\n${id},ชื่อใหม่`);assert.equal(p[0].matchId,id);assert.equal(p[0].errors.length,0);const before=JSON.stringify(s.reports),r=App.applyMasterCSV(s,'contractors',p,{0:'overwrite'});assert.equal(r.updated,1);assert.equal(s.contractors[0].id,id);assert.equal(s.projects[0].contractor,'ชื่อใหม่');assert.equal(JSON.stringify(s.reports),before);
 });
 test('master CSV identical rows do not update; new IDs retained and omitted masters remain',()=>{
- const s=importFixture(),p=App.previewMasterCSV(s,'contractors',App.masterCSV(s,'contractors')),before=JSON.stringify(s.contractors);const r=App.applyMasterCSV(s,'contractors',p,Object.fromEntries(p.map(x=>[x.index,'overwrite'])));assert.equal(r.updated,0);assert.equal(r.unchanged,p.length);assert.equal(JSON.stringify(s.contractors),before);
+ const s=importFixture();delete s.contractors[0].archived;const p=App.previewMasterCSV(s,'contractors',App.masterCSV(s,'contractors')),before=JSON.stringify(s.contractors);const r=App.applyMasterCSV(s,'contractors',p,Object.fromEntries(p.map(x=>[x.index,'overwrite'])));assert.equal(r.updated,0);assert.equal(r.unchanged,p.length);assert.equal(JSON.stringify(s.contractors),before);
  const next=App.previewMasterCSV(s,'contractors','ID,ชื่อ\nNEW-CTR,ผู้รับจ้างเพิ่ม');App.applyMasterCSV(s,'contractors',next);assert(s.contractors.some(x=>x.id==='NEW-CTR'));assert(s.contractors.length>1);
 });
 test('CSV rejects duplicate IDs, conflicting identities, wrong workspaces and year key edits',()=>{
