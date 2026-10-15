@@ -459,7 +459,7 @@ export function csvPreviewChanges(s,key,item){
  const old=key==='years'?{year:s.years.find(y=>String(y)===item.matchId),code:s.yearCodes?.[item.name]}:clone(s[key].find(x=>x.id===item.matchId)||{});
  applyMasterCSV(small,key,[item],{[item.index]:'overwrite'});
  const now=key==='years'?{year:+item.name,code:small.yearCodes[item.name]}:small[key].find(x=>x.id===(item.matchId||item.id)||(!item.matchId&&!item.id&&x.name===item.name));
- return importChanges(old,now||{}).filter(c=>c.path!=='id');
+ return importChanges(old,now||{}).filter(c=>c.path!=='id'&&(c.path!=='code'||item.code||item.matchId));
 }
 export function csvChangeHTML(changes){const value=x=>esc(x===null?'ไม่มีค่า':typeof x==='object'?JSON.stringify(x):String(x));return changes.length?`<details class="csv-diff"><summary>เปลี่ยน ${changes.length} ช่อง · ดูค่าเดิม / ค่าใหม่</summary><dl>${changes.map(c=>`<div><dt>${esc(importFieldLabels[c.path]||c.path)}</dt><dd><span>เดิม: ${value(c.before)}</span><strong>ใหม่: ${value(c.after)}</strong></dd></div>`).join('')}</dl></details>`:'<span class="csv-unchanged">ข้อมูลตรงกัน · ไม่เขียนทับ</span>';}
 export function masterCSV(s,key){assignMasterCodes(s);const items=key==='years'?s.years.map(y=>({id:String(y),code:s.yearCodes[y],name:String(y)})):s[key];const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';return '\ufeff'+[['ID','workspace_id','รหัส','ชื่อ','ประเภทงาน','รหัสงาน','เก็บเข้าคลัง'],...items.map(x=>[x.id,CSV_WORKSPACE_ID,x.code,x.name,s.workTypes?.find(t=>t.id===x.typeId)?.name||'',(x.codeIds||[]).map(id=>s.workCodes?.find(c=>c.id===id)?.name||'').filter(Boolean).join(' | '),x.archived?'1':'0'])].map(row=>row.map(q).join(',')).join('\r\n');}
