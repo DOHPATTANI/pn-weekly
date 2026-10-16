@@ -180,3 +180,11 @@ The local cache stores import history under a separate IndexedDB key and writes 
 - v8.1.1: source contractor names resolve to exact existing names automatically or create a contractor without a blocking review step. Persistent new/updated badges reuse the shared pill owner in registry list/detail and master list/edit; identical imports preserve their last actual change. Dates show Asia/Bangkok in Thai.
 
 - v8.1.2 lifecycle-date dialog follows changed-field amendment semantics; untouched empty historical fields do not overwrite current registry dates.
+
+## v9 authorized workflow contract
+- Shared table selection defaults to all matching rows across pagination. Clearing all then selecting rows narrows export; filters always bound the dataset. Selection count and scope appear explicitly. Registry, catalog, reports, weekly and quality use one DOM selection owner, not independent handlers.
+- Import comparison remains before write, and post-write change pills open field-level old/new review. Review confirmation is separate from mutation success; unchanged reimports preserve last real change/review state. Quality reviews hide only the same issue fingerprint and remain accessible in reviewed mode.
+- Shared outbox persists local state and queued deltas in one IndexedDB transaction. Server conflict stops replay, never overwrites silently. Shared script doubles as service worker; no top-level-await because worker startup must remain supported. Cold historical reports need prior caching offline.
+- Report-specific display names live in settings keyed by report/contract, never update the job master or registry. Web dates stay Thai; reversible file date-only values are DD/MM/YYYY Gregorian. Audit timestamps stay timestamps.
+- Report deletion supports selected entries in a week and selected weeks, always names selected rows in confirmation and writes audited before/after history; registry survives.
+- Project status is a pie plus clickable count legend; expiry uses latest effective end including approved extensions. Shared document widths apply relative factors and normalize to page width.
