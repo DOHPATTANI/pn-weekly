@@ -178,3 +178,5 @@ The local cache stores import history under a separate IndexedDB key and writes 
 - v8.1 registry: primary Excel import/export/template; text contract/code columns, numeric amounts, date cells, hidden retained identity. No forced manual master matching; preview states newly added types. Legacy CSV stays available.
 
 - v8.1.1: source contractor names resolve to exact existing names automatically or create a contractor without a blocking review step. Persistent new/updated badges reuse the shared pill owner in registry list/detail and master list/edit; identical imports preserve their last actual change. Dates show Asia/Bangkok in Thai.
+
+- v8.1.2 lifecycle-date dialog follows changed-field amendment semantics; untouched empty historical fields do not overwrite current registry dates.

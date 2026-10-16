@@ -30,3 +30,5 @@
 - v8.1 registry imports accept direct typed XLSX and legacy CSV, including Thai hyphen dates. Registry project titles need not equal catalog job names. Missing named types and supervisors may be created automatically; retain source contractor text without forced manual pairing. Preserve identity matching by ID or scoped contract number and historical reports. XLSX no-op follows the same delta short-circuit as CSV.
 
 - v8.1.1 user decision: registry imports reuse an existing contractor by exact trimmed name, otherwise create it, retaining source text and existing contacts. No manual matching gate. Persist last actual new/updated data status on imported registry/master records; no-op must not rewrite status/time or create an audit run.
+
+- v8.1.2 date dialog submits changed keys only, just like amendment form. Empty unchanged historical date fields must never clear registry dates imported later; explicit changes from nonempty to empty remain valid.
