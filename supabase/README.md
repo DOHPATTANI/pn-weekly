@@ -17,8 +17,14 @@ Current behavior:
 
 Verification:
 
-`npm test` runs 62 unit tests. `npm run qa` creates a local PGlite database with synthetic data, starts a local server, intercepts remote RPCs, and runs Chromium at desktop/mobile sizes. It covers all six master tabs, no-op reimport, failed-import retry, old-report detail and audited amendment. It never writes test records to the live database. Install development dependencies and Chromium as described in `MANUAL.md`.
+`npm test` runs 91 unit tests. `npm run qa` creates a local PGlite database with synthetic data, starts a local server, intercepts remote RPCs, and runs Chromium at desktop/mobile sizes. It covers all six master tabs, no-op reimport, failed-import retry, old-report detail and audited amendment. It never writes test records to the live database. Install development dependencies and Chromium as described in `MANUAL.md`.
 
 Additional release tests against a private copy of the full workspace cover granular entry saves, rapid queued edits, failure/reload recovery, full JSON backup, both funding groups, unknown legacy payment dates, closing/newly-paid date gates, invalid-entry rollback and unchanged frozen history. A live PostgreSQL contact-import probe under the client role took 1,224 ms and 1,011 ms in two runs; each verified the write then rolled it back, keeping revision 78 and no test data. These server-only samples are not HTTP latency guarantees. Release measurements and live deployment evidence are supplied in `05-Verification` of the delivery. Local and HTTP timings depend on data, cache and network conditions; they are not fixed latency guarantees.
 
 The older SQL regression files in `tests/` document their original v7 migration context. Use the v8 QA and current schema for release verification. See `MANUAL.md` for current user workflows and limits.
+
+## v11 registry relations
+
+Apply `20261017091813_personnel_assignments_and_road_catalog.sql` after the previous migrations. Personnel assignments retain group, ordinal, position and duty per contract; the common person record retains the full name. `pn2_road_sections` projects the reusable road catalogue while kilometres and direction remain contract-specific. Native foreign keys and ordinal constraints reject invalid assignments atomically. Existing scoped reads and changed-only writes remain in use; full history is loaded only for explicit backup operations.
+
+The authorized master rebuild is a separately audited XLSX delta with a private full backup. It rebuilds contractor/personnel references from current contracts and authoritative ก-4 names without deleting contracts or report snapshots. Legacy supervisor labels remain contract references rather than being guessed as new people.
