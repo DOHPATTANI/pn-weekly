@@ -5,7 +5,7 @@ Business sources: AGENTS.md, DESIGN.md and explicit owner decisions recorded in 
 |---|---|---|---|---|
 | Table Selection | mountSelections / tableSelections | DESIGN.md v9 | all filtered pages / explicit rows | tools.mjs browser QA |
 | Select/Listbox | selectField, native select and datalist | DESIGN.md | native browser popup | desktop/mobile browser QA |
-| Date | field date input, parseG3Date, fileDate | MANUAL.md date rules | Thai display / Gregorian files | unit and workbook tests |
+| Date | bindThaiDates/openThaiCalendar with bundled Flatpickr, parseG3Date, fileDate | MANUAL.md date rules | authored Thai BE popup / Gregorian storage | keyboard, year/month/day, workbook and DB tests |
 | Form | field, modal, commitCSVForm | DESIGN.md | create/edit/import/review | success/failure/retry browser QA |
 | Scrollbar | styles.css document baseline | DESIGN.md | table-scoped overflow | narrow viewport QA |
 | Toast | initializeUI toast | DESIGN.md | success/error; persistent sync banner | browser QA |
@@ -23,3 +23,15 @@ Owner approved a text-led read-only dossier, separate from edit field styling. T
 
 ## v11 approved data and UI contract
 Explicit owner start supersedes listening-only hold. Keep date storage CE/native date, Thai BE web/Plannet display. Remove amount only from main registry list. G4 import extracts full name, source ordinal and position, defaults inspection chair/member and supervision primary/assistant; position/duty belongs to a contract assignment, not the shared person. Native assignments and road catalogue are indexed projections with parent FKs. One primary duty per nonempty group. Inline row editing uses existing modal/fields, confirmed removals and atomic Save contract. Reset contractors/personnel only from current source/current contract evidence after full backup; retain fiscal years/types, valid budget accounts/codes/names and every report snapshot. Keep unidentified legacy supervisor text as reference; never regenerate short display aliases as master people. All formats preserve assignments and source keys; source G4 and own compact G4 export both supported. Repeated imports no-op. Browse exports all filtered rows; active selection exports only checked rows, zero selection blocks. Benchmark scope reads/compact writes against full backup, never promise all-browser/device support.
+
+## v12 — approved registry and weekly refinements
+
+Latest owner instruction supersedes history-retention defaults for the one-time cleanup: retain the newest closed report per funding/year and every draft after a private full backup. Preserve every contract and retained snapshot. Store prior entry baselines separately so amendments and carry-forward remain valid. No general automatic history deletion is enabled.
+
+Personnel masters retain current position, filled from authoritative ก-4 only when empty; per-contract position/duty remains independent. Choosing an existing name fills a blank position. Contractor raw source stays intact; canonical names and remembered aliases round-trip in JSON/Excel/CSV. Exact or approved aliases match automatically; fuzzy suggestions require explicit selection, otherwise import a pending name. Verified aliases may supersede a pending raw-name record without merging two verified firms automatically.
+
+Road masters use highway/control/canonical name without a trailing numbered ตอน suffix; original segment text/km/direction remain contract-specific. Searchable combined road selection fills the three identifying fields. Quantity-unit options derive from actual records and do not create a new master tab.
+
+Date is now a shared authored Thai BE calendar backed by bundled Flatpickr with ISO CE storage; no platform calendar popup is used. All modal date workflows reuse this owner. Compact management controls in the read dossier reveal route tools or open the shared personnel editor. Weekly table includes only the primary supervisor (title/given name/ฯ unless a report alias is set), compact alias/date icons, and reference-week expiry for ongoing work after approved extensions. Alias carry-forward and closed snapshots remain isolated.
+
+Performance: scoped reads limit projects/registry to selected funding/year; explicit destination-scope loading precedes file preview. Offline rebase reads active state without cold import history; cached history is deferred and unchanged history is not rewritten. Report validation covers changed report IDs while native constraints/global revision remain. Large registry/personnel workbooks use a module Worker at 200 rows; worksheet parsing yields in batches. Keep four published runtime files; vendor license is recorded. Full backup requires a complete online workspace; offline selected-report export remains available.

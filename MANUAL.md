@@ -1,4 +1,4 @@
-# PN Weekly 11.0.0 — คู่มือฉบับรวม
+# PN Weekly 12.0.0 — คู่มือฉบับรวม
 
 ## ทะเบียนสัญญาจาก Plannet
 
@@ -51,9 +51,9 @@ CSV ทะเบียนเก็บ ID Code และข้อมูลช่�
 
 ---
 
-# PN Weekly 11.0.0 — คู่มือฉบับรวม
+# PN Weekly 12.0.0 — คู่มือฉบับรวม
 
-เปิด [ระบบรุ่นล่าสุด](https://dohpattani.github.io/pn-weekly/?release=11.0.0) และตรวจ v11.0.0 ใต้เมนู หากยังเป็นรุ่นเดิมให้รีโหลดหน้า ระบบใช้ฐานข้อมูลเดิม ไม่ต้องนำเข้าซ้ำ
+เปิด [ระบบรุ่นล่าสุด](https://dohpattani.github.io/pn-weekly/?release=12.0.0) และตรวจ v12.0.0 ใต้เมนู หากยังเป็นรุ่นเดิมให้รีโหลดหน้า ระบบใช้ฐานข้อมูลเดิม ไม่ต้องนำเข้าซ้ำ
 
 ## นำเข้าและตรวจการเปลี่ยนแปลง
 
@@ -156,3 +156,25 @@ JSON ทั้งระบบเป็นสำรองครบกว่าร
 Excel ทั่วไปและ CSV เก็บบุคลากรพร้อมบทบาทในคอลัมน์ JSON และชื่อเต็มเพื่อเชื่อมข้อมูลได้เมื่อคีย์บุคลากรเปลี่ยน ส่วน JSON สำรองเต็มเก็บทะเบียนทางหลวงและประวัติครบ การนำเข้าเหมือนเดิมไม่เพิ่มรายชื่อ/ความสัมพันธ์/ประวัติซ้ำ หากเลือกข้ามแถวจะไม่เพิ่มข้อมูลพื้นฐานจากแถวนั้น
 
 การเปิดใช้งานปกติใช้ข้อมูลตามปี/กลุ่มงบและรายงานที่เลือก ไม่ดึงประวัติทั้งระบบทุกครั้ง การสำรองเต็มหรือกู้คืน JSON เป็นขั้นตอนเฉพาะที่จำเป็นต้องโหลดข้อมูลครบ การบันทึกทั่วไปใช้ส่วนที่เปลี่ยนและตรวจรุ่นข้อมูลก่อนบันทึก
+
+## v12 — approved registry and weekly refinements
+
+Latest owner instruction supersedes history-retention defaults for the one-time cleanup: retain the newest closed report per funding/year and every draft after a private full backup. Preserve every contract and retained snapshot. Store prior entry baselines separately so amendments and carry-forward remain valid. No general automatic history deletion is enabled.
+
+Personnel masters retain current position, filled from authoritative ก-4 only when empty; per-contract position/duty remains independent. Choosing an existing name fills a blank position. Contractor raw source stays intact; canonical names and remembered aliases round-trip in JSON/Excel/CSV. Exact or approved aliases match automatically; fuzzy suggestions require explicit selection, otherwise import a pending name. Verified aliases may supersede a pending raw-name record without merging two verified firms automatically.
+
+Road masters use highway/control/canonical name without a trailing numbered ตอน suffix; original segment text/km/direction remain contract-specific. Searchable combined road selection fills the three identifying fields. Quantity-unit options derive from actual records and do not create a new master tab.
+
+Date is now a shared authored Thai BE calendar backed by bundled Flatpickr with ISO CE storage; no platform calendar popup is used. All modal date workflows reuse this owner. Compact management controls in the read dossier reveal route tools or open the shared personnel editor. Weekly table includes only the primary supervisor (title/given name/ฯ unless a report alias is set), compact alias/date icons, and reference-week expiry for ongoing work after approved extensions. Alias carry-forward and closed snapshots remain isolated.
+
+Performance: scoped reads limit projects/registry to selected funding/year; explicit destination-scope loading precedes file preview. Offline rebase reads active state without cold import history; cached history is deferred and unchanged history is not rewritten. Report validation covers changed report IDs while native constraints/global revision remain. Large registry/personnel workbooks use a module Worker at 200 rows; worksheet parsing yields in batches. Keep four published runtime files; vendor license is recorded. Full backup requires a complete online workspace; offline selected-report export remains available.
+
+### การใช้รุ่น 12
+
+- ชื่อผู้รับจ้างจากไฟล์: หน้านำเข้าเสนอชื่อใกล้เคียงให้เลือกยืนยัน ชื่อที่เคยยืนยันจะจับคู่ให้ในครั้งต่อไป ถ้าไม่เลือกให้สร้างชื่อใหม่รอตรวจ สามารถแก้ชื่อมาตรฐานและชื่อเรียกอื่นในข้อมูลพื้นฐานได้
+- เลือกบุคลากรแล้วตำแหน่งจะเติมเฉพาะช่องว่าง แก้เฉพาะสัญญาได้โดยไม่เปลี่ยนตำแหน่งในสัญญาเก่า
+- ปฏิทินแสดงเดือนภาษาไทยและปี พ.ศ. ทั้งเพิ่ม/แก้ไข เลือกปี พ.ศ. แล้วระบบบันทึก ค.ศ. เอง ใช้ Escape เพื่อปิดและกลับช่องเดิม
+- ในรายละเอียดสัญญา กดไอคอนจัดการเล็กก่อนใช้เครื่องมือช่วงทางหรือบุคลากร
+- รายสัปดาห์เพิ่มผู้ควบคุมหลักโดยไม่รวมผู้ช่วย ไอคอนดินสอแก้ชื่อรายงาน และไอคอนวันที่เปิดบันทึกส่งมอบ/ตรวจรับ/เบิกจ่าย
+- กรอบหมดอายุสัญญาอิงวันท้ายสัปดาห์ที่เปิด ไม่ใช้วันนี้ย้อนเปลี่ยนรายงานเก่า และนับเฉพาะงานกำลังดำเนินการ
+- ล้างรายงานเก่าเฉพาะครั้งที่เจ้าของอนุญาตพร้อมข้อมูลสำรอง ไม่เปิดการล้างประวัติอัตโนมัติ
