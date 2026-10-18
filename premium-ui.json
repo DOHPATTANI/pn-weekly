@@ -1,0 +1,9 @@
+{
+  "profile": "product-admin",
+  "locale": "th-TH",
+  "canonicalMap": "UX-CONTRACT.md",
+  "ownership": {
+    "Select/Listbox": "native",
+    "Date": "authored"
+  }
+}
