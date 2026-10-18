@@ -1,5 +1,7 @@
 # PLANNET DOH project continuity
 
+- User communication preference (explicitly reaffirmed): summarize changes once at the end, when the system is ready to use. Avoid step-by-step progress narration; interrupt only for a decision or information genuinely required from the user. Deliver the working web link with the final summary.
+
 - Respond in Thai unless the user asks otherwise.
 - Inspect installed skills/plugins and use relevant ones for each task; do not invoke unrelated capabilities merely because installed.
 - Latest implementation is repository root (or `01-GitHub` when reading the handoff ZIP); the consolidated manual is `MANUAL.md` (also `04-Manual/คู่มือฉบับรวม.md` in the handoff ZIP) and design/behavior decisions are in `DESIGN.md` at repository root.
