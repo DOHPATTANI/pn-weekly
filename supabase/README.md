@@ -17,7 +17,7 @@ Current behavior:
 
 Verification:
 
-`npm test` runs 99 unit tests. `npm run qa` creates a local PGlite database with synthetic data, starts a local server, intercepts remote RPCs, and runs Chromium at desktop/mobile sizes. It covers all six master tabs, no-op reimport, failed-import retry, old-report detail and audited amendment. It never writes test records to the live database. Install development dependencies and Chromium as described in `MANUAL.md`.
+`npm test` runs 103 unit tests. `npm run qa` creates a local PGlite database with synthetic data, starts a local server, intercepts remote RPCs, and runs Chromium at desktop/mobile sizes. It covers all six master tabs, no-op reimport, failed-import retry, old-report detail and audited amendment. It never writes test records to the live database. Install development dependencies and Chromium as described in `MANUAL.md`.
 
 Additional release tests against a private copy of the full workspace cover granular entry saves, rapid queued edits, failure/reload recovery, full JSON backup, both funding groups, unknown legacy payment dates, closing/newly-paid date gates, invalid-entry rollback and unchanged frozen history. A live PostgreSQL contact-import probe under the client role took 1,224 ms and 1,011 ms in two runs; each verified the write then rolled it back, keeping revision 78 and no test data. These server-only samples are not HTTP latency guarantees. Release measurements and live deployment evidence are supplied in `05-Verification` of the delivery. Local and HTTP timings depend on data, cache and network conditions; they are not fixed latency guarantees.
 
@@ -34,3 +34,9 @@ The authorized master rebuild is a separately audited XLSX delta with a private 
 Apply `20261017231300_scoped_registry_reads_and_delta_validation.sql`. Scope reads return only the current funding/year projects and registry, while the report catalogue/carry context remain available. Patches validate the affected report set and retain global project checks/FKs/revision locking. Explicit JSON imports ignore cold import-history payloads when computing field diffs, preventing recursive history comparisons. Prior baselines in settings preserve cumulative validation after authorized report pruning. Road catalogue consolidation deletes retired IDs before renaming survivors to avoid transient unique conflicts. Active FK indexes follow the Supabase advisor; legacy pn_* tables remain unchanged.
 
 The one-time production cleanup is audited and backed up separately; ordinary saves still protect closed reports. Full JSON backup remains an explicit online operation.
+
+JSON replacement uploads exclude cold import audit (which remains in the destination). New JSON archives use the existing delta-v1 representation, preserving field before/after values without repeated full documents. Apply `20261018054604_avoid_reprocessing_cold_history_in_json_restore.sql` after the v12 scope migration.
+
+Apply `20261018055038_compact_added_removed_audit_nodes.sql` to retain complete added/removed record nodes in one diff item rather than recursively appending every absent leaf. Changed records still have granular field diffs. This bounds report-cleanup audit work while retaining the exact removed report.
+
+`20261018055453_append_json_audit_without_history_hydration.sql` appends a new JSON audit run directly, retaining every existing cold run instead of loading, concatenating and rewriting the old history. This also supports legacy capped-history function variants found in production.
