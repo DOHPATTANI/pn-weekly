@@ -50,3 +50,11 @@ Cold reference fields are omitted in the dossier and screen payload, not deleted
 - Roads share basic-data navigation. Search replaces the duplicate category title. Dossier pencils sit beside section headings, with labels/tooltips and usable hit areas.
 - Audit opens 25 changes per request; large values are abbreviated and retrieved explicitly. Full-history export remains explicit. Save errors retain input and explain cause/recovery; normal connection indicators stay hidden, exceptional unsent/conflict warnings remain visible.
 - Default year is the newest populated registry year. Existing offline identifiers are retained during the PLANNET DOH rename.
+
+## v14.1 — search, overlay and report consistency
+
+- `bindClearSearches` owns clear icons for list searches and searchable datalist fields. Show × only when populated; clear through the existing input/change owner, preserve remaining filters and return focus. Clearing a chooser invalidates its selected ID. It never saves or creates a record.
+- `searchableContractorField` / `bindContractorChoice` is the authored Select/Listbox variant for transfer only. Filter locally by canonical/alias names; offer existing fuzzy suggestions. Arrow keys navigate, Enter selects, Escape closes the list before closing the dialog, Tab exits. Typed text alone cannot authorize a transfer. The chosen stable ID and full name must be explicit.
+- `mountContractFooter` is the contract-form dialog variant. Body alone scrolls; footer and header are outside its clipping boundary. Footer buttons retain the contract form via native form association. Errors preserve input, focus the field and remain visible in the footer; submission blocks duplicate save/close as before.
+- `arrangeWeeklyControls` reuses period/summary/filter/review fragments in the registry control frame. Weekly selection mounts in this same frame; count has one owner. The table keeps its own horizontal scroll and pagination. Empty report behavior remains unchanged.
+- Executive remarks use `reportValues` without per-export substitution, including paid rows and blank notes. Excel may convert the date columns to BE formatting but cannot replace the remarks cell with payment date/status. HTML/print, image and Excel share the saved weekly note for the selected report.

@@ -64,7 +64,7 @@ Reuse existing .btn, .card, .field, .pill and native dialog. Preserve keyboard f
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
 |---|---|---|---|---|
-| Select/Listbox | selectField + native select / native datalist | DESIGN.md + runtime owner | platform-owned; search/create is datalist plus semantic button | Chrome create/select flow, DOM relation test |
+| Select/Listbox | selectField + native select/datalist; searchableContractorField + bindContractorChoice for transfer | DESIGN.md + runtime owner | platform-owned defaults; authored transfer chooser | keyboard/open popup/explicit ID selection/browser tests |
 | Date | bindThaiDates/openThaiCalendar backed by bundled Flatpickr | UX-CONTRACT.md | authored Thai BE popup; ISO CE value; date-only storage | keyboard, year/month/day, Escape, native DB ordering |
 | Form | field/selectField, modal, showFormError | DESIGN.md + runtime owner | create/edit/history amendment | required/range checks, inline errors, duplicate-submit disable |
 | Scrollbar | styles.css global baseline | DESIGN.md + runtime owner | responsive archive geometry | Chrome desktop/mobile inspection |
@@ -222,3 +222,6 @@ The dossier omits reference/history presentation. Source worksheet coordinates a
 
 ### v14
 รวมตัวกรองและสรุปในกรอบเดียว ลดหัวข้อซ้ำ ใช้กล่องสีอ่อน ตัวเลขเด่น และเส้นขอบ/เงาบางตามสถานะ มือถือแสดงยอดรวมเต็มแถวและอีกสี่ช่องเป็นสองคู่ ปุ่มดินสอไม่มีกรอบแต่ยังคงชื่อสำหรับเครื่องอ่านหน้าจอและพื้นที่กด หน้าเว็บแยกการแสดงผลตามงาน: ประวัติโหลดเป็นหน้าและเรียกค่าเต็มเฉพาะเมื่อเปิดดู
+
+### v14.1 — consistent weekly controls and search
+Weekly controls reuse the registry control frame: period, review/week actions, status cards, search/filter and one selection/count owner. The table panel contains only table/paging. Mobile status cards remain 1 + 2 + 2. Shared clearable search adds a labelled × without changing list/filter ownership or triggering saves. Contractor transfer is the authored searchable-combobox variant: exact/alias text and fuzzy suggestions are choices, never automatic identity changes. Other select/datalist fields remain platform-owned. Contract edit uses a separate opaque dialog footer outside the scrolling body so content cannot show below the action bar; native form association preserves submission and validation.
