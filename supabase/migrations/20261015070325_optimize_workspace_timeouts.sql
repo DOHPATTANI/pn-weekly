@@ -1,4 +1,4 @@
--- PN Weekly: bounded RPC timeouts and cached report validation.
+-- PLANNET DOH: bounded RPC timeouts and cached report validation.
 CREATE OR REPLACE FUNCTION public.pn2_save_workspace(payload jsonb, expected_revision bigint)
  RETURNS jsonb
  LANGUAGE plpgsql

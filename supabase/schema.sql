@@ -1,4 +1,4 @@
--- PN Weekly v7.1: shared single-user workspace, NO Auth dependency. Safe to rerun.
+-- PLANNET DOH v7.1: shared single-user workspace, NO Auth dependency. Safe to rerun.
 -- Leaves all v1 tables and data untouched; uses pn2_* tables and RPCs; upgrades v2 in place.
 begin;
 grant usage on schema public to anon, authenticated;

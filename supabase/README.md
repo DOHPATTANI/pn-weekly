@@ -1,4 +1,4 @@
-# PN Weekly v8 database
+# PLANNET DOH v8 database
 
 The live pn-weekly project was migrated on 15 October 2026. Existing business data was preserved: the hydrated JSON backup matched the pre-migration document exactly, at revision 78 with 111 projects, 130 reports and 5 import-history runs.
 

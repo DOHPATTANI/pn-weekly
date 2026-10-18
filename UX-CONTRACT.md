@@ -1,4 +1,4 @@
-# PN Weekly operational UI contract
+# PLANNET DOH operational UI contract
 Business sources: AGENTS.md, DESIGN.md and explicit owner decisions recorded in work/v9/requirements.md. Runtime remains a single maintained module.
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
@@ -40,3 +40,13 @@ Performance: scoped reads limit projects/registry to selected funding/year; expl
 Same shared owners above. Modal header never scrolls; .dialog-body owns content scrolling with clipping. Basic-data categories use native buttons, rectangular selected state plus visible overflow arrows and keyboard focus. บุคลากร shows both role groups without copying identities; old supervisor CSV headings and JSON keys remain accepted.
 Archive desktop cells become compact mobile rows with stable named cell classes, independent of injected selection checkboxes. Count/Select toolbar is shared across all operational tables, selection scope remains all filtered pages and zero selected blocks bulk actions. Normal ready text is hidden; busy/error/offline/outbox states persist.
 Cold reference fields are omitted in the dossier and screen payload, not deleted from import evidence. Imports explicitly load complete destination scope before comparing rows. Full JSON restores and all exports retain established business fields and historical snapshots.
+
+## v14 — focused controls and shared references
+
+- Registry controls share one frame: funding/year, total and budget-account cards, search and a single result/selection toolbar. The table is separate; committee follows contractor. Weekly status cards retain expiry as a subset of ongoing work. Mobile uses 1 + 2 + 2; desktop adapts horizontally.
+- Weekly title/contractor/supervisor double-click, Enter/F2 or a quiet pencil opens an inline report-only alias with master suggestions. Enter/blur saves; Escape cancels. Registry names remain canonical; aliases carry to later weeks. Executive remarks equal the weekly note, including blank.
+- Shared contractor renames propagate by stable ID across all current years. Explicit transfer previews all years before moving references and removing the duplicate. A conflicting imported alias never blocks choosing a canonical contractor; no fuzzy automatic merge. Closed snapshots/source text remain unchanged.
+- Bulk master deletion checks every active reference atomically, including secondary personnel and road segments. Referenced contractors offer transfer; no silent cascading master deletion.
+- Roads share basic-data navigation. Search replaces the duplicate category title. Dossier pencils sit beside section headings, with labels/tooltips and usable hit areas.
+- Audit opens 25 changes per request; large values are abbreviated and retrieved explicitly. Full-history export remains explicit. Save errors retain input and explain cause/recovery; normal connection indicators stay hidden, exceptional unsent/conflict warnings remain visible.
+- Default year is the newest populated registry year. Existing offline identifiers are retained during the PLANNET DOH rename.

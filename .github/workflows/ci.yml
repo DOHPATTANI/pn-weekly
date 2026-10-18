@@ -1,5 +1,5 @@
-name: Check and deploy PN Weekly
-run-name: PN Weekly · ${{ github.event_name }} · ${{ github.sha }}
+name: Check and deploy PLANNET DOH
+run-name: PLANNET DOH · ${{ github.event_name }} · ${{ github.sha }}
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read

@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: "PN Weekly"
+name: "PLANNET DOH"
 description: "Thai highway weekly contract reporting, highway operations dashboard and operational archive"
 colors:
   primary: "#145d47"
@@ -30,7 +30,7 @@ components:
     rounded: "8px"
 ---
 
-# PN Weekly design and behavior contract
+# PLANNET DOH design and behavior contract
 
 ## Overview
 
@@ -219,3 +219,6 @@ Owner approved rectangular horizontally scrollable basic-data category buttons w
 The shared modal has a fixed header and exactly one scrolling .dialog-body; no content may paint above its title. Main-page scrolling remains document-owned. Archive uses a five-column desktop table and three-row mobile records (week/status, Thai Buddhist date range, count/open). Table selection is quiet count/action in browse mode, with explicit all-filtered-pages scope only in selection mode. No repeated instruction paragraphs or organization workspace card. Critical save/offline/error feedback remains; normal ready banners are hidden.
 
 The dossier omits reference/history presentation. Source worksheet coordinates and amendment bodies are absent from normal screen responses, preserved in full backups/import context. Screen reads use native funding/year filters; branding has a separately cached hash-based read. Weekly entry writes update one native entry and the matching document entry, preserving snapshots; linked lifecycle edits retain shared validation. Other delta writes hydrate only changed reports and project changed IDs. Global revision locking and the compatibility document remain intentionally until a separately verified row-version migration. Redundant registry text work links become a derived read view, canonical job/code IDs remain stored. Old empty pn_* tables remain untouched.
+
+### v14
+รวมตัวกรองและสรุปในกรอบเดียว ลดหัวข้อซ้ำ ใช้กล่องสีอ่อน ตัวเลขเด่น และเส้นขอบ/เงาบางตามสถานะ มือถือแสดงยอดรวมเต็มแถวและอีกสี่ช่องเป็นสองคู่ ปุ่มดินสอไม่มีกรอบแต่ยังคงชื่อสำหรับเครื่องอ่านหน้าจอและพื้นที่กด หน้าเว็บแยกการแสดงผลตามงาน: ประวัติโหลดเป็นหน้าและเรียกค่าเต็มเฉพาะเมื่อเปิดดู

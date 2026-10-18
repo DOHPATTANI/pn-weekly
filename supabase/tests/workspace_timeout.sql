@@ -1,4 +1,4 @@
--- Run against a populated PN Weekly workspace. Every write is rolled back.
+-- Run against a populated PLANNET DOH workspace. Every write is rolled back.
 BEGIN;
 DO $test$
 DECLARE doc jsonb;rev bigint;candidate jsonb;rid text;pid text;changed jsonb;actual jsonb;rejected boolean;
@@ -8,7 +8,7 @@ BEGIN
  SELECT x->>'id' INTO rid FROM jsonb_array_elements(doc->'reports') x WHERE x->>'locked'='true' AND x->'entries'<>'{}' LIMIT 1;
  IF rid IS NULL THEN RAISE EXCEPTION 'Test requires a locked historical report';END IF;
  SELECT key INTO pid FROM jsonb_each((SELECT x->'entries' FROM jsonb_array_elements(doc->'reports') x WHERE x->>'id'=rid)) LIMIT 1;
- candidate:=jsonb_set(doc,'{settings,systemName}',to_jsonb(coalesce(doc->'settings'->>'systemName','PN Weekly')||' regression'));
+ candidate:=jsonb_set(doc,'{settings,systemName}',to_jsonb(coalesce(doc->'settings'->>'systemName','PLANNET DOH')||' regression'));
  PERFORM public.pn2_save_workspace(candidate,rev);
  SELECT document INTO actual FROM public.pn2_workspaces WHERE workspace_id='00000000-0000-0000-0000-000000000001'::uuid;
  IF actual->'reports' IS DISTINCT FROM doc->'reports' THEN RAISE EXCEPTION 'Reports changed during settings save';END IF;

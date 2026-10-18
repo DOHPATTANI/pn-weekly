@@ -1,4 +1,4 @@
-# PN Weekly project continuity
+# PLANNET DOH project continuity
 
 - Respond in Thai unless the user asks otherwise.
 - Inspect installed skills/plugins and use relevant ones for each task; do not invoke unrelated capabilities merely because installed.
