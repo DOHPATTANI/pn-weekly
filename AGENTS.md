@@ -87,29 +87,3 @@ All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via
 
 4. **`tools.mjs` upgrades**:
    - Added Test #123 (`v18.1 Master Developer Rules: RFC 7807 Problem Details, Button Lock & O(1) Contractor Dedup`) verifying `toProblemDetails` and concurrent `withButtonLock` execution.
-
-
-## กฎเหล็กสำหรับการแก้ไขฐานข้อมูลและหน้าเว็บในอนาคต (GitHub Actions + Supabase CLI 100% Sync)
-
-Repository หลักของระบบคือ `https://github.com/DOHPATTANI/pn-weekly.git` (หน้าเว็บจริง: `https://dohpattani.github.io/pn-weekly/`, Supabase Project Ref: `iiuearxdsbilcpsfzhyp`) ซึ่งผูกท่อส่งอัตโนมัติ (CI/CD) ใน `.github/workflows/ci.yml` ไว้ครบ 3 ขั้นตอนแล้ว (`checks` → `supabase` → `deploy`)
-
-**ข้อบังคับเด็ดขาดสำหรับ AI Agent และ ChatGPT Codex ทุกครั้งที่มีการแก้ไขโค้ด:**
-1. **การแก้ไขฐานข้อมูล (เพิ่มตาราง / แก้ฟังก์ชัน RPC / สร้าง Index / แก้ Trigger)**:
-   - **ต้องสร้างไฟล์ `.sql` ใหม่ไว้ในโฟลเดอร์ `supabase/migrations/` เสมอ** โดยตั้งชื่อตามวันที่และเวลา 14 หลัก เช่น `supabase/migrations/20261020090000_ชื่อการแก้ไข.sql`
-   - สามารถสร้างไฟล์โครงสร้างอัตโนมัติได้ด้วยคำสั่ง:
-     ```bash
-     npm run migrate -- ชื่อการแก้ไข
-     # หรือ
-     node tools.mjs migrate 20261020090000_ชื่อการแก้ไข
-     ```
-   - **ห้ามแก้ไขไฟล์ Migration เก่าที่มีรหัสเวลาน้อยกว่าหรือเท่ากับ `20261018130524` เด็ดขาด** เพราะไฟล์เหล่านั้นถูกรันบนฐานข้อมูลจริงแล้ว ให้สร้างไฟล์ Migration ใหม่ต่อท้ายเสมอ
-   - คำสั่ง SQL ในไฟล์ Migration ใหม่ต้องเป็นแบบ **Idempotent 100%** (`CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, `CREATE OR REPLACE FUNCTION`, `DROP TRIGGER IF EXISTS`) หุ้มด้วย `begin; ... commit;` และห้ามใช้ `SELECT *` ในฟังก์ชัน PL/pgSQL
-   - อัปเดตโครงสร้างล่าสุดใน `supabase/schema.sql` ให้ตรงกับไฟล์ Migration ใหม่ทุกครั้ง เพื่อให้ชุดทดสอบจำลองฐานข้อมูล (`PGlite`) ตรวจสอบความเข้ากันได้ทั้งระบบ
-2. **การตรวจสอบก่อนส่งมอบหรือ Push ขึ้น GitHub**:
-   - ต้องรันคำสั่งทั้ง 3 ขั้นตอนให้ผ่านครบ 100% ก่อน Commit/Push เสมอ:
-     ```bash
-     npm test        # รันชุดทดสอบ Unit & Migration Hygiene (124/124 เคส)
-     npm run qa      # รันชุดทดสอบ PGlite + Playwright E2E จำลองฐานข้อมูลจริง
-     npm run build   # สร้างชุดไฟล์สำหรับเผยแพร่ลงโฟลเดอร์ dist/
-     ```
-   - เมื่อ Push โค้ดขึ้นกิ่ง `main` บน GitHub (`https://github.com/DOHPATTANI/pn-weekly.git`) ระบบ GitHub Actions จะรันทดสอบ อัปเดตฐานข้อมูล Supabase (`supabase db push --include-all`) และอัปเดตหน้าเว็บ GitHub Pages ให้ตรงกัน 100% ทันที

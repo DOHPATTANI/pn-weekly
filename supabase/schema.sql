@@ -78,7 +78,7 @@ alter table public.pn2_contract_registry add column if not exists supervisor_id 
 alter table public.pn2_contract_registry add column if not exists archived boolean not null default false;
 alter table public.pn2_contracts add column if not exists registry_id text;
 do $$declare spec record;begin
- for spec in select c, t, col, ref, refcol from (values
+ for spec in select * from (values
  ('pn2_registry_year_fk','pn2_contract_registry','fiscal_year','pn2_fiscal_years','year'),
  ('pn2_registry_funding_fk','pn2_contract_registry','funding_source','pn2_funding_sources','id'),
  ('pn2_registry_budget_fk','pn2_contract_registry','budget_account_id','pn2_budget_accounts','id'),
@@ -120,7 +120,7 @@ do $$declare t text;begin foreach t in array array['pn2_workspaces','pn2_fiscal_
 end loop;end $$;
 create or replace function public.pn2_load_workspace() returns jsonb language sql security invoker set search_path='' as $$select document || jsonb_build_object('revision',revision) from public.pn2_workspaces where workspace_id='00000000-0000-0000-0000-000000000001'::uuid$$;
 create or replace function public.pn2_save_workspace(payload jsonb,expected_revision bigint) returns jsonb language plpgsql security definer set search_path='' as $$
-declare uid uuid:='00000000-0000-0000-0000-000000000001'::uuid;old_doc jsonb;old_rev bigint;new_rev bigint;v jsonb;r jsonb;e record;p jsonb;prev jsonb;prior_actual numeric;existing jsonb;ext jsonb;
+declare uid uuid:='00000000-0000-0000-0000-000000000001'::uuid;old_doc jsonb;old_rev bigint;new_rev bigint;v jsonb;r jsonb;e record;p jsonb;prev jsonb;prior_actual numeric;new_locked boolean;existing jsonb;ext jsonb;extsum integer;expected_end date;
 begin
  -- No user session, email, password, or Supabase Auth record required.
  -- Serializes the first insert too; optimistic revision prevents silent overwrites.
@@ -146,7 +146,7 @@ begin
   else
    if (r->>'end')::date-(r->>'start')::date<>6 or (r->>'reference')::date<>(r->>'end')::date or extract(isodow from (r->>'end')::date)<>1 then raise exception 'รอบรายงานต้องเป็นอังคารถึงจันทร์';end if;
   end if;
-  for e in select key, value from jsonb_each(r->'entries') loop
+  for e in select * from jsonb_each(r->'entries') loop
    v:=e.value;
    if nullif(v->>'deliveryDate','')::date>nullif(v->>'acceptanceDate','')::date then raise exception 'วันที่ตรวจรับต้องไม่น้อยกว่าวันที่ส่งมอบ';end if;
    if v->>'payment'='เบิกจ่ายแล้ว' and nullif(v->>'acceptanceDate','')::date>nullif(v->>'paymentDate','')::date then raise exception 'วันที่เบิกจ่ายต้องไม่น้อยกว่าวันที่ตรวจรับ';end if;
@@ -243,7 +243,7 @@ begin
  select value into r from jsonb_array_elements(doc->'reports') x where x->>'id'=report_id;
  if r is null then raise exception 'ไม่พบรายงาน';end if;before_r:=r;
  if jsonb_typeof(entries_patch)<>'object' or entries_patch='{}' then raise exception 'ไม่มีข้อมูลเปลี่ยนแปลง';end if;
- for change in select key, value from jsonb_each(entries_patch) loop
+ for change in select * from jsonb_each(entries_patch) loop
   if not (r->'entries' ? change.key) then raise exception 'ไม่พบสัญญาในรายงาน';end if;
   if jsonb_typeof(change.value)<>'object' or exists(select 1 from jsonb_object_keys(change.value) k where k not in ('plan','weekly','actual','note','payment','paymentDate','deliveryDate','acceptanceDate')) then raise exception 'ช่องแก้ไขไม่ถูกต้อง';end if;
   old_e:=r->'entries'->change.key;e:=old_e||change.value;
@@ -284,7 +284,7 @@ begin
  previous_flag:=current_setting('pn2.amending',true);perform set_config('pn2.amending','yes',true);
  -- v6: update only the lifecycle dates actually amended, never old snapshots or other dates.
  if doc ? 'contractRegistry' then
-  for change in select key, value from jsonb_each(entries_patch) loop
+  for change in select * from jsonb_each(entries_patch) loop
    e:=r->'entries'->change.key;
    doc:=jsonb_set(doc,'{contractRegistry}',coalesce((select jsonb_agg(case when x->>'projectId'=change.key then x
     || case when change.value ? 'deliveryDate' then jsonb_build_object('deliveryDate',coalesce(e->>'deliveryDate','')) else '{}'::jsonb end

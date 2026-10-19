@@ -1,14 +1,13 @@
 {
   "name": "pn-weekly",
-  "version": "18.1.0",
+  "version": "18.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node tools.mjs serve",
     "test": "node tools.mjs test",
     "build": "node tools.mjs build",
-    "qa": "node tools.mjs qa",
-    "migrate": "node tools.mjs migrate"
+    "qa": "node tools.mjs qa"
   },
   "engines": {
     "node": ">=20"
