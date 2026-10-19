@@ -298,6 +298,23 @@ test('native JSONB key ordering does not rewrite an unchanged road catalogue',()
 test('modern JSON backup reimport preserves a draft report validation mode',()=>{const s=importFixture();s.reports[0].locked=false;s.reports[0].imported=false;const next=App.prepareWorkspaceImport(s,App.fileDates(App.fileDates(s),true));assert.equal(next.reports[0].imported,false);assert.equal(next.reports[0].sourceImported,undefined);assert.equal(next.reports[0].locked,false);});
 
 test('personnel CSV uses the unified heading and accepts legacy supervisor headings',()=>{const s=registryFixture();normalizeState(s);s.supervisors=[{id:'PERSON-QA',name:'นายทดสอบ บุคลากร',position:'วิศวกร',personRoles:['inspection','supervision']}];App.assignMasterCodes(s);const csv=App.masterCSV(s,'supervisors');assert(csv.includes('ชื่อบุคลากร'));for(const text of [csv,csv.replace('ชื่อบุคลากร','ชื่อผู้ควบคุมงาน')]){const p=App.previewMasterCSV(s,'supervisors',text);assert.deepEqual(p.flatMap(x=>x.errors),[]);App.applyMasterCSV(s,'supervisors',p,{0:'overwrite'});assert.equal(s.supervisors.length,1);assert.equal(s.supervisors[0].position,'วิศวกร');assert.deepEqual(s.supervisors[0].personRoles,['inspection','supervision']);}});
+
+test('v18.1 Master Developer Rules: RFC 7807 Problem Details, Button Lock & O(1) Contractor Dedup',async()=>{
+ const problemConflict=App.toProblemDetails(new Error('expected_revision mismatch'),409,'/rest/v1/rpc/pn2_patch_workspace');
+ assert.equal(problemConflict.type,'https://pn-weekly.doh.go.th/problems/revision-conflict');
+ assert.equal(problemConflict.status,409);
+ assert.equal(problemConflict.instance,'/rest/v1/rpc/pn2_patch_workspace');
+ assert.ok(problemConflict.fix.includes('โหลดข้อมูลล่าสุด'));
+
+ let lockCalls=0;
+ const mockBtn={disabled:false,dataset:{},setAttribute(k,v){this[k]=v;},removeAttribute(k){delete this[k];}};
+ await Promise.all([
+  App.withButtonLock(mockBtn,async()=>{lockCalls++;await new Promise(r=>setTimeout(r,15));}),
+  App.withButtonLock(mockBtn,async()=>{lockCalls++;})
+ ]);
+ assert.equal(lockCalls,1,'withButtonLock must block concurrent double-clicks while task is running');
+ assert.equal(mockBtn.disabled,false,'withButtonLock must restore button state after completion');
+});
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
  const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(await fs.readFile(path.join(root,'supabase/schema.sql'),'utf8'));for(const f of(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort())await db.exec(await fs.readFile(path.join(root,'supabase/migrations',f),'utf8'));
