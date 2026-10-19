@@ -285,3 +285,8 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 #layout-leave[hidden]{display:none}#layout-leave .actions{margin-top:10px}
 @media(max-width:900px){.layout-workspace{grid-template-columns:1fr}.layout-controls{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.layout-controls>.layout-tools,.layout-controls>p{grid-column:1/-1}.layout-preview-area{height:480px}}
 @media(max-width:520px){.layout-controls{grid-template-columns:1fr}.layout-save-bar{bottom:-14px}.layout-save-bar span{width:100%}.layout-save-bar .btn{flex:1;font-size:12px}.layout-output-tools .field{width:100%}.layout-output-tools .btn{flex:1;font-size:12px}.layout-preview-area{height:400px}}
+
+/* v18.1 — Master Developer Rules: Button Loading Spinner & Real-Data Overflow Resilience */
+@keyframes pn-spin{to{transform:rotate(360deg)}}
+button[data-loading="true"],.btn[aria-busy="true"]{position:relative;pointer-events:none;opacity:.72}
+button[data-loading="true"]::after,.btn[aria-busy="true"]::after{content:"";display:inline-block;width:12px;height:12px;margin-left:6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:pn-spin .65s linear infinite;vertical-align:-2px}

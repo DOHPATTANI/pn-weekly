@@ -65,3 +65,25 @@ Road masters use highway/control/canonical name without a trailing numbered ต�
 Date is now a shared authored Thai BE calendar backed by bundled Flatpickr with ISO CE storage; no platform calendar popup is used. All modal date workflows reuse this owner. Compact management controls in the read dossier reveal route tools or open the shared personnel editor. Weekly table includes only the primary supervisor (title/given name/ฯ unless a report alias is set), compact alias/date icons, and reference-week expiry for ongoing work after approved extensions. Alias carry-forward and closed snapshots remain isolated.
 
 Performance: scoped reads limit projects/registry to selected funding/year; explicit destination-scope loading precedes file preview. Offline rebase reads active state without cold import history; cached history is deferred and unchanged history is not rewritten. Report validation covers changed report IDs while native constraints/global revision remain. Large registry/personnel workbooks use a module Worker at 200 rows; worksheet parsing yields in batches. Keep four published runtime files; vendor license is recorded. Full backup requires a complete online workspace; offline selected-report export remains available.
+
+## v18.1 — Master Developer Rules upgrade (current baseline)
+
+All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via `node tools.mjs test`):
+
+1. **`app.js` upgrades**:
+   - **Deterministic `today()` (Line 53)**: Uses `Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok', ... }).formatToParts(new Date())` to assemble `YYYY-MM-DD` deterministically across all ICU/Node/browser engines (fixes Test #98 expiry comparison). Do not revert to `.format(new Date())`.
+   - **$O(1)$ Contractor Dedup Index in `computeQualityIssues` (Line 42)**: Pre-indexes contractor names and aliases in `byContractorKey` (`Map`) before scanning registry rows instead of cloning state and running $O(C^2)$ nested searches.
+   - **RFC 7807 Standard Error Structure (`toProblemDetails`, Lines 279, 312)**: Exports `toProblemDetails(error, status, instance)` returning `{ type, title, status, detail, instance, reason, fix, field }` and attaches `err.problem` in `cloud.request` on HTTP/RPC/network failures.
+   - **Async Button Lock & Error Boundary (`withButtonLock`, Lines 280, 819–821, 831, 1150)**: Exports `withButtonLock(btn, task, onError)` which sets `disabled`, `data-loading="true"`, and `aria-busy="true"` during async execution to prevent double-click race conditions and unhandled promise rejections on selection toolbar actions (`exportSelection`, `reviewSelection`, `deleteSelection`), `#outbox-retry`, and `[data-quality-review]`.
+   - **Dead Code & Duplicate Key Removal (Lines 295, 599)**: Removed unused `people` helper inside `registryDetailHTML` and deduplicated repeated keys (`note`, `code`, `typeId`, `codeIds`) in `importFieldLabels`.
+
+2. **`styles.css` upgrades**:
+   - Added `@keyframes pn-spin` and loading spinner rules for `button[data-loading="true"]` and `.btn[aria-busy="true"]`.
+
+3. **`supabase/schema.sql` & `supabase/migrations/20261018105756_task_scoped_personnel_and_writes.sql` upgrades**:
+   - Replaced all `SELECT *` in PL/pgSQL loops (`select * from (values ...)` and `select * from jsonb_each(...)`) with explicit column lists (`select c, t, col, ref, refcol` and `select key, value`).
+   - Added composite indexes matching `WHERE` / `ORDER BY` access patterns: `pn2_reports_scope_end_idx`, `pn2_contracts_scope_idx`, `pn2_import_runs_ordinal_idx`, and `pn2_audit_workspace_rev_idx`.
+   - Removed unused PL/pgSQL variables (`new_locked`, `extsum`, `expected_end`) from `DECLARE` blocks.
+
+4. **`tools.mjs` upgrades**:
+   - Added Test #123 (`v18.1 Master Developer Rules: RFC 7807 Problem Details, Button Lock & O(1) Contractor Dedup`) verifying `toProblemDetails` and concurrent `withButtonLock` execution.

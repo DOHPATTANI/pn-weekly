@@ -100,6 +100,9 @@ end $$;
 create index if not exists pn2_registry_filter_idx on public.pn2_contract_registry(workspace_id,funding_source,fiscal_year,archived,budget_account_id);
 create index if not exists pn2_registry_project_idx on public.pn2_contract_registry(workspace_id,project_id);
 create index if not exists pn2_entries_contract_idx on public.pn2_entries(workspace_id,contract_id,report_id);
+create index if not exists pn2_reports_scope_end_idx on public.pn2_reports(workspace_id,funding_source,fiscal_year,end_date desc);
+create index if not exists pn2_contracts_scope_idx on public.pn2_contracts(workspace_id,funding_source,fiscal_year);
+create index if not exists pn2_audit_workspace_rev_idx on public.pn2_audit(workspace_id,revision desc);
 
 -- v7: six-character master codes; legacy primary/foreign keys stay valid.
 do $$declare t text;begin foreach t in array array['pn2_contractors','pn2_supervisors','pn2_work_types','pn2_work_names','pn2_work_codes','pn2_budget_accounts','pn2_fiscal_years'] loop
