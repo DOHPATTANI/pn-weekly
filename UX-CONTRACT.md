@@ -83,3 +83,5 @@ The shared table presentation owner moves the existing search primitive into Sea
 Registry list refinement: show assignmentDetails names with stored duty in parentheses for inspection and supervision. Readable wrapping replaces unbounded column growth in this list only. Preserve sticky identity columns, selection, sorting, full values, details and export semantics.
 
 Latest owner popup decision: the shared #modal never dismisses from backdrop clicks or native cancel/Escape. Explicit Close, Cancel or successful Save buttons retain their existing ownership and busy-state guard; form input must survive outside clicks. This applies consistently to all read/edit/import/report popups.
+
+Weekly inline performance: successful closed-cell amendments use the same audited save owner with a row-refresh option; they must not rebuild the entire table or discard a second active cell editor while a previous cell saves. Drafts, error/retry, serialization and subsequent-week reconciliation remain unchanged. Repeated double-click on an already unlocked field must not reset its original value or selection.
