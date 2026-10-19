@@ -249,3 +249,14 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 #app .weekly-secondary>.actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:10px}
 #app .weekly-secondary .week-management{padding:0;margin:8px 0 0}
 @media(max-width:600px){#app .table-density .filter-toggle{min-width:24px;width:24px;padding:2px}}
+/* Registry: compact readable columns; full titles wrap instead of widening the whole register. */
+#app .registry-panel .registry-table{table-layout:fixed;width:100%;min-width:1165px}
+#app .registry-table td{padding:14px 16px;vertical-align:top;white-space:normal;overflow-wrap:anywhere;line-height:1.65}
+#app .registry-table th{padding:14px 16px}
+#app .registry-table .registry-job>strong{display:block;font-weight:700;line-height:1.7}
+#app .registry-table .registry-job .sub{font-weight:400;margin-top:5px}
+#app .registry-table .registry-person{margin-bottom:4px}
+#app .registry-table .registry-duty{color:var(--muted);font-size:.92em;white-space:normal}
+#app .registry-panel .registry-table td:nth-child(7){max-width:none;white-space:normal}
+@media(max-width:700px){#app .registry-table td,#app .registry-table th{padding:12px;font-size:12px}#app .registry-panel .registry-table{min-width:1165px}}
+#app .registry-table.selection-active .management-column{width:140px!important;min-width:140px!important}
