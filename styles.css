@@ -220,6 +220,8 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 @media(max-width:600px){#app .command-search-row>.search-field,#app .registry-control-tools>.search-field{flex:1 1 180px;min-width:0}#app .command-search-row>.actions,#app .registry-control-tools>.actions{justify-content:flex-end;flex-wrap:wrap;width:100%}#app .filter-disclosure .period-control{width:100%}#app .table-density{gap:8px}}
 .report-preview{overflow:auto}
 .report-preview .auto-report th,.report-preview .auto-report td{white-space:normal;overflow-wrap:anywhere}
+.report-preview .auto-report>tbody>tr:not(.summary-container)>td:nth-child(2),.print-report .auto-report>tbody>tr:not(.summary-container)>td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
+@media print{.print-report .auto-report>thead th,.print-report .auto-report>tbody>tr:not(.summary-container)>td{font-size:var(--province-print-font,12px)!important}}
 @media print{.print-report .auto-report{width:100%!important}.print-report .auto-report th,.print-report .auto-report td{overflow-wrap:anywhere}}
 #app .period-actions-frame>.actions,#app .week-management{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;width:100%}
 #app table.selection-active>thead>tr>th:first-child,#app table.selection-active>tbody>tr>td:first-child{position:sticky;left:0;z-index:3;min-width:44px!important;width:44px!important;background:#edf4ef}

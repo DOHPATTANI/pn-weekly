@@ -1,4 +1,6 @@
 # PLANNET DOH operational UI contract
+
+v17.2.2 latest owner priority: province executive job titles must never wrap or clip. reportLayout measures the longest title with the bundled font and expands that physical column and document without a width cap. Preserve other columns' physical widths. Preview scrolls, workbook maps absolute pixels, canvas expands, print scales the type to fit. This supersedes the fixed-canvas/capped job-width rule for province reports only.
 Business sources: AGENTS.md, DESIGN.md and explicit owner decisions recorded in work/v9/requirements.md. Runtime remains a single maintained module.
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
