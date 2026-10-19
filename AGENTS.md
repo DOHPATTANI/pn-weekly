@@ -1,5 +1,7 @@
 # PLANNET DOH project continuity
 
+- v17 latest explicit owner decision: weekly membership automatically includes active registry contracts in the selected funding/year, including closed reports. Add missing entries/snapshots through the existing audited compact import, preserving every previously stored entry/snapshot and aliases. Never infer source-observed actual as weekly actual. Do not offer deleting a weekly-only contract row that automatic linkage would immediately restore; registry owns contract membership. Main list controls are Search → Select → Page size; read/edit popups are excluded. Desktop/tablet period controls align left with primary actions right; phones place primary actions first, then funding/year, then week.
+
 - User communication preference (explicitly reaffirmed): summarize changes once at the end, when the system is ready to use. Avoid step-by-step progress narration; interrupt only for a decision or information genuinely required from the user. Deliver the working web link with the final summary.
 
 - Respond in Thai unless the user asks otherwise.

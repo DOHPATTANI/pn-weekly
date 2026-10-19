@@ -224,3 +224,28 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 #app .period-actions-frame>.actions,#app .week-management{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;width:100%}
 #app table.selection-active>thead>tr>th:first-child,#app table.selection-active>tbody>tr>td:first-child{position:sticky;left:0;z-index:3;min-width:44px!important;width:44px!important;background:#edf4ef}
 #app .operational-table td{min-width:0!important}
+/* v17: one responsive search/selection/density row; scope at the left, commands at the right. */
+#app .table-density{flex-wrap:nowrap;gap:10px}
+#app .table-density>.search-field{flex:1 1 320px;min-width:60px;max-width:480px;margin:0}
+#app .table-density>.selection-toolbar{flex:0 0 auto}
+#app .table-density>label{flex:0 0 auto;white-space:nowrap}
+#app .table-density .search{width:100%;min-width:0}
+#app .scope-command-bar{display:flex;flex-wrap:wrap;justify-content:space-between!important;align-items:center;gap:16px}
+#app .scope-command-bar>.period-control{display:flex;justify-content:flex-start!important;flex:1 1 auto;gap:14px}
+#app .scope-command-bar>.actions{display:flex;justify-content:flex-end!important;flex:0 1 auto;width:auto}
+#app .inline-period-field{display:flex;flex-direction:row;align-items:center;gap:8px;white-space:nowrap}
+#app .inline-period-field select{width:auto;min-width:100px}
+#app .weekly-period{display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:8px;padding:0 16px 12px}
+#app .weekly-period select{width:auto}
+#app .filter-disclosure>select{min-height:40px;padding:8px 30px 8px 12px;border:1px solid var(--line);border-radius:6px;background-color:white;color:var(--ink);font:inherit}
+#app .registry-link{margin-left:10px;vertical-align:middle;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:transparent;border:0;color:var(--green)}
+#app .registry-link:hover{color:#0c493d;background:var(--mint)}
+#app .registry-controls .registry-control-tools:empty,#app .command-search-row:empty,#app .period-bar:empty{display:none}
+#app .registry-controls .summary-items{display:flex;flex-wrap:wrap;gap:10px}
+#app .registry-controls .summary-count{flex:1 1 150px;min-width:0;height:auto;min-height:88px}
+@media(max-width:600px){#app .scope-command-bar{flex-direction:column;align-items:stretch}#app .scope-command-bar>.actions{order:-1;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#app .scope-command-bar>.actions>.btn,#app .scope-command-bar>.actions>.file-menu{width:100%;min-width:0}#app .scope-command-bar>.period-control{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:8px}#app .inline-period-field{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px}#app .inline-period-field select{width:100%;min-width:0}#app .scope-command-bar .week-control{grid-column:1/-1}#app .weekly-period{flex-direction:column;align-items:stretch}#app .weekly-period select{width:100%}#app .table-density{gap:6px;padding:10px 8px}#app .table-density>.search-field{flex:1 1 90px;min-width:40px}#app .table-density>.selection-toolbar .btn{padding:7px 9px}#app .table-density>label{font-size:11px}#app .table-density select{width:55px;min-width:0;padding:6px 3px}#app .table-density>.selection-toolbar.is-selecting{flex-wrap:wrap;flex:1 1 140px}#app .table-density:has(.is-selecting){flex-wrap:wrap}#app .registry-controls .summary-count{flex-basis:calc(50% - 10px)}#app .registry-controls .summary-count:first-child{flex-basis:100%}}
+#app .weekly-secondary{margin:0 16px 12px;text-align:right}
+#app .weekly-secondary>summary{display:inline-flex;cursor:pointer;list-style:none}
+#app .weekly-secondary>.actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:10px}
+#app .weekly-secondary .week-management{padding:0;margin:8px 0 0}
+@media(max-width:600px){#app .table-density .filter-toggle{min-width:24px;width:24px;padding:2px}}
