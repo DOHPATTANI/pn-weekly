@@ -260,3 +260,5 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 #app .registry-panel .registry-table td:nth-child(7){max-width:none;white-space:normal}
 @media(max-width:700px){#app .registry-table td,#app .registry-table th{padding:12px;font-size:12px}#app .registry-panel .registry-table{min-width:1165px}}
 #app .registry-table.selection-active .management-column{width:140px!important;min-width:140px!important}
+/* Keep executive percentages legible inside the shared narrow progress columns. */
+.report-preview .main-report>tbody>tr:not(.summary-container)>td:nth-child(n+9):nth-child(-n+11),.print-report .main-report>tbody>tr:not(.summary-container)>td:nth-child(n+9):nth-child(-n+11){white-space:nowrap;padding-left:3px;padding-right:3px}
