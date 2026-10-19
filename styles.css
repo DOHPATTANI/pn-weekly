@@ -220,7 +220,7 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 @media(max-width:600px){#app .command-search-row>.search-field,#app .registry-control-tools>.search-field{flex:1 1 180px;min-width:0}#app .command-search-row>.actions,#app .registry-control-tools>.actions{justify-content:flex-end;flex-wrap:wrap;width:100%}#app .filter-disclosure .period-control{width:100%}#app .table-density{gap:8px}}
 .report-preview{overflow:auto}
 .report-preview .auto-report th,.report-preview .auto-report td{white-space:normal;overflow-wrap:anywhere}
-.report-preview .auto-report>tbody>tr:not(.summary-container)>td:nth-child(2),.print-report .auto-report>tbody>tr:not(.summary-container)>td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
+.report-preview .auto-report:not(.custom-report)>tbody>tr:not(.summary-container)>td:nth-child(2),.print-report .auto-report:not(.custom-report)>tbody>tr:not(.summary-container)>td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
 @media print{.print-report .auto-report>thead th,.print-report .auto-report>tbody>tr:not(.summary-container)>td{font-size:var(--province-print-font,12px)!important}}
 @media print{.print-report .auto-report{width:100%!important}.print-report .auto-report th,.print-report .auto-report td{overflow-wrap:anywhere}}
 #app .period-actions-frame>.actions,#app .week-management{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;width:100%}
@@ -264,3 +264,24 @@ table[data-selection-key]:not(.selection-active)>thead>tr>th:first-child,table[d
 #app .registry-table.selection-active .management-column{width:140px!important;min-width:140px!important}
 /* Keep executive percentages legible inside the shared narrow progress columns. */
 .report-preview .main-report>tbody>tr:not(.summary-container)>td:nth-child(n+9):nth-child(-n+11),.print-report .main-report>tbody>tr:not(.summary-container)>td:nth-child(n+9):nth-child(-n+11){white-space:nowrap;padding-left:3px;padding-right:3px}
+/* Executive layout studio: shared dialog and form owners, document overflow only. */
+.layout-intro{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+.layout-intro strong{color:var(--green)}.layout-intro span{font-size:12px;color:var(--muted)}
+.layout-workspace{display:grid;grid-template-columns:310px minmax(0,1fr);gap:24px;margin-top:20px}
+.layout-controls{border:1px solid var(--line);border-radius:8px;padding:14px;background:var(--bg)}
+.layout-tools,.layout-output-tools{display:flex;align-items:end;gap:8px;flex-wrap:wrap}
+.layout-tools .btn{flex:1;padding:9px 8px;font-size:12px}
+.layout-width-field{display:grid;grid-template-columns:minmax(0,1fr) 85px;align-items:center;gap:10px;font-size:12px;padding:7px 0;border-bottom:1px solid var(--line)}
+.layout-width-field input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:6px;padding:8px;color:var(--ink);background:var(--surface,#fff);font:inherit;text-align:right}
+.layout-width-field input[aria-invalid=true]{border-color:var(--red)}
+.layout-output{min-width:0}.layout-output-tools .field{min-width:150px}.layout-output-tools .btn{min-height:42px}
+#layout-status{font-size:12px;min-height:20px;margin:15px 0 6px;color:var(--green)}
+.layout-preview-area{max-width:100%;height:600px;overflow:auto;border:1px solid var(--line);background:var(--bg);border-radius:8px}
+.layout-preview-area .report-preview{background:white;min-width:100%;padding:18px;width:max-content}
+.layout-preview-area figure{margin:14px}.layout-preview-area img{display:block;max-width:100%;height:auto;background:white}.layout-preview-area figcaption{font-size:12px;text-align:center;padding:8px}
+.layout-print-frame{display:block;border:0;width:1122px;height:794px;background:white}
+.layout-save-bar{position:sticky;bottom:-22px;background:white;border-top:1px solid var(--line);padding:16px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;z-index:2}
+.layout-save-bar span{font-size:12px;color:var(--muted);margin-right:auto}
+#layout-leave[hidden]{display:none}#layout-leave .actions{margin-top:10px}
+@media(max-width:900px){.layout-workspace{grid-template-columns:1fr}.layout-controls{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.layout-controls>.layout-tools,.layout-controls>p{grid-column:1/-1}.layout-preview-area{height:480px}}
+@media(max-width:520px){.layout-controls{grid-template-columns:1fr}.layout-save-bar{bottom:-14px}.layout-save-bar span{width:100%}.layout-save-bar .btn{flex:1;font-size:12px}.layout-output-tools .field{width:100%}.layout-output-tools .btn{flex:1;font-size:12px}.layout-preview-area{height:400px}}
