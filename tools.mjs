@@ -315,6 +315,34 @@ test('v18.1 Master Developer Rules: RFC 7807 Problem Details, Button Lock & O(1)
  assert.equal(lockCalls,1,'withButtonLock must block concurrent double-clicks while task is running');
  assert.equal(mockBtn.disabled,false,'withButtonLock must restore button state after completion');
 });
+
+test('v18.1 GitHub Actions + Supabase CLI migration pipeline & timestamped SQL enforcement',async()=>{
+ const configToml=await fs.readFile(path.join(root,'supabase/config.toml'),'utf8');
+ assert.match(configToml,/project_id\s*=\s*"iiuearxdsbilcpsfzhyp"/);
+ const ciText=await fs.readFile(path.join(root,'.github/workflows/ci.yml'),'utf8');
+ assert.match(ciText,/supabase\/setup-cli@v1/);
+ assert.match(ciText,/supabase db push --include-all/);
+ assert.match(ciText,/needs:\s*\[checks,\s*supabase\]/);
+ const pkg=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'));
+ assert.equal(pkg.scripts.migrate,'node tools.mjs migrate');
+ const migFiles=(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort();
+ assert.ok(migFiles.length>=19,'must include all historical and v18.1 migrations');
+ const seenVersions=new Set();
+ for(const file of migFiles){
+  assert.match(file,/^\d{14}_[^\s/\\]+\.sql$/,`Migration filename must follow YYYYMMDDHHMMSS_<name>.sql: ${file}`);
+  const ver=file.slice(0,14);
+  assert.equal(seenVersions.has(ver),false,`Duplicate migration version timestamp: ${ver}`);
+  seenVersions.add(ver);
+ }
+ const latestMig=await fs.readFile(path.join(root,"supabase/migrations/20261020090000_master_developer_rules_optimization.sql"),"utf8");
+ const schemaSql=await fs.readFile(path.join(root,"supabase/schema.sql"),"utf8");
+ const stripComments=s=>s.replace(/--.*$/gm,"");
+ assert.equal(/select\s+\*/i.test(stripComments(latestMig)),false,"v18.1 migration must not contain SELECT *");
+ assert.equal(/select\s+\*/i.test(stripComments(schemaSql)),false,"schema.sql must not contain SELECT *");
+ assert.match(latestMig,/on\s+public\.pn2_reports\s*\(workspace_id,\s*funding_source,\s*fiscal_year,\s*end_date\s+desc\)/i);
+ assert.match(latestMig,/on\s+public\.pn2_registry_segments\s*\(workspace_id,\s*registry_id,\s*ordinal\)/i);
+ assert.match(latestMig,/on\s+public\.pn2_registry_personnel\s*\(workspace_id,\s*registry_id,\s*role,\s*ordinal\)/i);
+});
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
  const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(await fs.readFile(path.join(root,'supabase/schema.sql'),'utf8'));for(const f of(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort())await db.exec(await fs.readFile(path.join(root,'supabase/migrations',f),'utf8'));
@@ -353,4 +381,26 @@ results.push({width,masterModes:6,noOpNoWrite:true,failedImportRetry:true,oldDet
 }else if(mode==='serve'){
  const{default:http}=await import('node:http');const port=Number(process.env.PORT||4173);const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.ttf':'font/ttf'};
  http.createServer(async(req,res)=>{try{let rel=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(rel==='/')rel='/index.html';if(!['/index.html','/app.js','/styles.css','/THSarabun.ttf'].includes(rel)){res.writeHead(404);return res.end('Not found');}const data=await fs.readFile(path.join(root,rel));res.writeHead(200,{'Content-Type':mime[path.extname(rel)],'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(data);}catch{res.writeHead(404);res.end('Not found');}}).listen(port,'127.0.0.1',()=>console.log('PLANNET DOH: http://127.0.0.1:'+port));
-}else throw Error('Use: node tools.mjs test | build | serve');
+}else if(mode==='migrate'){
+ const rawArg=process.argv.slice(3).join('_').trim().replace(/\.sql$/i,'')||'update_schema';
+ const migDir=path.join(root,'supabase/migrations');
+ await fs.mkdir(migDir,{recursive:true});
+ const existing=(await fs.readdir(migDir)).filter(x=>/^\d{14}_/.test(x)&&x.endsWith('.sql')).sort();
+ const latestVer=existing.length?existing.at(-1).slice(0,14):'00000000000000';
+ let ver,slug;
+ const explicitMatch=rawArg.match(/^(\d{14})_(.+)$/);
+ if(explicitMatch){
+  ver=explicitMatch[1];
+  slug=explicitMatch[2];
+ }else{
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(p=>[p.type,p.value]));
+  ver=`${parts.year}${parts.month}${parts.day}${parts.hour}${parts.minute}${parts.second}`;
+  if(ver<=latestVer)ver=String(BigInt(latestVer)+1n).padStart(14,'0');
+  slug=rawArg;
+ }
+ slug=slug.replace(/[\s/\\]+/g,'_').replace(/^_+|_+$/g,'')||'update_schema';
+ const fileName=`${ver}_${slug}.sql`,fullPath=path.join(migDir,fileName);
+ const template=`-- Migration: ${fileName}\n-- Created at: ${new Date().toISOString()} (Asia/Bangkok)\n-- กฎเหล็ก: ใช้คำสั่งแบบ Idempotent เท่านั้น (CREATE TABLE IF NOT EXISTS, CREATE INDEX IF NOT EXISTS, CREATE OR REPLACE FUNCTION)\n-- และห้ามใช้ SELECT * ในฟังก์ชัน PL/pgSQL เด็ดขาด\n\nbegin;\n\n-- เขียนคำสั่ง SQL สำหรับเพิ่มตาราง แก้ฟังก์ชัน RPC หรือสร้าง Index ใหม่ด้านล่างนี้\n\ncommit;\n`;
+ await fs.writeFile(fullPath,template,{flag:'wx'});
+ console.log(`Created migration: supabase/migrations/${fileName}`);
+}else throw Error('Use: node tools.mjs test | qa | build | serve | migrate <name>');
