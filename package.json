@@ -1,13 +1,15 @@
 {
   "name": "pn-weekly",
-  "version": "18.0.0",
+  "version": "19.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node tools.mjs serve",
     "test": "node tools.mjs test",
     "build": "node tools.mjs build",
-    "qa": "node tools.mjs qa"
+    "qa": "node tools.mjs qa",
+    "migrate": "node tools.mjs migrate",
+    "verify-db": "node tools.mjs verify-db"
   },
   "engines": {
     "node": ">=20"

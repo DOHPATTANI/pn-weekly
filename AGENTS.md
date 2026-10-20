@@ -87,3 +87,10 @@ All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via
 
 4. **`tools.mjs` upgrades**:
    - Added Test #123 (`v18.1 Master Developer Rules: RFC 7807 Problem Details, Button Lock & O(1) Contractor Dedup`) verifying `toProblemDetails` and concurrent `withButtonLock` execution.
+
+## v19 current release contract
+- Preserve the v18.1 upgrades above. The uploaded report was a change brief: its claimed database deployment was not assumed. The actual DB lacked its optimization migration and retained a legacy delete into the read-only work-links view. v19 applies the optimization and correction atomically, preserves task-scoped native projections, and hydrates touched historical snapshots before amendments. Never reintroduce the unhydrated/older save functions from the optimization alone.
+- New database changes require a new additive, idempotent ordered migration plus schema.sql. Use npm run migrate -- name. Test fresh schema + ordered migrations, production-copy amendments, and idempotency before application. Do not edit old migrations as a deployment shortcut.
+- pn2_release_compatibility / npm run verify-db gates Pages deployment. Missing CLI credentials must not silently mean the database is ready; verify a connector-deployed contract. Never mark unknown migrations applied just because db push failed. Existing pre-CLI migration aliases require evidence-based reconciliation before enabling a new CLI path.
+- Weekly confirmation is in Select, not a separate table column. Preserve historical editing through selected single-row amendment and inline edits. Child personnel/route editors are excluded from operational text sizing.
+- operationFeedback is the shared visible save/load feedback owner. Mount popovers inside an open modal to preserve interactivity, reparent on modal close, retain input focus, and respect reduced motion. Show percentages only from known real byte totals; otherwise indeterminate. Errors retain values and provide cause/fix/safe retry. Keep independent DOH/PROVINCE report layout presets.
