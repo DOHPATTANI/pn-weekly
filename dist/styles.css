@@ -351,6 +351,9 @@ button[data-loading="true"]::after,.btn[aria-busy="true"]::after{content:"";disp
 #contract-form .dialog-actions,.dialog-footer{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 .sidebar-bottom{padding-bottom:env(safe-area-inset-bottom,0px)}
 .row-details-button{display:none}
+:is(#app,#modal) tr[data-row-detail-mounted]{cursor:pointer}
+:is(#app,#modal) tr[data-row-detail-mounted]:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+@media (pointer:fine){:is(#app,#modal) tr[data-row-detail-mounted]:hover{background:var(--mint)}}
 /* Only tagged operational records become cards; official reports keep their paper grid. */
 @media screen and (max-width: 640px){
  :is(#app,#modal) table:is(.mobile-records,.mobile-record-table){display:block!important;min-width:0!important;width:100%!important;max-width:100%!important;table-layout:auto!important;white-space:normal}
@@ -405,7 +408,7 @@ button[data-loading="true"]::after,.btn[aria-busy="true"]::after{content:"";disp
  :is(#app,#modal,.topbar) :is(.icon-button,.edit,.text-link,.link,.search-clear,.pencil-action,[data-page],[data-close]){display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px}
  .search-field>input{padding-inline-end:50px!important}
  .search-clear{inset-inline-end:0}
- :is(#app,#modal) label:has(input:is([type=checkbox],[type=radio])){display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;cursor:pointer}
+ :is(#app,#modal) label:has(input:is([type=checkbox],[type=radio])):not([hidden]):not(.select-all-label){display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;cursor:pointer}
  .row-select-target,.select-all-label{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;cursor:pointer;flex-shrink:0}
  .row-select-target{padding:10px}
  input[type=checkbox][data-row-selector],td input[type=checkbox][data-entry=confirmed]{width:24px!important;height:24px!important;min-width:24px;min-height:24px;margin:0}
