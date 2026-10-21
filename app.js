@@ -1183,7 +1183,7 @@ function mountResponsiveRows(root=document){
 
 function mountMobileInputs(){for(const input of $$('#app input,#modal input,#app select,#modal select,#app textarea,#modal textarea')){
  if(['hidden','file','checkbox','radio','color','button','submit','reset'].includes(input.type))continue;
- const key=input.name||input.id||'',search=input.type==='search'||input.classList.contains('search')||/search/i.test(input.id),integer=/^(year|duration|days|usefulLifeYears|unitCount|historyYear|ordinal)$/.test(key)||/_(ordinal)$/.test(key),decimal=input.type==='number'||/^(plan|weekly|actual|contractValue|actualCost|quantity|depreciationRate)$/.test(key);
+ const key=input.name||input.id||'',search=input.type==='search'||input.classList.contains('search')||/search/i.test(input.id),integer=/^(year|duration|days|usefulLifeYears|unitCount|historyYear|ordinal)$/.test(key)||/_(ordinal|routeNumber|controlSection)$/.test(key)||/^(routeNumber|controlSection)$/.test(key)||input.classList.contains('cur-year'),decimal=input.type==='number'||/^(plan|weekly|actual|contractValue|actualCost|quantity|depreciationRate)$/.test(key);
  input.setAttribute('inputmode',search?'search':input.type==='tel'||/phone/i.test(key)?'tel':input.type==='email'?'email':integer?'numeric':decimal?'decimal':'text');
  input.setAttribute('enterkeyhint',search?'search':input.tagName==='TEXTAREA'?'done':'next');
  if(!input.hasAttribute('autocomplete'))input.setAttribute('autocomplete',search?'off':input.type==='tel'||/phone/i.test(key)?'tel':input.type==='email'?'email':key==='address'?'street-address':'off');
