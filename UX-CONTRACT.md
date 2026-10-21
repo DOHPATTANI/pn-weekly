@@ -112,3 +112,9 @@ Source: user chat on 20 October 2026 and attached Master Developer Rules report.
 - Operational registry/weekly/project tables use labeled cards at≤640px, native tables above640px. Official report tables and edit/view child tables are excluded. Touch fonts16px/targets44px, safe-area footer and nowrap KPI values are canonical. Resize restores table sizing and pinning.
 - ข้อมูลพื้นฐาน → ตารางค่าเสื่อมราคา is a read-only paginated reference to the verified source rows and groups; code-linked rules update life/rate automatically from recognized feature text.
 - v22.0.1 scope readiness: settings/preview waits for the current funding data, including an immediate click during a scope change. Blank/empty previews require a genuinely empty resolved dataset.
+
+## v23 accepted evolution
+- The canonical modal/field/native-select/date/button-lock/save queue owners remain. New catalog references are buttons in the existing master tab row. No second date picker or persistence engine.
+- Confirmation reports confirmed count and an explicit draft state. Archive preflight lists all actionable causes and uses the existing editors. Failed/queued writes never claim that the report is archived.
+- Registry selects cascade budget abbreviation → PDF project → activity → code and offer relevant units. Missing budget links remain visible and editable, not guessed. Dossiers show the reverse hierarchy.
+- P301 configured records default365, new records actual fiscal days; choose365/366 explicitly when needed. Each save stores the chosen basis. Model/spec defaults '-'. PDF/PNG share vector baselines and18px description inset; native XLSX retains editable fields and uses the bundled font metrics.
