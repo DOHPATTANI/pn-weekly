@@ -656,3 +656,54 @@ button[data-loading="true"]::after,
     position: static;
   }
 }
+
+/* v24.2 Batch edit mode and draft save button */
+.weekly-batch-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.batch-mode-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  background: var(--mint, #e8f3ee);
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px solid #c8ded4;
+  user-select: none;
+}
+.batch-mode-label:hover {
+  background: #dbeef1;
+}
+.batch-mode-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  margin: 0;
+  accent-color: var(--green);
+}
+#save-weekly-drafts {
+  background: #176554;
+  color: white;
+  font-weight: 600;
+  border: 1px solid #145744;
+  box-shadow: 0 2px 6px rgba(20, 87, 68, 0.25);
+  transition: all 0.2s ease;
+}
+#save-weekly-drafts:hover {
+  background: #0f4b3e;
+  transform: translateY(-1px);
+}
+@keyframes pn-pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(23, 101, 84, 0.6); }
+  70% { box-shadow: 0 0 0 7px rgba(23, 101, 84, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(23, 101, 84, 0); }
+}
+.highlight-pulse {
+  animation: pn-pulse-glow 2s infinite;
+}

@@ -369,6 +369,42 @@ test('v18.1 Master Developer Rules: RFC 7807 Problem Details, Button Lock & O(1)
  assert.equal(lockCalls,1,'withButtonLock must block concurrent double-clicks while task is running');
  assert.equal(mockBtn.disabled,false,'withButtonLock must restore button state after completion');
 });
+
+test('v24.2 weekly auto rules: actual=100 sets deliver status and note, payment=pay sets note',()=>{
+ const e1={plan:100,weekly:10,actual:90,payment:'รอส่งมอบงาน',note:''};
+ App.applyWeeklyAutoRules(e1,'actual',100,{reference:'2026-10-12'},{actual:90});
+ assert.equal(e1.actual,100);
+ assert.equal(e1.weekly,10);
+ assert.equal(e1.payment,'รอส่งมอบงาน');
+ assert.equal(e1.note,'งานแล้วเสร็จ รอส่งมอบงาน');
+
+ const e2={plan:100,weekly:0,actual:80,payment:'รอส่งมอบงาน',note:''};
+ App.applyWeeklyAutoRules(e2,'weekly',20,{reference:'2026-10-12'},{actual:80});
+ assert.equal(e2.actual,100);
+ assert.equal(e2.weekly,20);
+ assert.equal(e2.payment,'รอส่งมอบงาน');
+ assert.equal(e2.note,'งานแล้วเสร็จ รอส่งมอบงาน');
+
+ const e3={plan:100,weekly:10,actual:90,payment:'เบิกจ่ายแล้ว',paymentDate:'2026-10-01',note:'เบิกจ่ายแล้ว วันที่ 1 ตุลาคม 2569'};
+ App.applyWeeklyAutoRules(e3,'actual',100,{reference:'2026-10-12'},{actual:90});
+ assert.equal(e3.actual,100);
+ assert.equal(e3.payment,'เบิกจ่ายแล้ว');
+ assert.equal(e3.paymentDate,'2026-10-01');
+ assert.ok(e3.note.includes('เบิกจ่ายแล้ว'));
+
+ const e4={plan:100,weekly:0,actual:100,payment:'รอส่งมอบงาน',note:'งานแล้วเสร็จ รอส่งมอบงาน'};
+ App.applyWeeklyAutoRules(e4,'payment','รอเบิกจ่าย',{reference:'2026-10-12'},{actual:100});
+ assert.equal(e4.payment,'รอเบิกจ่าย');
+ assert.equal(e4.note,'รอเบิกจ่าย');
+
+ App.applyWeeklyAutoRules(e4,'payment','รอส่งมอบงาน',{reference:'2026-10-12'},{actual:100});
+ assert.equal(e4.payment,'รอส่งมอบงาน');
+ assert.equal(e4.note,'งานแล้วเสร็จ รอส่งมอบงาน');
+
+ App.applyWeeklyAutoRules(e4,'actual',95,{reference:'2026-10-12'},{actual:90});
+ assert.equal(e4.actual,95);
+ assert.equal(e4.note,'');
+});
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
  const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(await fs.readFile(path.join(root,'supabase/schema.sql'),'utf8'));for(const f of(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort())await db.exec(await fs.readFile(path.join(root,'supabase/migrations',f),'utf8'));
