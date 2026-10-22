@@ -420,7 +420,7 @@ test('v24.3 UI Ergonomics: sparklines, delta badges, search affordance and unifi
  assert.equal(App.deltaBadge(-4,true),'<span class="delta-badge pos">-4</span>');
 
  const css=await fs.readFile('styles.css','utf8');
- for(const cls of ['.unified-toolbar','.filter-bar-inline','.search-box','.search-icon','.search-shortcut','.search-clear','.delta-badge','.mini-sparkline','.table-toolbar-row','.pill-toggle','.audit-toolbar','.settings-footer']){
+ for(const cls of ['.unified-toolbar','.filter-bar-inline','.search-box','.search-icon','.search-shortcut','.search-clear','.delta-badge','.mini-sparkline','.table-toolbar-row','.pill-toggle','.audit-toolbar','.settings-footer','--spring-easing','.skeleton-shimmer','dialog#modal[open]','prefers-reduced-motion']){
   assert.ok(css.includes(cls),'styles.css must include '+cls);
  }
 });

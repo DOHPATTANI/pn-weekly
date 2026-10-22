@@ -1027,3 +1027,93 @@ dialog#modal::backdrop {
     width: 100%;
   }
 }
+
+/* ==================== Master Motion & Tactile Choreography System ==================== */
+:root {
+  --spring-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-duration-micro: 150ms;
+  --spring-duration-pop: 250ms;
+  --spring-duration-modal: 300ms;
+}
+
+/* Tactile Micro-Interactions */
+.btn:active,
+.icon-button:active,
+.summary-count:active,
+.pill-toggle:active {
+  transform: scale(0.98) !important;
+}
+
+.btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 62, 50, 0.08);
+}
+
+.stat:hover,
+.card.dash-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 62, 50, 0.08);
+}
+
+/* Staggered Card Reveals */
+@keyframes pnCardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stats .stat:nth-child(1) { animation: pnCardReveal 350ms var(--spring-easing) 40ms both; }
+.stats .stat:nth-child(2) { animation: pnCardReveal 350ms var(--spring-easing) 80ms both; }
+.stats .stat:nth-child(3) { animation: pnCardReveal 350ms var(--spring-easing) 120ms both; }
+.stats .stat:nth-child(4) { animation: pnCardReveal 350ms var(--spring-easing) 160ms both; }
+
+/* Signature Modal Scale & Lighting Entrance */
+dialog#modal[open] {
+  animation: pnModalScaleIn 260ms var(--spring-easing) both;
+  box-shadow: 0 24px 64px rgba(16, 62, 50, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+@keyframes pnModalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Skeleton Shimmer Loading States */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(232, 240, 235, 0.6) 25%, rgba(246, 248, 246, 0.95) 50%, rgba(232, 240, 235, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: pnShimmerWave 1.6s infinite ease-in-out;
+  border-radius: 6px;
+}
+
+@keyframes pnShimmerWave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Prefers-Reduced-Motion Full Accessibility Compliance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
