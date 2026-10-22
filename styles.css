@@ -1115,3 +1115,46 @@ dialog#modal[open] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==================== Screen-by-Screen Ergonomic Upgrades ==================== */
+
+/* 1. Weekly Data Entry Grid Focus Glow & Tabular Numerals */
+.weekly-input {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.weekly-input:focus {
+  outline: none !important;
+  border-color: #145d47 !important;
+  box-shadow: 0 0 0 3px rgba(20, 93, 71, 0.14) !important;
+}
+
+/* 2. Horizontal Scrollable Budget Account Pills with Scroll-Snap */
+.register-summary .summary-items,
+.registry-controls .summary-items {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  gap: 10px !important;
+  padding-bottom: 6px;
+}
+
+.register-summary .summary-items > *,
+.registry-controls .summary-items > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* 3. Sticky Glassmorphic Period & Context Bar */
+.period-bar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+}
