@@ -424,6 +424,18 @@ test('v24.3 UI Ergonomics: sparklines, delta badges, search affordance and unifi
   assert.ok(css.includes(cls),'styles.css must include '+cls);
  }
 });
+
+test('v24.4 Dashboard Bento KPIs, 5-stage Contract Status Pipeline and Budget Account Progress Chart',async()=>{
+ const css=await fs.readFile('styles.css','utf8');
+ for(const cls of ['.dash-kpis','.dash-kpi-card','.dash-pipeline-card','.pipeline-bar-track','.pipeline-stages','.pipeline-stage','.dash-budget-progress','.budget-chart-container','.budget-chart-row','.budget-bar','.budget-plan-marker','.dash-insight-banner']){
+  assert.ok(css.includes(cls),'styles.css must include '+cls);
+ }
+ const appJs=await fs.readFile('app.js','utf8');
+ assert.ok(appJs.includes('dash-pipeline-card'),'app.js must include dash-pipeline-card');
+ assert.ok(appJs.includes('dash-budget-progress'),'app.js must include dash-budget-progress');
+ assert.ok(appJs.includes('data-filter-budget'),'app.js must support budget filter clicks');
+ assert.ok(appJs.includes('กำลังดำเนินการ') && appJs.includes('รอส่งมอบงาน') && appJs.includes('รอเบิกจ่าย') && appJs.includes('เบิกจ่ายแล้ว') && appJs.includes('หมดอายุสัญญา'));
+});
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
  const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(await fs.readFile(path.join(root,'supabase/schema.sql'),'utf8'));for(const f of(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort())await db.exec(await fs.readFile(path.join(root,'supabase/migrations',f),'utf8'));

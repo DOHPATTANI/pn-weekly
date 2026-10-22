@@ -850,6 +850,588 @@ button[data-loading="true"]::after,
   opacity: 1;
 }
 
+/* B.3 Dashboard Bento KPI Cards (4 Cards Grid) */
+.dash-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+@media (max-width: 900px) {
+  .dash-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .dash-kpis {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dash-kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--line, #e2ece6);
+  border-radius: 12px;
+  padding: 18px 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 44px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.dash-kpi-card:hover {
+  border-color: var(--green, #176554);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(23, 63, 52, 0.08);
+}
+
+.dash-kpi-card.alert-card {
+  border-color: #fca5a5;
+  background: #fffcfc;
+}
+
+.dash-kpi-card.alert-card:hover {
+  border-color: #ef4444;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.1);
+}
+
+.kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.kpi-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #365b4b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kpi-label span {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.kpi-body {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.kpi-body .stat-number {
+  font: 600 34px Arial, sans-serif;
+  letter-spacing: -1px;
+  color: #173f34;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.kpi-body .stat-number small {
+  font: 16px 'Noto Sans Thai', Tahoma, sans-serif;
+  letter-spacing: 0;
+  margin-left: 4px;
+  color: var(--muted, #82918d);
+}
+
+.dash-kpi-card.alert-card .stat-number {
+  color: #dc2626;
+}
+
+.kpi-trend {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.kpi-trend.down {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.1);
+}
+
+.kpi-trend.up {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.kpi-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 12px;
+  color: var(--muted, #82918d);
+  gap: 10px;
+  margin-top: auto;
+}
+
+.kpi-straight-bar {
+  height: 3px;
+  flex: 1;
+  max-width: 60px;
+  background: #173f34;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.kpi-progress-bar {
+  height: 6px;
+  flex: 1;
+  max-width: 80px;
+  background: #e2ece6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.kpi-progress-bar span {
+  display: block;
+  height: 100%;
+  background: #173f34;
+  border-radius: 3px;
+}
+
+@media (max-width: 640px) {
+  .kpi-body .stat-number {
+    font-size: 26px !important;
+  }
+}
+
+/* B.4 Contract Status Pipeline (5 Stages) */
+.dash-pipeline-card {
+  background: #ffffff;
+  border: 1px solid var(--line, #e2ece6);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.dash-pipeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dash-pipeline-title h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #173f34;
+  margin: 0;
+  display: inline-block;
+}
+
+.dash-pipeline-title .sub {
+  font-size: 13px;
+  color: var(--muted, #82918d);
+  margin-left: 10px;
+}
+
+.pipeline-progress-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted, #82918d);
+}
+
+.pipeline-progress-legend strong {
+  font-weight: 600;
+  color: #173f34;
+  font-variant-numeric: tabular-nums;
+}
+
+.pipeline-bar-track {
+  display: flex;
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #e8eee8;
+  gap: 2px;
+  width: 100%;
+}
+
+.pipeline-bar-track .bar-seg {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.pipeline-bar-track .bar-seg.ongoing {
+  background: #173f34;
+}
+
+.pipeline-bar-track .bar-seg.deliver {
+  background: #475569;
+}
+
+.pipeline-bar-track .bar-seg.pay {
+  background: #b45309;
+}
+
+.pipeline-bar-track .bar-seg.paid {
+  background: #059669;
+}
+
+.pipeline-bar-track .bar-seg.expired {
+  background: #ef4444;
+}
+
+.pipeline-stages {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .pipeline-stages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .pipeline-stages {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pipeline-stage {
+  background: #fbfdfc;
+  border: 1px solid #e2ece6;
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  width: 100%;
+}
+
+.pipeline-stage:hover {
+  border-color: var(--green, #176554);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.stage-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stage-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.stage-icon.ongoing {
+  background: rgba(23, 63, 52, 0.1);
+  color: #173f34;
+}
+
+.stage-icon.deliver {
+  background: rgba(71, 85, 105, 0.1);
+  color: #475569;
+}
+
+.stage-icon.pay {
+  background: rgba(180, 83, 9, 0.1);
+  color: #b45309;
+}
+
+.stage-icon.paid {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+
+.stage-icon.expired {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+.stage-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--muted, #82918d);
+  font-variant-numeric: tabular-nums;
+}
+
+.stage-badge.alert {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+}
+
+.stage-label {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.stage-val {
+  font: 600 24px Arial, sans-serif;
+  color: #0f172a;
+  margin: 2px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage-val small {
+  font: 12px 'Noto Sans Thai', Tahoma, sans-serif;
+  color: var(--muted, #82918d);
+  margin-left: 4px;
+  font-weight: normal;
+}
+
+.stage-mini-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #e2ece6;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.stage-mini-track span {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+}
+
+.pipeline-stage.ongoing .stage-mini-track span {
+  background: #173f34;
+}
+
+.pipeline-stage.deliver .stage-mini-track span {
+  background: #475569;
+}
+
+.pipeline-stage.pay .stage-mini-track span {
+  background: #b45309;
+}
+
+.pipeline-stage.paid .stage-mini-track span {
+  background: #059669;
+}
+
+.pipeline-stage.expired .stage-mini-track span {
+  background: #ef4444;
+}
+
+/* B.5 Progress by Budget Account (Horizontal Bar Chart) */
+.dash-budget-progress {
+  background: #ffffff;
+  border: 1px solid var(--line, #e2ece6);
+  border-radius: 12px;
+  padding: 22px 24px;
+}
+
+.budget-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.budget-chart-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 55px;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+}
+
+@media (max-width: 600px) {
+  .budget-chart-row {
+    grid-template-columns: 100px minmax(0, 1fr) 48px;
+    gap: 8px;
+  }
+}
+
+.budget-row-label {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e3a2f;
+  text-align: right;
+  padding: 6px 4px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.budget-row-label:hover {
+  color: var(--green, #176554);
+  text-decoration: underline;
+}
+
+.budget-row-chart {
+  position: relative;
+  height: 26px;
+  background: #f3f7f4;
+  border-radius: 4px;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+}
+
+.budget-grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.budget-grid-lines span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.budget-bar {
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+  background: #173f34;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.budget-plan-marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2.5px;
+  background: #c4962c;
+  border-radius: 1px;
+  z-index: 2;
+}
+
+.budget-row-val {
+  font: 600 13px Arial, sans-serif;
+  color: #173f34;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.budget-axis-labels {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  margin-left: 154px;
+  margin-right: 69px;
+  font-size: 11px;
+  color: var(--muted, #82918d);
+  margin-top: 8px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .budget-axis-labels {
+    margin-left: 108px;
+    margin-right: 56px;
+    font-size: 10px;
+  }
+}
+
+.headline-neg {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.headline-pos {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* B.6 Dashboard Side Column & Insight Alert Banner */
+.dash-side-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dash-insight-banner {
+  background: #ffffff;
+  border: 1px solid var(--line, #e2ece6);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.insight-alert-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #fffbf0;
+  border: 1px solid #fce8bd;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.insight-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.insight-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.insight-content strong {
+  font-size: 13px;
+  color: #855306;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.insight-content p {
+  font-size: 12px;
+  color: #6b4707;
+  margin: 0;
+  line-height: 1.4;
+}
+
+
 /* Unified Table Toolbar (Tabs Left, Filters Right in 1 Row) */
 .table-toolbar-row {
   display: flex;
