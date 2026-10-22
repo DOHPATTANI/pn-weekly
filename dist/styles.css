@@ -2546,7 +2546,7 @@ dialog#modal[open] {
   background: #F8FAFC !important;
   border-color: #94A3B8 !important;
 }
-#app .table-density label {
+#app .table-density > label {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -2554,10 +2554,14 @@ dialog#modal[open] {
   color: #0F172A !important;
   font-weight: 500 !important;
 }
-#app .table-density label select {
+#app .table-density > label select {
   min-height: 44px !important;
   border-radius: 12px !important;
   padding: 0 32px 0 12px !important;
+}
+.selection-toolbar:not(.is-selecting) .select-all-label,
+.selection-toolbar:not(.is-selecting) > :not([data-selection-mode]):not([role=status]) {
+  display: none !important;
 }
 #app .table-density .filter-toggle {
   display: inline-flex !important;
