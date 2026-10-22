@@ -23,4 +23,4 @@ grant execute on function public.pn2_release_compatibility() to anon,authenticat
 
 notify pgrst, 'reload schema';
 
-commit;.
+commit.
