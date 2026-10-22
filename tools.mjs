@@ -436,6 +436,18 @@ test('v24.4 Dashboard Bento KPIs, 5-stage Contract Status Pipeline and Budget Ac
  assert.ok(appJs.includes('data-filter-budget'),'app.js must support budget filter clicks');
  assert.ok(appJs.includes('กำลังดำเนินการ') && appJs.includes('รอส่งมอบงาน') && appJs.includes('รอเบิกจ่าย') && appJs.includes('เบิกจ่ายแล้ว') && appJs.includes('หมดอายุสัญญา'));
 });
+
+test('v24.5 Dashboard Data-Driven UI: SVG Bezier Sparklines, Unified Divided Strip & 4-State Resilience',async()=>{
+ const css=await fs.readFile('styles.css','utf8');
+ for(const cls of ['.dash-simulator-bar','.simulator-title','.simulator-buttons','.state-btn','.dash-skeleton-grid','.dash-skeleton-card','.dash-skeleton-pipeline','.dash-empty-card','.dash-error-card','.stage-divider','.dash-pipeline-divider']){
+  assert.ok(css.includes(cls),'styles.css must include '+cls);
+ }
+ const appJs=await fs.readFile('app.js','utf8');
+ assert.ok(appJs.includes('calcPipelineWeights'),'app.js must include calcPipelineWeights');
+ assert.ok(appJs.includes('dash-simulator-bar'),'app.js must include dash-simulator-bar');
+ assert.ok(appJs.includes('emeraldGrad') && appJs.includes('crimsonGrad'),'app.js must include emerald and crimson SVG linearGradients');
+ assert.ok(appJs.includes('M 4 60 C 45 36, 80 42, 115 40 C 155 38, 190 6, 238 5') && appJs.includes('M 2 10 C 60 11, 105 22, 155 22 C 195 22, 220 26, 238 27'),'app.js must include exact SVG Bezier paths');
+});
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
  const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(await fs.readFile(path.join(root,'supabase/schema.sql'),'utf8'));for(const f of(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort())await db.exec(await fs.readFile(path.join(root,'supabase/migrations',f),'utf8'));
