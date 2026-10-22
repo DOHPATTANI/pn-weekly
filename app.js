@@ -1527,3 +1527,54 @@ if(typeof document==='undefined'&&typeof self!=='undefined'&&typeof self.skipWai
  self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('pn-weekly-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
  self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==scope.origin||!url.pathname.startsWith(scope.pathname))return;event.respondWith(fetch(event.request).then(response=>{if(response.ok&&['document','script','style','font'].includes(event.request.destination)){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{const cached=await caches.match(event.request,{ignoreSearch:true});if(cached)return cached;if(event.request.mode==='navigate')return caches.match(new URL('index.html',scope).href);throw Error('ยังไม่ได้เก็บไฟล์นี้สำหรับออฟไลน์');}));});
 }
+
+// === PLANNET DOH v24.1 Performance & UX Engine Helpers ===
+let _v241CachedReportsRef = null;
+let _v241CachedReportLookup = new Map();
+
+export function buildPreviousReportLookup(reports) {
+  if (_v241CachedReportsRef === reports) return _v241CachedReportLookup;
+  _v241CachedReportsRef = reports;
+  _v241CachedReportLookup = new Map();
+  const datedReports = (reports || [])
+    .filter(r => r && r.id !== 'EMPTY' && r.end)
+    .slice()
+    .sort((a, b) => a.end.localeCompare(b.end));
+  for (const r of reports || []) {
+    if (!r || !r.start) continue;
+    const priors = [];
+    for (let i = datedReports.length - 1; i >= 0; i--) {
+      const candidate = datedReports[i];
+      if (candidate.id !== r.id && candidate.end < r.start) {
+        priors.push(candidate);
+      }
+    }
+    _v241CachedReportLookup.set(r.id, priors);
+  }
+  return _v241CachedReportLookup;
+}
+
+export function updateWeeklyRowInPlace(projectId, entry, rows, statusKeyFn) {
+  if (typeof document === 'undefined' || !document.querySelector) return false;
+  const escId = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(projectId) : String(projectId).replace(/["\\]/g, '\\$&');
+  const tr = document.querySelector(`tr[data-id="${escId}"]`);
+  if (!tr || !entry) return false;
+  if (typeof statusKeyFn === 'function') {
+    const st = statusKeyFn(entry);
+    tr.className = st === 'paid' ? 'paid' : st === 'deliver' ? 'waiting-delivery' : st === 'pay' ? 'waiting-payment' : '';
+  }
+  for (const k of ['plan', 'weekly', 'actual', 'note']) {
+    const input = tr.querySelector(`[data-entry="${k}"]`);
+    if (input && document.activeElement !== input) input.value = entry[k] ?? '';
+  }
+  const select = tr.querySelector('[data-entry="payment"]');
+  if (select && document.activeElement !== select) select.value = entry.payment || 'รอส่งมอบงาน';
+  const checkbox = tr.querySelector('[data-entry="confirmed"]');
+  if (checkbox && document.activeElement !== checkbox) checkbox.checked = Boolean(entry.confirmed);
+  const reviewBadge = document.querySelector('.review-count');
+  if (reviewBadge && Array.isArray(rows)) {
+    const confirmedCount = rows.filter(x => x?.e?.confirmed).length;
+    reviewBadge.textContent = `ยืนยันแล้ว ${confirmedCount}/${rows.length}`;
+  }
+  return true;
+}
