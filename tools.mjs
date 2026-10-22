@@ -405,6 +405,25 @@ test('v24.2 weekly auto rules: actual=100 sets deliver status and note, payment=
  assert.equal(e4.actual,95);
  assert.equal(e4.note,'');
 });
+
+test('v24.3 UI Ergonomics: sparklines, delta badges, search affordance and unified toolbars',async()=>{
+ assert.equal(App.miniSparklineSVG([]),'');
+ assert.equal(App.miniSparklineSVG([10]),'');
+ const spark=App.miniSparklineSVG([10,20,15,30]);
+ assert.ok(spark.includes('<svg class="mini-sparkline"'));
+ assert.ok(spark.includes('points="'));
+
+ assert.equal(App.deltaBadge(0),'<span class="delta-badge neutral">0</span>');
+ assert.equal(App.deltaBadge(5),'<span class="delta-badge pos">+5</span>');
+ assert.equal(App.deltaBadge(-3),'<span class="delta-badge neg">-3</span>');
+ assert.equal(App.deltaBadge(5,true),'<span class="delta-badge neg">+5</span>');
+ assert.equal(App.deltaBadge(-4,true),'<span class="delta-badge pos">-4</span>');
+
+ const css=await fs.readFile('styles.css','utf8');
+ for(const cls of ['.unified-toolbar','.filter-bar-inline','.search-box','.search-icon','.search-shortcut','.search-clear','.delta-badge','.mini-sparkline','.table-toolbar-row','.pill-toggle','.audit-toolbar','.settings-footer']){
+  assert.ok(css.includes(cls),'styles.css must include '+cls);
+ }
+});
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
  const db=new PGlite();await db.exec('create role anon;create role authenticated;');await db.exec(await fs.readFile(path.join(root,'supabase/schema.sql'),'utf8'));for(const f of(await fs.readdir(path.join(root,'supabase/migrations'))).filter(x=>x.endsWith('.sql')).sort())await db.exec(await fs.readFile(path.join(root,'supabase/migrations',f),'utf8'));

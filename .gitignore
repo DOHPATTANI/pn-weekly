@@ -15,3 +15,6 @@ dist/
 original-data.json
 
 supabase/.temp/
+
+.claude/
+agent/
