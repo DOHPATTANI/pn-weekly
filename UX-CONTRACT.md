@@ -121,6 +121,12 @@ Source: user chat on 20 October 2026 and attached Master Developer Rules report.
 
 ## v24 — mobile cards and shared row dossiers
 
+### v25 HTML reference evolution
+
+Source: owner's23October2026 request and uploaded `plannet_doh.html`, with explicit exception for the current dashboard band. The operational shell adopts emerald/gold navigation, frosted topbar and tinted summaries; existing record/save/error/import/export owners retain behavior. Counts use actual scoped records. Demo data and destructive browser-storage bootstrap from the reference are excluded.
+
+Dashboard removes its week selector and secondary preview command; it uses the latest actual report for the chosen funding/year. Weekly/archive continue to expose historical periods and existing preview/form settings. Default50project/registry rows accommodates42contracts in one page. Thai labels wrap in their owned region. Official report tables/PDF/Excel/image renderers keep their independent styles; theme additions use screen media only.
+
 Authority: owner's pending requirements after v23 and explicit start instruction in this chat. `mountResponsiveRows` extends the native table owner to operational tables in the app and dialogs. More than3columns become labeled cards below640px; print/preview documents are excluded. Identity/status lead the card, other facts/actions remain readable without horizontal swiping. Coarse-pointer controls use44px targets, while mouse layouts remain dense. Mobile fields use16px type and semantic keyboard/autofill/enter hints. KPI numbers remain together with a30px font cap; fixed/sticky footers reserve content and safe-area space.
 
 `mountRowDetails` owns double-click and keyboard reading; interactive fields retain their own gestures. A mobile ดูรายละเอียด button reaches the same dossier. Edits/deletions delegate to existing mutation, confirmation and scope owners. Nested detail close restores the parent's exact DOM, input values, handlers and scroll; backdrop/Escape retain the existing explicit-close policy. Read-only reference/audit data and automatically linked weekly membership explain unavailable actions. Weekly dossier facts come from the chosen report snapshot/entry.

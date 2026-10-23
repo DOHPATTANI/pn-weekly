@@ -32,6 +32,14 @@ components:
 
 # PLANNET DOH design and behavior contract
 
+## v25 current visual reference
+
+Owner supplied `plannet_doh.html` on23October2026 (SHA256 `4304a9e3a780c7aba7285eea2a7f60d0925c9e5f7e875f5bf84ee8a4281c10ad`); its final emerald/gold theme is the visual source for the operational shell and nine screens. A separate owner screenshot explicitly preserves the incumbent dashboard KPI/pipeline/budget/donut band. Source sample records and cache-deletion startup are excluded. This presentation update extends current main and reuses its data/save owners.
+
+`styles.css` remains the token owner. Existing dashboard role variables and chart/layout styles remain canonical for the preserved band. The appended screen-only theme uses the source `--tw-emerald-*`, amber/blue/rose/slate palette for the sidebar/topbar and non-dashboard operational scope (`#app[data-screen]`). No external Tailwind script or framework is required. Scope prevents report-document and dashboard-band drift. Existing button, modal, field, date, selection, row-detail and persistence owners remain canonical.
+
+Dashboard toolbar contains funding/year and Create week; the actual latest scoped report supplies the data. Weekly/archive retain historical week selection. Project/registry page size defaults50 with existing alternatives. Example42/8counts and amounts are QA fixtures only. Browser evidence covers all nine screens at1500/375px and the existing regression workflows at1500/900/640/375px; release verification is recorded in the manual.
+
 ## Overview
 
 Product/admin surface for one Thai highway officer preparing weekly management reports. The user-approved v7.4 redesign uses a forest-green navigation shell, brass accents and paper-white operational surfaces. The visual reference is highway operations and Thai institutional documents; these palette choices are not a claim of official brand specifications. The report itself follows the supplied institutional table. The archive is a chronological register rather than a dashboard of cards. Avoid repeated actions, decorative tiles and unnecessary status columns.

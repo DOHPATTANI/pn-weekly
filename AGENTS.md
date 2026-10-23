@@ -1,5 +1,12 @@
 # PLANNET DOH project continuity
 
+## v25.0 — owner HTML visual refresh (23 October 2026)
+- Build on current main through v24.6; preserve the paused experimental v25 branch separately. The supplied plannet_doh.html is a visual reference, not a replacement application or migration. Never copy its IndexedDB deletion/bootstrap instructions or illustrative records into the live workspace.
+- Preserve the existing dashboard KPI, lifecycle pipeline, budget chart and status donut presentation approved in the owner's screenshot. Dashboard toolbar shows funding/year and Create week; resolve the latest actual scoped report. Weekly/archive retain report selection and historical editing.
+- Shared operational styles follow the attachment's deep emerald/gold sidebar, frosted topbar, bordered panels and semantic summary colors. Retain base dashboard tokens; screen-specific emerald tokens apply to other operational screens. No Tailwind CDN/runtime, additional app bundle, schema change or demo import.
+- Use complete Thai labels, including ความคืบหน้าเฉลี่ย. Project/registry default page size50 accommodates42contracts while retaining10/25/50/100 choices, sorting and selection. Counts and rows remain actual scope data.
+- Official executive/P301 PDF, image and native Excel renderers retain their own styles. Theme additions are screen-only. Preserve375px cards,44px coarse-pointer targets,16px mobile inputs, safe areas, explicit modal close and reduced motion.
+
 - v17 latest explicit owner decision: weekly membership automatically includes active registry contracts in the selected funding/year, including closed reports. Add missing entries/snapshots through the existing audited compact import, preserving every previously stored entry/snapshot and aliases. Never infer source-observed actual as weekly actual. Do not offer deleting a weekly-only contract row that automatic linkage would immediately restore; registry owns contract membership. Main list controls are Search → Select → Page size; read/edit popups are excluded. Desktop/tablet period controls align left with primary actions right; phones place primary actions first, then funding/year, then week.
 
 - User communication preference (explicitly reaffirmed): summarize changes once at the end, when the system is ready to use. Avoid step-by-step progress narration; interrupt only for a decision or information genuinely required from the user. Deliver the working web link with the final summary.
