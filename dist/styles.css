@@ -2509,7 +2509,7 @@ dialog#modal[open] {
   border: 1px solid #E2E8F0 !important;
   border-radius: 12px !important;
   background: #ffffff !important;
-  font-size: 14px !important;
+  font-size: 14px;
   color: #0F172A !important;
   transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
@@ -2581,4 +2581,10 @@ dialog#modal[open] {
 #app .table-density .filter-toggle:hover {
   background: #F8FAFC !important;
   border-color: #94A3B8 !important;
+}
+
+@media (max-width: 640px), (pointer: coarse) {
+  :is(#app, #modal) :is(input, select, textarea, .search) {
+    font-size: 16px !important;
+  }
 }
