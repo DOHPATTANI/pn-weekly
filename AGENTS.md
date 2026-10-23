@@ -132,3 +132,47 @@ All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via
 - mountRowDetails/mountResponsiveRows own row reading. Noninteractive double-click or row Enter/Space opens details; mobile has explicit ดูรายละเอียด. Existing inline entry/name controls keep editing gestures. Child detail drills detach/restore parent nodes so unsaved forms and handlers survive. Delegate edits/deletions to canonical handlers with existing confirmations. Weekly automatically linked membership, source references and audit history are not newly deletable. Explain disabled actions rather than creating a new destructive API. Historical weekly details use the selected snapshot/entry, never current registry values.
 - P301 labels have no underline/dotted border under their glyphs. Shared p301MetadataFields measures label widths; dotted lines start in the value region only. The exact seller label is ชื่อผู้ขาย/ผู้รับจ้าง/ผู้บริจาค. PDF/PNG/XLSX preserve this separation; native Excel label cells have no border.
 - Master menus show direct นำเข้า/ส่งออก in the system format only. Registry source imports remain available. Hide source columns in depreciation and DOH code references; retain provenance in stored data. This is a client-only release using the verified database23contract; no new migration or data import is required.
+
+## v24.2 weekly auto rules
+- Automatic lifecycle notes and payments trigger on progress changes via `applyWeeklyAutoRules(entry, field, value, report, prev)`:
+  - When `actual === 100` (or `weekly` increment achieves 100% cumulative completion) and payment is not already 'เบิกจ่ายแล้ว': payment defaults to `'รอส่งมอบงาน'` and note automatically sets to `'งานแล้วเสร็จ รอส่งมอบงาน'`.
+  - When payment is selected as `'รอเบิกจ่าย'`: note automatically synchronizes to `'รอเบิกจ่าย'`.
+  - When payment is selected as `'รอส่งมอบงาน'`: note automatically synchronizes to `'งานแล้วเสร็จ รอส่งมอบงาน'`.
+  - When `actual < 100`: completion notes automatically clear.
+  - When payment is `'เบิกจ่ายแล้ว'`: preserves existing payment date and payment note without overwriting.
+
+## v24.3 UI ergonomics and visual affordances
+- `miniSparklineSVG(data)` generates lightweight SVG polyline sparklines for compact historical trend representation in dashboard and overview panels.
+- `deltaBadge(val, invert)` generates standard status delta indicators (`.delta-badge.pos`, `.delta-badge.neg`, `.delta-badge.neutral`) with semantic inversion support for negative-good metrics (e.g. project delay days).
+- Standardized toolbars and search affordances: `.unified-toolbar`, `.filter-bar-inline`, `.search-box`, `.search-icon`, `.search-shortcut` (hotkey `/` focus and Escape clearing), `.table-toolbar-row`, `.pill-toggle`, `.audit-toolbar`, and `--spring-easing` motion curves with strict `prefers-reduced-motion` compliance.
+
+## v24.4 dashboard bento KPIs, status pipeline and budget chart
+- Dashboard Bento KPI architecture: contracts categorized into 5 lifecycle pipeline stages (`กำลังดำเนินการ`, `รอส่งมอบงาน`, `รอเบิกจ่าย`, `เบิกจ่ายแล้ว`, `หมดอายุสัญญา`).
+- Segmented status pipeline bar: `.dash-pipeline-card`, `.pipeline-bar-track`, `.pipeline-stages`, `.pipeline-stage` with dynamic proportional weights (`calcPipelineWeights`).
+- Budget account progress chart: `.dash-budget-progress`, `.budget-chart-container`, `.budget-chart-row`, `.budget-bar`, `.budget-plan-marker` comparing planned versus actual expenditure per budget category, with interactive cross-filtering (`data-filter-budget`).
+
+## v24.5 data-driven UI, SVG Bezier sparklines and simulator removal
+- Dashboard metrics derive 100% from live Supabase / IndexedDB state. UI state simulator controls (`.dash-simulator-bar` and 4-state buttons `Success, Loading, Empty, Error`) are permanently removed from the user interface and hidden via CSS.
+- High-fidelity SVG Bezier sparkline paths with emerald (`emeraldGrad`) and crimson (`crimsonGrad`) gradients rendered natively without third-party chart dependencies.
+- Frontend resilience across 4 states: native skeleton shimmer (`.dash-skeleton-grid`, `.dash-skeleton-card`, `.dash-skeleton-pipeline`), empty states (`.dash-empty-card`), and error states (`.dash-error-card`).
+
+## v24.6 systematic stacking hierarchy and unified 5 bento status cards
+- **Strict Stacking Scale & Z-Index Hierarchy**:
+  - Mobile Navigation Drawer (`.sidebar` at `<= 850px` and `.sidebar.open`) MUST have `z-index: 9999 !important;` with `box-shadow: 0 0 0 100vw #0004` so it is always on top of `main` and can never have pointer events intercepted by in-page controls.
+  - Desktop Sidebar (`min-width: 851px`): fixed at `z-index: 100`.
+  - In-Page Scope & Control Bars (`.period-bar`, `.page-heading`): `z-index: 60` to `70`.
+  - In-Page Dropdown Menus (`.file-menu[open]`, `.file-menu-items`): `z-index: 100` to `110 !important;` with submenus (`.file-submenu[open]`) at `z-index: 120 !important;`.
+  - Bento Summary Sections (`.register-summary`, `.registry-bento-summary`, `.weekly-summary`): `z-index: 1 !important;`.
+  - Bento KPI Cards (`.weekly-bento-card`): MUST be `position: static !important;`. All interior decorations (accent bars, progress indicators) use flexbox in-flow layout to prevent establishing unexpected stacking contexts over sibling dropdowns.
+  - Table Pinned Columns & Headers: `.management-column` and `.identity-column` at `z-index: 2` to `3`.
+  - Modals & Overlays: native `dialog#modal` at `z-index: 1500`, `#toast` at `z-index: 100`, Flatpickr calendar at `z-index: 10000`, and `#operation-feedback` at `z-index: 2147483647`.
+- **Unified 5 Bento Status KPI Cards**:
+  - Standardized across both `weeklySummary(rows)` and `registrySummary(rows)`:
+    1. `all` (ทั้งหมด) — Emerald border, white card (`card-all`).
+    2. `ongoing` (กำลังดำเนินการ) — Amber accent bar, `#FFFBEB` (`card-ongoing`).
+    3. `pay` (รอเบิกจ่าย) — Blue border, `#EFF6FF` (`card-pay`).
+    4. `paid` (เบิกจ่ายแล้ว) — Emerald progress bar with percentage, `#ECFDF5` (`card-paid`).
+    5. `expired` (หมดอายุ · ยังดำเนินการ) — Red progress bar with percentage, `#FEF2F2` (`card-expired`).
+  - Fluid Responsive Grid: 6 columns on desktop (spans 2/2/2/3/3) and 1 column on mobile (`max-width: 640px`).
+  - Shared Interactive Filter: Bound to `data-budget-filter`, `data-registry-filter`, and `data-filter` for instantaneous, zero-latency client-side lifecycle filtering.
+
