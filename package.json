@@ -1,6 +1,6 @@
 {
   "name": "pn-weekly",
-  "version": "26.0.0",
+  "version": "26.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,8 @@
     "verify-db": "node tools.mjs verify-db",
     "verify-schema": "node tools.mjs verify-schema",
     "schema": "node tools.mjs schema",
-    "qa:audit": "node tests/audit-regressions.mjs"
+    "qa:audit": "node tests/audit-regressions.mjs",
+    "agent:workflow": "node tools/agent-workflow.mjs"
   },
   "engines": {
     "node": ">=20"

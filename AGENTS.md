@@ -1,5 +1,13 @@
 # PLANNET DOH project continuity
 
+## Mandatory development workflow — owner confirmed 24 October 2026
+- `Rules.md` is the entry point for this same ruleset; read it and this complete AGENTS.md before every requirement/workflow/business-logic/idea task. Follow docs/DEVELOPMENT-WORKFLOW.md, including its output fields and confirmation text.
+- Analyze facts/assumptions/unknowns/recommendations, then present an implementation plan. Wait for user confirmation before mutations unless an explicit instruction to start already authorizes that exact scope. Do not ask again for authorization already given. Revisit analysis when requirements change.
+- Every delegated agent follows these rules and selects relevant available skills/plugins, recording actual usage and evidence. Never fabricate reads, tests, skill use, handoffs, performance or deployment.
+- Preserve existing architecture, shared access without login, source ownership and report/data contracts below. Rules referring to TypeScript/Zod/RLS apply only where relevant; do not add a new stack or authentication to satisfy a generic template.
+- Record material decisions and actual validation in docs/decision-log.md. Report conflicts that require a scope decision before proceeding with the affected work.
+- tools/agent-workflow.mjs validates recorded handoffs and CI evidence. Actual AI delegation is performed by the Codex coordinator; shell QA must never auto-pass human/agent review or release.
+
 ## v25.0 — owner HTML visual refresh (23 October 2026)
 - Build on current main through v24.6; preserve the paused experimental v25 branch separately. The supplied plannet_doh.html is a visual reference, not a replacement application or migration. Never copy its IndexedDB deletion/bootstrap instructions or illustrative records into the live workspace.
 - Preserve the existing dashboard KPI, lifecycle pipeline, budget chart and status donut presentation approved in the owner's screenshot. Dashboard toolbar shows funding/year and Create week; resolve the latest actual scoped report. Weekly/archive retain report selection and historical editing.

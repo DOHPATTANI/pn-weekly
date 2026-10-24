@@ -1,0 +1,31 @@
+version: 2
+workflow: pn-weekly-agent-chain
+root: .
+# Documentation manifest; executable contract is tools/agent-workflow.mjs.
+rules: [Rules.md, AGENTS.md, docs/DEVELOPMENT-WORKFLOW.md]
+orchestrator: Codex collaboration tools
+runner: tools/agent-workflow.mjs
+stages: [audit, plan, confirmation, data, ui, performance, security, qa, release]
+evidence:
+  require_run_identity: true
+  require_agent_identity: true
+  require_actual_skills: true
+  require_existing_nonempty_files: true
+  hash_algorithm: sha256
+  confirmation_bound_to_plan: true
+  invalidate_downstream_on_rework: true
+qa:
+  commands:
+    - node tools.mjs verify-source
+    - node tools.mjs verify-schema
+    - node tests/p301-export-dto.mjs
+    - npm test
+    - npm run qa
+    - npm run qa:audit
+    - npm run build
+  failure_exit_code: nonzero
+  success_state: awaiting-review
+  gate_timeout_ms: 900000
+release:
+  requires_agent_handoff: true
+  deployment_performed_by_runner: false
