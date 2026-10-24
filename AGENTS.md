@@ -197,3 +197,8 @@ All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via
 ## v26 follow-up owner decision and review identity
 - Owner explicitly reaffirmed: retain shared access without login; authentication changes remain excluded until later instruction.
 - New review fingerprints use sha256-v1 of canonical changeFingerprint data. Preserve legacy serialized fingerprint reads and all import before-images. Test digest equivalence against platform SHA-256, including Thai and multi-block inputs.
+
+## v26 source and export ownership
+- Edit src sections named by src/manifest.json, then run node tools.mjs source. Root app.js/styles.css remain the generated four-asset delivery contract. Build/CI verify matching sources.
+- P301 all-years export uses pn2_load_p301_export with a funding-scoped report DTO, never full active workspace or backup. Keep reports/import history/personnel/review metadata out and test report-model equivalence.
+- Architecture decisions and explicitly retained constraints are in docs/ARCHITECTURE-DECISIONS-v26.md. Source partitioning is not independent module isolation; global revision and eager master reads remain current contracts.

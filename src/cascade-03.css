@@ -1,0 +1,221 @@
+/* === PLANNET DOH v24.1 Master UI/UX & UX Engine 2.3 Upgrade === */
+:root {
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+/* 1. Bento KPI Cards & Tabular Numerals (dashboard & p301) */
+.stat,
+.card,
+.summary-count,
+.btn,
+.icon-button,
+.p301-summary > div {
+  transition:
+    transform 180ms var(--ease-spring),
+    box-shadow 180ms var(--ease-out-quart),
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.stat,
+.stat-number,
+.summary-count,
+.summary-count strong,
+.p301-summary,
+td .code,
+.weekly-input,
+.review-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.stat:hover,
+.p301-summary > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -8px rgba(20, 93, 71, 0.14);
+}
+
+/* 2. Sticky Command Bar & Unified Scope Controls (dashboard, weekly, reports) */
+.scope-command-bar,
+.dashboard-scope-frame {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.command-menu > summary {
+  list-style: none;
+  user-select: none;
+}
+
+.command-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* 3. Unified Filter, Search & Density Toolbar (all 9 views) */
+.table-density,
+.p301-table-tools,
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.search-field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.search-field input,
+.search,
+#catalog-search,
+#registry-search,
+#archive-search {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.search-field input:focus,
+.search:focus,
+#catalog-search:focus,
+#registry-search:focus,
+#archive-search:focus {
+  border-color: var(--green, #145d47);
+  box-shadow: 0 0 0 3px rgba(20, 93, 71, 0.14);
+  outline: none;
+}
+
+.basic-data .filters input#catalog-search {
+  max-width: 100%;
+  flex: 1 1 280px;
+}
+
+/* 4. Horizontal Scrollable Summary Strip (projects & weekly) */
+.register-summary .summary-items {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+}
+
+/* 5. Button Lock Spinner & Non-Intrusive Top-Right Morphing Feedback */
+@keyframes pn-spin {
+  to { transform: rotate(360deg); }
+}
+
+button[data-loading="true"],
+.btn[aria-busy="true"] {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.78;
+}
+
+button[data-loading="true"]::after,
+.btn[aria-busy="true"]::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 6px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: pn-spin 0.65s linear infinite;
+  vertical-align: -2px;
+}
+
+#operation-feedback {
+  transition:
+    opacity 180ms var(--ease-out-quart),
+    transform 220ms var(--ease-spring),
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+#operation-feedback[data-phase="loading"] {
+  border-color: #b78435;
+}
+
+#operation-feedback[data-phase="success"] {
+  border-color: #145d47;
+}
+
+#operation-feedback[data-phase="error"] {
+  border-color: #a92a2a;
+}
+
+/* 6. UX Engine 2.3 — 5 Iron Rules for 375px Mobile & Touch Devices */
+.sidebar {
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
+#modal {
+  max-height: 92dvh;
+}
+
+.sidebar-bottom,
+#modal .dialog-footer,
+#modal .dialog-actions,
+#contract-form .dialog-actions,
+.save-status-bar {
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .icon-button,
+  .summary-count,
+  .tabs button,
+  nav button,
+  .sort-head {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Prevent iOS Safari auto-zoom on input focus */
+  input,
+  select,
+  textarea,
+  .weekly-input,
+  .weekly-note,
+  .weekly-select,
+  .search,
+  #search,
+  #catalog-search,
+  #registry-search,
+  #archive-search {
+    font-size: 16px !important;
+  }
+
+  /* Horizontal pill strip on 375px screens instead of tall stacked grid */
+  .register-summary .summary-items {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+  }
+
+  .register-summary .summary-count {
+    flex: 0 0 auto;
+    min-width: 132px;
+  }
+
+  .scope-command-bar,
+  .dashboard-scope-frame {
+    position: static;
+  }
+}
+

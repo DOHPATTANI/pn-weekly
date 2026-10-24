@@ -25,7 +25,9 @@ jobs:
           node-version: 22
           cache: 'npm'
       - run: npm ci --prefer-offline
+      - run: node tools.mjs verify-source
       - run: npm run verify-schema
+      - run: node tests/p301-export-dto.mjs
       - run: npm test
       - run: npm run qa
       - run: npm run qa:audit

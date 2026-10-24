@@ -1,0 +1,25 @@
+{
+  "app.js": [
+    "src/runtime-controls.js",
+    "src/data-rules.js",
+    "src/executive-reports.js",
+    "src/image-export.js",
+    "src/master-data.js",
+    "src/local-storage.js",
+    "src/cloud-client.js",
+    "src/registry-import.js",
+    "src/application-shell.js",
+    "src/linked-masters.js",
+    "src/operations.js",
+    "src/registry-dialogs.js"
+  ],
+  "styles.css": [
+    "src/cascade-00.css",
+    "src/cascade-01.css",
+    "src/cascade-02.css",
+    "src/cascade-03.css",
+    "src/cascade-04.css",
+    "src/cascade-05.css",
+    "src/cascade-06.css"
+  ]
+}
