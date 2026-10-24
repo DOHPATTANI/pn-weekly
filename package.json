@@ -1,6 +1,6 @@
 {
   "name": "pn-weekly",
-  "version": "25.0.0",
+  "version": "26.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,10 @@
     "build": "node tools.mjs build",
     "qa": "node tools.mjs qa",
     "migrate": "node tools.mjs migrate",
-    "verify-db": "node tools.mjs verify-db"
+    "verify-db": "node tools.mjs verify-db",
+    "verify-schema": "node tools.mjs verify-schema",
+    "schema": "node tools.mjs schema",
+    "qa:audit": "node tests/audit-regressions.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -1,6 +1,10 @@
 name: Check and deploy PLANNET DOH
 run-name: PLANNET DOH · ${{ github.event_name }} · ${{ github.sha }}
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
   pages: write
@@ -13,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -21,8 +25,10 @@ jobs:
           node-version: 22
           cache: 'npm'
       - run: npm ci --prefer-offline
+      - run: npm run verify-schema
       - run: npm test
       - run: npm run qa
+      - run: npm run qa:audit
       - run: npm run build
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
