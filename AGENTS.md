@@ -193,3 +193,7 @@ All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via
 - schema.sql is a generated COMPLETE fresh-install snapshot. Run node tools.mjs schema after a new migration; node tools.mjs verify-schema compares it with bootstrap+ordered upgrade and reapplies the latest migration. Do not replay all historical migrations on a complete snapshot.
 - Run npm test, npm run qa, npm run qa:audit, npm run verify-schema, npm run build. Await debounced result identity before opening a row in browser tests. Fixtures must supply master IDs as well as readable budget-account names.
 - Remaining architectural work and owner policy questions are tracked in docs/AUDIT-REMEDIATION.md. Never claim all audit findings closed from a passing unit count alone.
+
+## v26 follow-up owner decision and review identity
+- Owner explicitly reaffirmed: retain shared access without login; authentication changes remain excluded until later instruction.
+- New review fingerprints use sha256-v1 of canonical changeFingerprint data. Preserve legacy serialized fingerprint reads and all import before-images. Test digest equivalence against platform SHA-256, including Thai and multi-block inputs.
