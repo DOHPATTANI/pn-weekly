@@ -183,3 +183,22 @@ All future changes MUST preserve these v18.1 upgrades (123/123 tests passing via
   - Fluid Responsive Grid: 6 columns on desktop (spans 2/2/2/3/3) and 1 column on mobile (`max-width: 640px`).
   - Shared Interactive Filter: Bound to `data-budget-filter`, `data-registry-filter`, and `data-filter` for instantaneous, zero-latency client-side lifecycle filtering.
 
+
+## v26 audit remediation (working release)
+- Owner authorized all audit fixes and a shared sticky primary-action bar, following table header, configurable registry columns, budget-account summary cards and readable mobile summaries.
+- Financial KPI uses known actualCost / contractValue only; missing actualCost is not zero or inferred from status. Pipeline has four exclusive stages; expired is overlapping. All sparklines use real history.
+- Draft cleanup compares captured object identity; newer typing survives an earlier save. Bind inline event properties idempotently; stale blur closures must never disable batch input.
+- Audit DTO is rows/run/change with server paging and search. Do not reinterpret it as full importHistory. Search keeps its input node and updates result surfaces.
+- Registry column preference is device-local; contract identity/actions always remain and exports retain their full established columns. Mobile default is10, desktop50; explicit page-size choice still wins.
+- schema.sql is a generated COMPLETE fresh-install snapshot. Run node tools.mjs schema after a new migration; node tools.mjs verify-schema compares it with bootstrap+ordered upgrade and reapplies the latest migration. Do not replay all historical migrations on a complete snapshot.
+- Run npm test, npm run qa, npm run qa:audit, npm run verify-schema, npm run build. Await debounced result identity before opening a row in browser tests. Fixtures must supply master IDs as well as readable budget-account names.
+- Remaining architectural work and owner policy questions are tracked in docs/AUDIT-REMEDIATION.md. Never claim all audit findings closed from a passing unit count alone.
+
+## v26 follow-up owner decision and review identity
+- Owner explicitly reaffirmed: retain shared access without login; authentication changes remain excluded until later instruction.
+- New review fingerprints use sha256-v1 of canonical changeFingerprint data. Preserve legacy serialized fingerprint reads and all import before-images. Test digest equivalence against platform SHA-256, including Thai and multi-block inputs.
+
+## v26 source and export ownership
+- Edit src sections named by src/manifest.json, then run node tools.mjs source. Root app.js/styles.css remain the generated four-asset delivery contract. Build/CI verify matching sources.
+- P301 all-years export uses pn2_load_p301_export with a funding-scoped report DTO, never full active workspace or backup. Keep reports/import history/personnel/review metadata out and test report-model equivalence.
+- Architecture decisions and explicitly retained constraints are in docs/ARCHITECTURE-DECISIONS-v26.md. Source partitioning is not independent module isolation; global revision and eager master reads remain current contracts.

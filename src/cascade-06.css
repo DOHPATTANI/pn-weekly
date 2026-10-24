@@ -1,0 +1,72 @@
+/* v26: one operational command owner; report documents have their own layout. */
+:root{--operational-shell-top:64px;--operational-header-top:120px}
+#app .operational-dock{position:sticky;top:var(--operational-shell-top);z-index:74;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;background:var(--surface,#fff);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:16px;box-shadow:0 3px 10px #103e3210}
+#app .operational-dock .weekly-batch-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex:1;min-width:0}
+#app .operational-dock .command-menu-panel{right:0;left:auto;max-height:60dvh;overflow:auto;min-width:min(300px,85vw)}
+#app .operational-dock .command-menu-panel .actions{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.operational-table-head{position:fixed;z-index:73;overflow:hidden;background:#f4f8f5;box-shadow:0 3px 5px #103e3220}
+.operational-table-head table{margin:0;border-collapse:collapse;font:inherit;color:var(--ink)}
+.operational-table-head th{background:#f4f8f5;padding:12px;text-align:left;border-bottom:1px solid var(--line);white-space:normal;font-size:13px}
+.operational-table-head .sort-head{font:inherit;color:inherit}
+#app .period-bar{position:static;top:auto;z-index:auto;backdrop-filter:none!important}
+#app .period-control{display:flex;flex-wrap:wrap;align-items:end;gap:12px;min-width:0}
+#app .period-control .field{display:flex;flex-direction:column;align-items:stretch;gap:6px;flex:1 1 170px;min-width:0;max-width:340px}
+#app .period-control select{width:100%;min-width:0;max-width:100%}
+#app .period-control .week-control{flex-basis:280px}
+#app .registry-controls{padding:16px;display:flex;flex-direction:column;gap:14px}
+#app .registry-controls .period-bar{margin:0;padding:0;border:0!important;box-shadow:none}
+#app .register-summary{padding:14px;margin:0 0 16px;min-width:0}
+#app .registry-controls .register-summary{padding:0;margin:0;border:0!important;background:none!important}
+#app .register-summary .summary-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:12px;width:100%;overflow:visible;min-width:0;scroll-snap-type:none}
+#app .register-summary .summary-items>*{min-width:0;width:auto;grid-column:auto}
+#app .summary-count{position:static;word-break:normal;overflow-wrap:break-word}
+#app .weekly-bento-card{display:flex;flex-direction:column;align-items:stretch;gap:8px;min-height:126px;border:1px solid var(--line);text-align:left}
+#app .weekly-bento-card .bento-top{display:flex;justify-content:space-between;align-items:start;gap:8px}
+#app .bento-title{font-size:14px;line-height:1.5;word-break:normal;overflow-wrap:normal}
+#app .bento-dot{flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+#app .bento-number{font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+#app .bento-subtext{font-size:12px;line-height:1.5}
+#app .bento-foot{display:flex;flex-direction:column;gap:6px}
+#app .bento-progress-track{height:4px;background:#0001;border-radius:4px;overflow:hidden}
+#app .bento-progress-fill{height:100%;background:currentColor}
+#app .bento-bottom-bar{height:3px;background:currentColor;border-radius:3px}
+#app .budget-summary-card{display:flex;flex-direction:column;align-items:start;gap:8px;min-height:118px}
+#app .budget-summary-card strong small{font:400 13px 'Noto Sans Thai',sans-serif}
+#app .budget-summary-card .sub{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+#app .search-field{min-width:0;flex:1 1 240px;max-width:none}
+#app .registry-control-tools,#app .command-search-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-width:0}
+#app .registry-control-tools>div,#app .command-search-row>div{min-width:0}
+#app [hidden],.operational-table-head [hidden]{display:none!important}
+.column-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.column-choices label{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:8px}
+#app .kpi-sparkline-wrap .mini-sparkline{width:100%;height:64px}
+#app :is(input,button,select,a,textarea){scroll-margin-top:calc(var(--operational-header-top) + 80px)}
+@media(max-width:900px){#app .register-summary .summary-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+ #app .operational-dock{padding:8px;gap:8px;align-items:center}
+ #app .operational-dock>.primary{flex:1;min-width:140px;font-size:13px}
+ #app .operational-dock .weekly-batch-tools{flex-basis:100%;font-size:12px}
+ #app .operational-dock .batch-mode-label{font-size:12px}
+ #app .operational-dock .btn{min-height:44px}
+ #app .operational-dock .weekly-batch-tools .btn{flex:1}
+ #app .period-control{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ #app .period-control .field{max-width:none;min-width:0!important;font-size:12px}
+ #app .period-control .week-control{grid-column:1/-1}
+ #app .period-control select{font-size:16px;min-height:44px;padding:8px}
+ #app .registry-controls{padding:12px;gap:12px}
+ #app .register-summary .summary-items{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #app .weekly-bento-card{min-height:108px;padding:12px!important;gap:6px}
+ #app .weekly-bento-card:first-child{grid-column:1/-1;min-height:76px}
+ #app .weekly-bento-card:first-child .bento-top{flex:1}
+ #app .bento-title{font-size:13px;line-height:1.5;white-space:normal}
+ #app .bento-number{font-size:clamp(1.35rem,5.5vw,1.875rem)}
+ #app .budget-summary-card{padding:12px!important;min-height:130px}
+ #app .budget-summary-card:first-child{grid-column:1/-1;min-height:100px}
+ #app .registry-control-tools>.search-field,#app .command-search-row>.search-field{flex-basis:100%;width:100%}
+ .column-choices{grid-template-columns:1fr}
+ .operational-table-head{display:none}
+}
+@media print{.operational-table-head,.operational-dock{display:none!important}}
+
+#app .catalog-tab-group{display:flex;align-items:center;gap:8px;padding:8px 10px;border-right:1px solid var(--line);flex-shrink:0}
+#app .catalog-group-label{font-size:11px;color:var(--muted);max-width:95px;white-space:normal;line-height:1.5}
