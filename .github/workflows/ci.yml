@@ -29,6 +29,7 @@ jobs:
       - run: npm run verify-schema
       - run: node tests/p301-export-dto.mjs
       - run: npm test
+      - run: node --test tests/agent-workflow.mjs
       - run: npm run qa
       - run: npm run qa:audit
       - run: npm run build
