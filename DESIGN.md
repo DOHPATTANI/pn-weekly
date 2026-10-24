@@ -329,3 +329,9 @@ Metadata labels in P301 are never ruled underneath. `p301MetadataFields` measure
 
 ## v26 operational controls
 The existing emerald/gold theme remains the token owner. `mountOperationalDock` owns sticky primary actions. `layoutOperationalChrome` shows the current operational table header below the measured action bar, synchronizes horizontal scroll, and excludes mobile cards and official report documents. Secondary tools retain their original handlers inside disclosures. Registry summaries group actual contracts by budget account. Column visibility is a local preference, never an export/data mutation. Search replaces result tables only and restores the same input/caret. Summary grids use two readable mobile columns with a full-width total rather than five compressed strips.
+
+## v26.0.1 collapsible navigation
+
+The existing emerald/gold shell remains canonical. `mountCollapsibleSidebar` in src/sidebar.js owns only navigation presentation and menu-name search. At desktop widths above850px, the rail is252px expanded and80px collapsed, with `.is-collapsed` on the aside and a root bootstrap class to avoid expanded flash. Native buttons keep full Thai accessible names/title tooltips when labels, category headers, badges and profile details are hidden. Preferences are device-local and storage failure is nonfatal.
+
+Menu-search icon or Ctrl/Cmd+K expands and focuses the menu search; no interception while a modal is open or during IME composition. Search filters existing data-view navigation, not business records; clear and no-results states remain local. Mobile retains the existing `.open` off-canvas drawer and a full-width menu; switching viewport does not overwrite the saved desktop preference. Reduced motion disables width transitions; canonical resize owners are notified both after state application and after transition completion. Official report styles and table/data handlers are not redefined.

@@ -1,6 +1,7 @@
 {
   "app.js": [
     "src/runtime-controls.js",
+    "src/sidebar.js",
     "src/data-rules.js",
     "src/executive-reports.js",
     "src/image-export.js",

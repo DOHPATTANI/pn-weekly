@@ -22,3 +22,14 @@
 - `node --check tools/agent-workflow.mjs` and `git diff --check`: passed.
 - `npm run qa`: passed at 1500/900/640/375px; errors empty in every viewport.
 - No schema deployment/data import performed; no production data written.
+
+## 2026-10-25 — Collapsible shared sidebar (v26.0.1)
+
+- **Authorization/scope:** User explicitly requested implementing the collapsible sidebar and reaffirmed using workflow/AI agents. Paused gradient cards, expanded filters and theme/settings redesign remain separate requirements.
+- **Decision:** Reuse static shell/nav handlers. Add source-only shared presentation/search owner;252px desktop expanded/80px icon rail, guarded boolean localStorage preference, early bootstrap root class. Existing <=850px drawer remains expanded when open. Ctrl/Cmd+K opens/focuses menu-label search, blocked by modal/IME; clear/no-results and accessible names remain.
+- **Alternatives rejected:** Framework/dependency rewrite or second app bundle; new DB preference table/auth; global business-data search. These add unrelated scope and risk.
+- **Data/security:** No schema, API, auth, migration or live-data operations; only local boolean preference. Menu matches use text/attributes, not HTML interpolation. Canonical business navigation and official exports remain owners.
+- **Risk found by independent safety review:** Reduced-motion disables transitionend, which could skip pinned-table sizing. Explicit animation-frame resize notification added; focused browser test asserts notification under reduced motion. Final transitionend still recalculates width after normal animations.
+- **Validation:** Focused Chromium shell tests and168 unit cases passed before full QA. Final seven-gate run and release handoff are recorded under ignored work/agent-runs and work/sidebar; these are test evidence, not deployment proof. Full-app QA/CI must pass before delivery. Model delegation occurs via Codex agents; the CLI records handoffs/QA only.
+- **Rollback:** Revert sidebar feature commit and rebuild generated bundles. Local preference key may remain unused harmlessly. No database rollback.
+- **Sources:** index.html, src/sidebar.js, src/manifest.json, src/cascade-06.css, tests/sidebar-interactions.mjs; package/cache version refs26.0.1 and generated assets. Independent roles: sidebar_review, sidebar_qa, sidebar_safety.
