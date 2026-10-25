@@ -23,7 +23,7 @@ import fs from 'node:fs/promises';import path from 'node:path';const root=proces
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,view+' page overflow at '+width);
   surfaces.push(view);
   if(view==='weekly'){
-   assert.equal(await p.locator('.weekly-bento-card').count(),5);
+   assert.equal(await p.locator('.weekly-bento-card').count(),6);
    const boxes=await p.locator('.weekly-bento-card').evaluateAll(items=>items.map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,overflow:el.scrollWidth>el.clientWidth})));
    assert(boxes.every(b=>b.width>=120&&!b.overflow),JSON.stringify({width,boxes}));
    const search=p.locator('#search');await search.evaluate(el=>window.__savedSearch=el);await search.fill('ทดสอบ');await p.waitForTimeout(250);assert.equal(await search.evaluate(el=>el===window.__savedSearch&&document.activeElement===el),true,'search node/focus preserved');await search.fill('');await p.waitForTimeout(80);
@@ -37,6 +37,12 @@ import fs from 'node:fs/promises';import path from 'node:path';const root=proces
   if(view==='projects'){
    assert.equal(await p.locator('.budget-summary-card').count(),4);
    await p.locator('#registry-column-settings').click();await p.locator('#registry-columns-form [value=contractorName]').uncheck();await p.locator('#registry-columns-form [type=submit]').click();await p.locator('#modal').waitFor({state:'hidden'});assert.equal(await p.locator('.registry-table th[data-column-key=contractorName]').isVisible(),false);await p.locator('#registry-search').fill('1/2569');await p.waitForTimeout(250);assert.equal(await p.locator('.registry-table th[data-column-key=contractorName]').isVisible(),false);await p.locator('#registry-search').fill('');
+  }
+  if(['weekly','projects','p301'].includes(view)){
+   const panel=p.locator('.advanced-filter-menu');assert.equal(await panel.count(),1);if(!await panel.getAttribute('open'))await panel.locator('summary').click();const budget=panel.locator('[data-advanced-filter=budget]');if(await budget.count()){const values=await budget.locator('option').evaluateAll(xs=>xs.map(x=>x.value).filter(Boolean));if(values.length){await budget.selectOption(values[0]);await p.locator('[data-clear-advanced=all]').click();}}await p.locator('.advanced-filter-menu').evaluate(el=>el.open=false);
+  }
+  if(view==='settings'){
+   await p.locator('#ui-theme').selectOption('ocean');assert.equal(await p.locator('html').getAttribute('data-ui-theme'),'ocean');await p.locator('#ui-font-size').selectOption('18');assert.equal(await p.locator('html').getAttribute('data-ui-font'),'18');await p.locator('#ui-motion').selectOption('off');assert.equal(await p.locator('html').getAttribute('data-ui-motion'),'off');await p.locator('#theme-reset').click();await p.locator('#ui-font-size').selectOption('16');await p.locator('#ui-motion').selectOption('on');
   }
   if(view==='audit'){
    assert(await p.locator('.import-history-table tbody tr').count()>0,'history rows render');await p.locator('[data-audit-filter=updated]').click();await p.waitForFunction(()=>document.querySelector('[data-audit-filter=updated]')?.classList.contains('active'));assert(await p.locator('[data-audit-filter=updated]').evaluate(el=>el.classList.contains('active')));await p.locator('#audit-search').fill('QA history');await p.waitForTimeout(500);assert(await p.locator('.import-history-table tbody tr').count()>0);await p.locator('#audit-search').fill('no-result-XYZ');await p.waitForFunction(()=>!document.querySelector('.import-history-table'));assert.equal(await p.locator('.import-history-table').count(),0);

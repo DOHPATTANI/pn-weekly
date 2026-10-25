@@ -1,73 +1,31 @@
-// Shared, device-local navigation behavior; never mutates business data.
-function mountCollapsibleSidebar() {
-  const sidebar = document.querySelector('#app-sidebar');
-  if (!sidebar || sidebar.dataset.interactionMounted) return;
-  sidebar.dataset.interactionMounted = 'true';
-  const toggle = document.querySelector('#sidebar-toggle');
-  const search = document.querySelector('#sidebar-search-input');
-  const clear = document.querySelector('#sidebar-search-clear');
-  const mobile = window.matchMedia('(max-width:850px)');
-  const buttons = [...sidebar.querySelectorAll('button[data-view]')];
-  let savedCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
-  try { savedCollapsed = localStorage.getItem('pn-weekly-sidebar-collapsed') === 'true'; } catch {}
-  for (const button of buttons) {
-    const label = button.querySelector('.nav-text')?.textContent.trim() || '';
-    button.setAttribute('aria-label', label);
-    button.title = label;
-  }
-  function filterMenus() {
-    const query = search.value.trim().toLocaleLowerCase('th');
-    for (const button of buttons) button.hidden = !button.getAttribute('aria-label').toLocaleLowerCase('th').includes(query);
-    clear.hidden = !search.value;
-    document.querySelector('#sidebar-no-results').hidden = buttons.some(button => !button.hidden);
-    const header = sidebar.querySelector('.nav-header');
-    if (header) header.hidden = ![...header.nextElementSibling.querySelectorAll('[data-view]')].some(button => !button.hidden);
-  }
-  function applyState() {
-    const collapsed = !mobile.matches && savedCollapsed;
-    sidebar.classList.toggle('is-collapsed', collapsed);
-    document.documentElement.classList.toggle('sidebar-is-collapsed', collapsed);
-    toggle.setAttribute('aria-expanded', String(!collapsed));
-    toggle.setAttribute('aria-label', mobile.matches ? 'ปิดเมนู' : collapsed ? 'ขยายเมนู' : 'ย่อเมนู');
-    toggle.title = toggle.getAttribute('aria-label');
-    if (collapsed) { search.value = ''; filterMenus(); }
-    // Reduced motion has no transitionend; still refresh canonical table sizing.
-    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
-  }
-  function setCollapsed(value) {
-    savedCollapsed = value;
-    try { localStorage.setItem('pn-weekly-sidebar-collapsed', String(value)); } catch {}
-    applyState();
-  }
-  function focusSearch() {
-    setCollapsed(false);
-    if (mobile.matches) sidebar.classList.add('open');
-    search.focus({ preventScroll: true });
-  }
-  toggle.addEventListener('click', () => {
-    if (mobile.matches) { sidebar.classList.remove('open'); document.querySelector('#mobile-menu')?.focus(); }
-    else setCollapsed(!savedCollapsed);
-  });
-  document.querySelector('#sidebar-search-open').addEventListener('click', focusSearch);
-  search.addEventListener('input', filterMenus);
-  clear.addEventListener('click', () => { search.value = ''; filterMenus(); search.focus(); });
-  search.addEventListener('keydown', event => {
-    if (event.isComposing) return;
-    if (event.key === 'Escape') { search.value = ''; filterMenus(); }
-    if (event.key === 'Enter') { event.preventDefault(); buttons.find(button => !button.hidden)?.click(); }
-  });
-  document.addEventListener('keydown', event => {
-    if (event.isComposing || event.altKey || event.repeat || document.querySelector('#modal')?.open) return;
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); focusSearch(); }
-    if (event.key === 'Escape' && mobile.matches && sidebar.classList.contains('open')) {
-      sidebar.classList.remove('open'); document.querySelector('#mobile-menu')?.focus();
-    }
-  });
-  mobile.addEventListener('change', () => { sidebar.classList.remove('open'); applyState(); });
-  // Existing pinned columns and sticky header owners recalculate once the width settles.
-  sidebar.addEventListener('transitionend', event => {
-    if (event.target === sidebar && event.propertyName === 'width') window.dispatchEvent(new Event('resize'));
-  });
-  applyState();
+// Shared, device-local navigation and contextual help; never mutates business data.
+const SIDEBAR_COLLAPSE_KEY='pn-weekly-sidebar-collapsed';
+const SIDEBAR_TOUR_KEY='pn-weekly-tour-progress-v1';
+const sidebarTourSteps={
+ dashboard:[['#crumb','ภาพรวมโครงการ','ดูภาพรวมล่าสุดของโครงการตามกลุ่มงบและปีงบประมาณ'],['.period-bar,.unified-toolbar','ตัวกรองภาพรวม','เลือกขอบเขตข้อมูลและค้นหาโครงการ'],['.dash-hero','ความก้าวหน้ารายสัปดาห์','กดส่วนนี้เพื่อเปิดหน้าอัปเดตรายสัปดาห์'],['.dash-metrics,.stats','ตัวเลขสำคัญ','สรุปจำนวนโครงการ ความก้าวหน้า การเบิกจ่าย และงานล่าช้า'],['.dash-pipeline-card','สถานะสัญญา','กดสถานะเพื่อกรองรายการที่เกี่ยวข้อง'],['.dash-budget-progress','ความคืบหน้าตามบัญชีงบประมาณ','เปรียบเทียบแผนกับผลจริงของแต่ละบัญชี'],['.table-scroll','ตารางโครงการ','ค้นหา กรอง เรียงลำดับ และเปิดรายละเอียดแต่ละแถว']],
+ weekly:[['#crumb','อัปเดตรายสัปดาห์','กรอกและตรวจผลงานของสัปดาห์ที่เลือก'],['.period-bar','รอบรายงาน','เลือกกลุ่มงบ ปีงบประมาณ และสัปดาห์'],['.weekly-summary,.register-summary','สรุปสถานะ','กดการ์ดเพื่อกรองสัญญาตามสถานะ'],['.filters,.command-search-row','ค้นหาและกรอง','จำกัดรายการก่อนเริ่มกรอกหรือจัดการหลายแถว'],['.weekly-table-panel,.table-scroll','ตารางอัปเดต','กรอกผลงาน ตรวจยืนยัน และเปิดรายละเอียดสัญญา'],['.operational-dock','บันทึกและปิดรายงาน','บันทึกค่าที่แก้ไข ตรวจสอบ แล้วเก็บรายงานเข้าคลัง']],
+ projects:[['#crumb','ทะเบียนสัญญา','ดู เพิ่ม แก้ไข และจัดการข้อมูลสัญญา'],['.period-bar,.registry-controls','ขอบเขตทะเบียน','เลือกกลุ่มงบและปีงบประมาณ'],['.registry-control-tools','เครื่องมือตาราง','ค้นหา กรอง จัดการรายการ และเลือกคอลัมน์ที่ต้องการเห็น'],['.registry-bento-summary,.register-summary','สรุปทะเบียน','กดการ์ดเพื่อกรองสถานะหรือบัญชีงบประมาณ'],['.registry-panel,.table-scroll','ตารางทะเบียนสัญญา','เปิดรายละเอียดด้วยการดับเบิลคลิกหรือปุ่มดูรายละเอียด']],
+ p301:[['#crumb','ทะเบียนคุมทรัพย์สิน','ตรวจความพร้อมและจัดทำแบบทะเบียนคุมทรัพย์สิน'],['.period-bar,.p301-controls','ขอบเขตข้อมูล','เลือกกลุ่มงบ ปี และค้นหารายการ'],['.register-summary,.p301-summary','สรุปความพร้อม','แสดงรายการที่พร้อมคำนวณและรายการที่ต้องเติมข้อมูล'],['.table-scroll','ตารางทรัพย์สิน','เปิดรายละเอียด ตั้งค่า และดูตัวอย่างแบบ พ.3-01'],['.operational-dock,.page-heading .actions','ส่งออกรายงาน','สร้าง PDF Excel หรือรูปภาพจากข้อมูลที่ตรวจแล้ว']],
+ reports:[['#crumb','คลังรายงาน','ค้นหาและเปิดรายงานย้อนหลัง'],['.period-bar,.archive-panel .filters','ตัวกรองคลัง','เลือกกลุ่มงบ ปี สถานะ และคำค้น'],['.archive-table,.table-scroll','รายการรายงาน','เปิดดู แก้ไขตามสิทธิ์ หรือส่งออกรายงานที่เลือก']],
+ catalog:[['#crumb','ข้อมูลพื้นฐาน','ดูแลรายการอ้างอิงที่ใช้ร่วมกันทั้งระบบ'],['.catalog-tabs','หมวดข้อมูล','เลือกผู้รับจ้าง บุคลากร รหัสงาน หรือข้อมูลสายทาง'],['.catalog-search-row,.table-top','เครื่องมือข้อมูล','ค้นหา นำเข้า ส่งออก หรือเพิ่มรายการ'],['.catalog-table,.table-scroll','ตารางข้อมูลพื้นฐาน','เปิดรายละเอียด แก้ไข หรือลบเมื่อไม่มีข้อมูลอ้างอิง']],
+ audit:[['#crumb','ประวัติการเปลี่ยนแปลง','ตรวจสอบว่ากระบวนการใดเปลี่ยนข้อมูลอะไร'],['.audit-toolbar','ค้นหาและกรอง','ค้นหาชื่อไฟล์ การดำเนินการ หรือประเภทการเปลี่ยนแปลง'],['.import-history-table,.table-scroll','รายการเปลี่ยนแปลง','เปิดดูค่าเดิมและค่าใหม่ของแต่ละรายการ']],
+ quality:[['#crumb','ตรวจข้อมูล','รวมประเด็นที่ต้องตรวจทบทวนก่อนออกรายงาน'],['.period-bar','ขอบเขตการตรวจ','เลือกกลุ่มงบและปีงบประมาณ'],['.tabs','สถานะการตรวจ','สลับระหว่างรายการรอตรวจกับรายการที่ตรวจแล้ว'],['.table-scroll','รายการที่ต้องตรวจ','เปิดข้อมูลต้นทาง แก้ไข แล้วกดตรวจแล้วเมื่อเรียบร้อย']],
+ settings:[['#crumb','ตั้งค่าระบบ','ตั้งค่าการแสดงผล ระบบ และการสำรองข้อมูล'],['#settings-form','ข้อมูลระบบ','แก้ชื่อระบบ หน่วยงาน โลโก้ และตัวเลือกการแสดงผล'],['.settings-footer','บันทึกการตั้งค่า','ตรวจสถานะการซิงก์และบันทึกค่าที่เปลี่ยน'],['.grid2 .card:nth-child(2)','สำรองและกู้คืน','ดาวน์โหลดสำรอง JSON หรือนำเข้าข้อมูลเมื่อจำเป็น']]
+};
+function currentSidebarSearch(){return [...document.querySelectorAll('#search,#registry-search,#archive-search,#catalog-search,#audit-search,#p301-search')].find(el=>el.offsetParent!==null&&!el.disabled);}
+function sidebarTourProgress(){try{return JSON.parse(localStorage.getItem(SIDEBAR_TOUR_KEY)||'{}')||{};}catch{return {};}}
+function saveSidebarTourProgress(progress){try{localStorage.setItem(SIDEBAR_TOUR_KEY,JSON.stringify(progress));}catch{}}
+function mountSidebarTour(sidebar){
+ const launch=sidebar.querySelector('#sidebar-help');if(!launch)return;let overlay,highlighted,steps=[],index=0,view='dashboard',previousFocus;
+ const close=()=>{highlighted?.classList.remove('tour-highlight');overlay?.remove();overlay=null;highlighted=null;previousFocus?.focus?.({preventScroll:true});};
+ const show=()=>{if(!overlay)return;highlighted?.classList.remove('tour-highlight');while(index<steps.length&&!document.querySelector(steps[index][0]))index++;if(index>=steps.length){const progress=sidebarTourProgress();progress[view]={index:0,completed:true};saveSidebarTourProgress(progress);close();return;}const [selector,title,text]=steps[index],target=document.querySelector(selector);highlighted=target;target.classList.add('tour-highlight');target.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});overlay.querySelector('[data-tour-title]').textContent=title;overlay.querySelector('[data-tour-text]').textContent=text;overlay.querySelector('[data-tour-count]').textContent=`${index+1} / ${steps.length}`;overlay.querySelector('[data-tour-back]').disabled=index===0;overlay.querySelector('[data-tour-next]').textContent=index===steps.length-1?'เสร็จ':'ถัดไป';const progress=sidebarTourProgress();progress[view]={index,completed:false};saveSidebarTourProgress(progress);};
+ launch.addEventListener('click',()=>{if(overlay){close();return;}view=document.querySelector('#app')?.dataset.screen||sidebar.querySelector('[data-view].active')?.dataset.view||'dashboard';steps=sidebarTourSteps[view]||sidebarTourSteps.dashboard;const saved=sidebarTourProgress()[view];index=saved&&!saved.completed?Math.min(saved.index||0,steps.length-1):0;previousFocus=document.activeElement;overlay=document.createElement('div');overlay.className='tour-overlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','tour-title');overlay.innerHTML='<section class="tour-card"><div class="tour-card-top"><span data-tour-count></span><button type="button" data-tour-close aria-label="ปิดคำแนะนำ">×</button></div><h2 id="tour-title" data-tour-title></h2><p data-tour-text></p><div class="tour-actions"><button type="button" class="btn" data-tour-restart>เริ่มใหม่</button><span></span><button type="button" class="btn" data-tour-back>ย้อนกลับ</button><button type="button" class="btn primary" data-tour-next>ถัดไป</button></div></section>';document.body.append(overlay);overlay.querySelector('[data-tour-close]').onclick=close;overlay.querySelector('[data-tour-restart]').onclick=()=>{index=0;show();};overlay.querySelector('[data-tour-back]').onclick=()=>{index=Math.max(0,index-1);show();};overlay.querySelector('[data-tour-next]').onclick=()=>{index++;show();};overlay.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close();}if(event.key==='Tab'){const focusable=[...overlay.querySelectorAll('button:not(:disabled)')],first=focusable[0],last=focusable.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}});show();overlay.querySelector('[data-tour-close]').focus();});
 }
-if (typeof document !== 'undefined') mountCollapsibleSidebar();
+function mountCollapsibleSidebar(){
+ const sidebar=document.querySelector('#app-sidebar');if(!sidebar||sidebar.dataset.interactionMounted)return;sidebar.dataset.interactionMounted='true';const toggle=document.querySelector('#sidebar-toggle'),mobile=window.matchMedia('(max-width:850px)'),buttons=[...sidebar.querySelectorAll('button[data-view]')];let savedCollapsed=document.documentElement.classList.contains('sidebar-is-collapsed');
+ try{savedCollapsed=localStorage.getItem(SIDEBAR_COLLAPSE_KEY)==='true';}catch{}for(const button of buttons){const label=button.querySelector('.nav-text')?.textContent.trim()||button.getAttribute('aria-label')||'';button.setAttribute('aria-label',label);button.title=label;}
+ function applyState(){const collapsed=!mobile.matches&&savedCollapsed;sidebar.classList.toggle('is-collapsed',collapsed);document.documentElement.classList.toggle('sidebar-is-collapsed',collapsed);toggle.setAttribute('aria-expanded',String(!collapsed));toggle.setAttribute('aria-label',mobile.matches?'ปิดเมนู':collapsed?'ขยายเมนู':'ย่อเมนู');toggle.title=toggle.getAttribute('aria-label');requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')));}
+ function setCollapsed(value){savedCollapsed=value;try{localStorage.setItem(SIDEBAR_COLLAPSE_KEY,String(value));}catch{}applyState();}
+ toggle.addEventListener('click',()=>{if(mobile.matches){sidebar.classList.remove('open');document.querySelector('#mobile-menu')?.focus();}else setCollapsed(!savedCollapsed);});document.addEventListener('keydown',event=>{if(event.isComposing||event.altKey||event.repeat||document.querySelector('#modal')?.open||document.querySelector('.tour-overlay'))return;if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){const search=currentSidebarSearch();if(search){event.preventDefault();search.focus({preventScroll:true});search.select?.();}}if(event.key==='Escape'&&mobile.matches&&sidebar.classList.contains('open')){sidebar.classList.remove('open');document.querySelector('#mobile-menu')?.focus();}});mobile.addEventListener('change',()=>{sidebar.classList.remove('open');applyState();});sidebar.addEventListener('transitionend',event=>{if(event.target===sidebar&&event.propertyName==='width')window.dispatchEvent(new Event('resize'));});mountSidebarTour(sidebar);applyState();
+}
+if(typeof document!=='undefined')mountCollapsibleSidebar();

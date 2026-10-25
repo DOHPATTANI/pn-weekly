@@ -1438,6 +1438,21 @@ dialog#modal[open] {
 @media(max-width:420px){#app .ov-kpis{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){#app .ov-kpi{transition:none}#app .ov-kpi:hover{transform:none}}
 
+/* Dashboard context bar and work-type distribution — owner-approved v27 direction. */
+#app .dashboard-command-bar{position:sticky;top:var(--operational-shell-top,0);z-index:74;display:flex;align-items:end;gap:12px;padding:12px 16px;margin-bottom:18px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(15,66,51,.08);backdrop-filter:blur(12px)}
+#app .dashboard-command-bar .period-control{display:grid;grid-template-columns:minmax(220px,1.25fr) minmax(140px,.7fr) minmax(180px,1fr) minmax(220px,1.2fr);align-items:end;gap:10px;flex:1;min-width:0}
+#app .dashboard-command-bar .field{min-width:0;margin:0;font-size:12px;font-weight:600;color:var(--muted)}
+#app .dashboard-command-bar select,#app .dashboard-command-bar input{width:100%;min-width:0;margin-top:5px;background-color:#fff}
+#app .dashboard-command-bar .dashboard-primary-slot{display:flex;align-items:end;flex:none}
+#app .dashboard-command-bar .dashboard-primary-slot .btn{min-height:44px;white-space:nowrap}
+#app .dash-work-types .status-pie circle{transition:opacity .15s,stroke-width .15s}
+#app .dash-work-types .status-pie:hover circle{opacity:.65}
+#app .dash-work-types .work-type-links button[aria-pressed="true"]{background:var(--mint);box-shadow:inset 3px 0 var(--green)}
+#app .dash-work-types .work-type-links b{display:flex;align-items:baseline;gap:4px}
+@media(max-width:1100px){#app .dashboard-command-bar{align-items:stretch;flex-wrap:wrap}#app .dashboard-command-bar .period-control{grid-template-columns:repeat(2,minmax(0,1fr))}#app .dashboard-command-bar .dashboard-primary-slot{margin-left:auto}}
+@media(max-width:640px){#app .dashboard-command-bar{position:relative;top:auto;padding:12px;flex-direction:column}#app .dashboard-command-bar .dashboard-primary-slot{order:-1;width:100%;margin:0}#app .dashboard-command-bar .dashboard-primary-slot .btn{width:100%}#app .dashboard-command-bar .period-control{width:100%;grid-template-columns:1fr}#app .dash-work-types .status-pie{width:140px;height:140px}}
+@media(prefers-reduced-motion:reduce){#app .dash-work-types .status-pie circle{transition:none}}
+
 
 /* ==========================================================================
    v24.6 Bento Status KPI Cards, Top Action Bar & Unified Strip (Design Tokens)
