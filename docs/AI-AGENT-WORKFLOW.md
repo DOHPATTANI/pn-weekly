@@ -1,5 +1,7 @@
 # PN Weekly agent workflow
 
+นโยบายลดงานซ้ำและรวมบทบาทอยู่ที่ [AGENT-EFFICIENCY.md](AGENT-EFFICIENCY.md) เป็นแหล่งเดียว Stage ในตารางไม่บังคับสร้างเอเจนต์แยก ใช้ `npm run agent:workflow -- --summary` แทน `--status` เมื่อต้องการเพียงภาพรวมและค่า gate metrics; ไม่มีข้อมูล token/โควตาใน CLI
+
 อ่าน Rules.md → AGENTS.md → docs/DEVELOPMENT-WORKFLOW.md ก่อนเริ่ม เอเจนต์จริงรับงานจาก Codex coordinator ผ่านเครื่องมือ delegation ที่มีใน session ส่วน CLI นี้ตรวจหลักฐาน handoff และเรียก QA commands เท่านั้น ไม่เรียกโมเดลหรือทำงานเบื้องหลังเมื่อปิด session
 
 ## บทบาทและลำดับ
