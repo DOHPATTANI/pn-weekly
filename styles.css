@@ -3108,3 +3108,10 @@ body:has(> main > #app) {
  #app .weekly-bento-grid>.weekly-bento-card:first-child{grid-column:1/-1!important}
 }
 @media screen and (min-width:851px){#app-sidebar .sidebar-toggle{position:absolute!important;top:50%!important;right:-22px!important;left:auto!important;transform:translateY(-50%)!important;z-index:105!important;width:44px!important;height:44px!important}}
+@media screen {
+ .sidebar-utility-row{grid-template-columns:minmax(0,1fr) 44px!important}
+ .sidebar-utility-row>#sidebar-help{grid-column:1/-1;justify-content:flex-start}
+ .sidebar-utility-row>[data-view=settings]{grid-column:1;min-width:0}
+ .sidebar-utility-row>[data-view=settings] .nav-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .dashboard-search-field:not(:has(input)){display:none!important}
+}

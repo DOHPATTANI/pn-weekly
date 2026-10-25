@@ -35,6 +35,8 @@
 - **Sources:** index.html, src/sidebar.js, src/manifest.json, src/cascade-06.css, tests/sidebar-interactions.mjs; package/cache version refs26.0.1 and generated assets. Independent roles: sidebar_review, sidebar_qa, sidebar_safety.
 ## 25 October 2026 — v27 UI integration validation
 
+Release follow-up: fresh audit now exercises advanced budget filter select/clear on weekly/registry/assets and theme/font/motion changes on both desktop and375px. All pass. Visual screenshot inspection identified cramped sidebar Settings text; utility grid now gives Settings a readable full column. Unit168, sidebar, schema and build were rerun successfully. Deployment is tracked separately by GitHub Actions and live smoke verification.
+
 Owner authorized the screenshot-led dashboard, sidebar navigation, manual contextual tours, shell themes, registry columns, operational filters and P301 party-label presentation. Changes reuse existing business/save/export owners. Device preferences remain local; no schema, authentication or data import is added. Theme selection is an immediate live preview with reset; summary/chart semantic palettes and official document styles remain independent.
 
 Integration fixed missing parentheses in advanced-filter/table markup, a removed notification element's startup handler, unmounted advanced filters and missing quality counts. Responsive regression caught six weekly cards squeezed into legacy columns at375px; explicit two-column mobile layout retains the full-width total. Sidebar tests wait for the media-state transition before opening the mobile drawer.
