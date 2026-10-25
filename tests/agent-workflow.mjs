@@ -71,3 +71,15 @@ test('negative decision cannot unlock implementation',()=>{
 test('changed rules can cancel stale run and initialize a fresh run',()=>{
   const f=fixture();try{const before=f.state().runId;f.write('AGENTS.md','revised rules');assert.notEqual(f.run('--status').status,0);assert.equal(f.run('--cancel').status,0);assert.equal(f.state().status,'cancelled');assert.equal(f.run('--init','work/task.md').status,0);assert.notEqual(f.state().runId,before);}finally{f.cleanup();}
 });
+
+test('compact summary reports real gate metrics without exposing evidence or claiming quota',()=>{
+  const f=fixture();try{
+    f.prepare();assert.equal(f.run('--qa').status,0);
+    const result=f.run('--summary');assert.equal(result.status,0);
+    const value=JSON.parse(result.stdout);
+    assert.equal(value.qaAttempts,1);assert.equal(value.executedGates,7);assert.equal(value.failedGates,0);
+    assert(value.logBytes>0);assert(value.gateDurationMs>=0);
+    assert.match(value.quotaUsage,/unavailable/);assert.equal(value.stages.qa,'passed');
+    assert.equal(value.evidence,undefined);assert.equal(f.state().status,'awaiting-review');
+  }finally{f.cleanup();}
+});

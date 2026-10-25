@@ -1,5 +1,7 @@
 # Requirement-to-validation workflow
 
+ใช้ [AGENT-EFFICIENCY.md](AGENT-EFFICIENCY.md) สำหรับการรวมบทบาท ลด context/log/polling ซ้ำ และเลือก validation ตามผลกระทบ โดยไม่ลด approval/data/release safeguards
+
 เจ้าของระบบยืนยัน workflow นี้ในบทสนทนา 24 October 2026 ใช้กับ requirement, workflow, business logic และ idea ทุกงาน Rules.md คือ entry point และ AGENTS.md เป็นกติกาโครงการหลัก ทั้งบนเครื่องและ GitHub
 
 ## Step 1: Rules Review

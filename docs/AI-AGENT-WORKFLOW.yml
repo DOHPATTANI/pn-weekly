@@ -4,6 +4,9 @@ root: .
 # Documentation manifest; executable contract is tools/agent-workflow.mjs.
 rules: [Rules.md, AGENTS.md, docs/DEVELOPMENT-WORKFLOW.md]
 orchestrator: Codex collaboration tools
+efficiency_policy: docs/AGENT-EFFICIENCY.md
+roles: [coordinator, implementer, reviewer-release]
+separate_agent_per_stage: false
 runner: tools/agent-workflow.mjs
 stages: [audit, plan, confirmation, data, ui, performance, security, qa, release]
 evidence:

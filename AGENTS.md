@@ -1,6 +1,7 @@
 # PLANNET DOH project continuity
 
 ## Mandatory development workflow — owner confirmed 24 October 2026
+- Efficiency policy: follow docs/AGENT-EFFICIENCY.md. Stages are checklists, not mandatory separate agents. Default to coordinator/implementer/reviewer-release responsibilities, one writer per file, compact scoped handoffs and focused checks before final integrated gates. Never claim measured ChatGPT quota without provider telemetry.
 - `Rules.md` is the entry point for this same ruleset; read it and this complete AGENTS.md before every requirement/workflow/business-logic/idea task. Follow docs/DEVELOPMENT-WORKFLOW.md, including its output fields and confirmation text.
 - Analyze facts/assumptions/unknowns/recommendations, then present an implementation plan. Wait for user confirmation before mutations unless an explicit instruction to start already authorizes that exact scope. Do not ask again for authorization already given. Revisit analysis when requirements change.
 - Every delegated agent follows these rules and selects relevant available skills/plugins, recording actual usage and evidence. Never fabricate reads, tests, skill use, handoffs, performance or deployment.

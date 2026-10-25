@@ -152,11 +152,25 @@ function qa() {
   state.stages.qa.status = 'passed'; state.status = 'awaiting-review'; persist(state);
   console.log('QA passed; release agent must review evidence. No deployment performed.');
 }
+function summary() {
+  const state = load();
+  const attempts = state.qaAttempts ?? [];
+  const results = attempts.flatMap(attempt => attempt.results ?? []);
+  console.log(JSON.stringify({
+    runId: state.runId, status: state.status,
+    stages: Object.fromEntries(Object.entries(state.stages).map(([key, value]) => [key, value.status])),
+    qaAttempts: attempts.length, executedGates: results.length,
+    failedGates: results.filter(item => item.exitCode !== 0).length,
+    gateDurationMs: results.reduce((sum, item) => sum + (item.durationMs ?? 0), 0),
+    logBytes: results.reduce((sum, item) => sum + fs.statSync(path.join(root, item.log.path)).size, 0),
+    quotaUsage: 'unavailable: elapsed time and log bytes are not model tokens or ChatGPT quota',
+  }, null, 2));
+}
 let lock;
 try {
   const action = process.argv[2], arg = process.argv[3];
-  check(['--init', '--handoff', '--confirm', '--qa', '--status', '--cancel'].includes(action), 'Usage: agent:workflow -- --init task.md | --handoff file.json | --confirm file.json | --qa | --status | --cancel');
-  if (action !== '--status') {
+  check(['--init', '--handoff', '--confirm', '--qa', '--status', '--summary', '--cancel'].includes(action), 'Usage: agent:workflow -- --init task.md | --handoff file.json | --confirm file.json | --qa | --status | --summary | --cancel');
+  if (!['--status', '--summary'].includes(action)) {
     fs.mkdirSync(runs, { recursive: true });
     lock = fs.openSync(path.join(runs, '.lock'), 'wx');
   }
@@ -164,6 +178,7 @@ try {
   else if (action === '--handoff') handoff(arg);
   else if (action === '--confirm') confirm(arg);
   else if (action === '--qa') qa();
+  else if (action === '--summary') summary();
   else if (action === '--cancel') { const state = load({ requireFresh: false }); state.status = 'cancelled'; persist(state); }
   else console.log(JSON.stringify(load(), null, 2));
 } catch (error) { console.error('agent-workflow: ' + error.message); process.exitCode = 1; }
