@@ -33,3 +33,10 @@
 - **Validation:** Focused Chromium shell tests and168 unit cases passed before full QA. Final seven-gate run and release handoff are recorded under ignored work/agent-runs and work/sidebar; these are test evidence, not deployment proof. Full-app QA/CI must pass before delivery. Model delegation occurs via Codex agents; the CLI records handoffs/QA only.
 - **Rollback:** Revert sidebar feature commit and rebuild generated bundles. Local preference key may remain unused harmlessly. No database rollback.
 - **Sources:** index.html, src/sidebar.js, src/manifest.json, src/cascade-06.css, tests/sidebar-interactions.mjs; package/cache version refs26.0.1 and generated assets. Independent roles: sidebar_review, sidebar_qa, sidebar_safety.
+## 25 October 2026 — v27 UI integration validation
+
+Owner authorized the screenshot-led dashboard, sidebar navigation, manual contextual tours, shell themes, registry columns, operational filters and P301 party-label presentation. Changes reuse existing business/save/export owners. Device preferences remain local; no schema, authentication or data import is added. Theme selection is an immediate live preview with reset; summary/chart semantic palettes and official document styles remain independent.
+
+Integration fixed missing parentheses in advanced-filter/table markup, a removed notification element's startup handler, unmounted advanced filters and missing quality counts. Responsive regression caught six weekly cards squeezed into legacy columns at375px; explicit two-column mobile layout retains the full-width total. Sidebar tests wait for the media-state transition before opening the mobile drawer.
+
+Validation actually run: npm test168/168; npm run qa at1500/900/640/375; npm run qa:audit across9screens at1500/375; npm run verify-schema; npm run build; node tools.mjs verify-source; git diff --check; focused sidebar interaction test. All passed in local fixtures. Full QA began before the final filter/font/motion hookup; final audit covered those rendered surfaces, not every new interaction. Theme preview has no separate confirmation step. No production deployment performed by this integration agent.

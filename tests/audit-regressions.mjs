@@ -23,7 +23,7 @@ import fs from 'node:fs/promises';import path from 'node:path';const root=proces
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,view+' page overflow at '+width);
   surfaces.push(view);
   if(view==='weekly'){
-   assert.equal(await p.locator('.weekly-bento-card').count(),5);
+   assert.equal(await p.locator('.weekly-bento-card').count(),6);
    const boxes=await p.locator('.weekly-bento-card').evaluateAll(items=>items.map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,overflow:el.scrollWidth>el.clientWidth})));
    assert(boxes.every(b=>b.width>=120&&!b.overflow),JSON.stringify({width,boxes}));
    const search=p.locator('#search');await search.evaluate(el=>window.__savedSearch=el);await search.fill('ทดสอบ');await p.waitForTimeout(250);assert.equal(await search.evaluate(el=>el===window.__savedSearch&&document.activeElement===el),true,'search node/focus preserved');await search.fill('');await p.waitForTimeout(80);
