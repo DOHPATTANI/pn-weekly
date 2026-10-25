@@ -1684,6 +1684,7 @@ function refreshCatalogResults(markup){
 let operationalDock,headerMirror,layoutFrame,operationalResizeObserver;
 function scheduleOperationalLayout(){if(layoutFrame)return;layoutFrame=requestAnimationFrame(()=>{layoutFrame=0;layoutOperationalChrome();});}
 function mountOperationalDock(){
+ document.querySelector('.topbar .page-primary-actions')?.remove();
  headerMirror?.remove();headerMirror=null;operationalResizeObserver?.disconnect();
  const app=$('#app'),sources=[...app.querySelectorAll('.period-bar>.actions,.page-heading>.actions,.basic-data .table-top>.actions')].filter(el=>el.children.length),batch=app.querySelector('.weekly-batch-tools');
  const dock=document.createElement('div');dock.className='operational-dock';dock.setAttribute('aria-label','คำสั่งหลัก');
@@ -1697,6 +1698,8 @@ function mountOperationalDock(){
  for(const source of sources)if(!source.children.length)source.remove();
  // Put the weekly archival CTA beside Save, not inside a hidden menu.
  if(view==='weekly'){const primary=app.querySelector('[data-action=lock]');if(primary&&operationalDock){const shortcut=primary.cloneNode(true);shortcut.removeAttribute('data-action');shortcut.dataset.dockArchive='true';shortcut.classList.add('primary');shortcut.onclick=()=>withButtonLock(shortcut,()=>primary.onclick?.(),e=>toast(e.message,true));operationalDock.append(shortcut);}}
+ const primaryActions=document.createElement('div');primaryActions.className='page-primary-actions';for(const button of [...dock.children])if(button.matches('.primary')&&!button.matches('[data-dock-archive]'))primaryActions.append(button);if(primaryActions.children.length)$('.topbar').append(primaryActions);
+ if(view==='dashboard'){const target=app.querySelector('.dashboard-search-field'),input=app.querySelector('#search');if(target&&input)target.append(input.closest('.search-field')||input);}
  operationalResizeObserver=new ResizeObserver(scheduleOperationalLayout);for(const el of [operationalDock,$('.topbar'),...app.querySelectorAll('.table-scroll')])if(el)operationalResizeObserver.observe(el);
  scheduleOperationalLayout();
 }
