@@ -1,5 +1,10 @@
 # PLANNET DOH project continuity
 
+## v27.1 uploaded dashboard specification
+- docs/DASHBOARD-DOCUMENT-v27.1.md maps sample fields onto actual state. Never install illustrative store keys/schema/departments or infer payments from cost totals.
+- src/dashboard-selectors.js owns immutable filter/stage/distribution/pending/account projections. Five exclusive display stages sum to100%; underlying weekly lifecycle remains unchanged.
+- Pending includes ongoing/expired/handover/payment, excludes paid. Official outputs remain independent. Keep calendar/null guards and tests/dashboard-contract.mjs.
+
 ## Mandatory development workflow — owner confirmed 24 October 2026
 - Efficiency policy: follow docs/AGENT-EFFICIENCY.md. Stages are checklists, not mandatory separate agents. Default to coordinator/implementer/reviewer-release responsibilities, one writer per file, compact scoped handoffs and focused checks before final integrated gates. Never claim measured ChatGPT quota without provider telemetry.
 - `Rules.md` is the entry point for this same ruleset; read it and this complete AGENTS.md before every requirement/workflow/business-logic/idea task. Follow docs/DEVELOPMENT-WORKFLOW.md, including its output fields and confirmation text.

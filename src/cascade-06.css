@@ -94,6 +94,12 @@
 
 /* Device-local shell themes. Data cards, semantic colours, charts and reports stay canonical. */
 @media screen{
+ .dash-pipeline-card .pipeline-stage :is(.stage-label,.stage-val,.stage-badge){color:#172b24!important}.dash-kpi-card .kpi-foot>.mini-sparkline{width:80px;height:30px}
+ .executive-eyebrow{display:block;font-size:9px;letter-spacing:1px;color:var(--muted)}.executive-eyebrow[hidden]{display:none}.topbar .dashboard-export-tools .btn{padding:7px 10px;font-size:12px}.topbar:has(.dashboard-export-tools){height:auto;min-height:76px;flex-wrap:wrap;padding-block:10px}.topbar:has(.dashboard-export-tools) .page-primary-actions{flex-wrap:wrap;max-width:100%}
+ .hero-progress>.mini-sparkline{display:block;width:120px;height:32px;margin-top:12px}.dash-table-grid>.table-card>.table-scroll{max-height:640px;overflow:auto}
+ .dashboard-shell{--g900:#0a2b21;--g800:#0f3b2d;--gold:#e4b84a;--orange:#d97a0b;--yellow:#e5a50f;--gray:#50565a;--red:#e11d48;--blue:#2563eb;font-family:'IBM Plex Sans Thai','Noto Sans Thai',Tahoma,sans-serif}.dashboard-shell h2{font-family:'Kanit','IBM Plex Sans Thai',Tahoma,sans-serif}.dashboard-shell .stat-number{font-family:Inter,'IBM Plex Sans Thai',Arial,sans-serif}
+ .sidebar-connection{font-size:11px;padding:8px;border:1px solid #ffffff30;border-radius:8px;color:#ecf3ee;margin-top:8px}.sidebar.is-collapsed .sidebar-connection{display:none}.sidebar #nav{min-height:0;overflow:auto;flex-shrink:1}
+ .dashboard-export-tools{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
  html{--ui-page:#f3f7f4;--ui-sidebar:#0d4035;--ui-sidebar-2:#082f28;--ui-sidebar-ink:#f5fbf7;--ui-topbar:#f8fbf9e8;--ui-control:#fff;--ui-control-ink:#142e29;--ui-control-line:#cad9d1;--ui-focus:#c69a3a}
  html[data-ui-theme=ocean]{--ui-page:#f1f5fa;--ui-sidebar:#102f50;--ui-sidebar-2:#0a223b;--ui-sidebar-ink:#f3f8ff;--ui-topbar:#f6f9fce8;--ui-control:#fff;--ui-control-ink:#132c46;--ui-control-line:#c9d7e5;--ui-focus:#2f77b8}
  html[data-ui-theme=slate]{--ui-page:#f3f4f5;--ui-sidebar:#293239;--ui-sidebar-2:#1d252b;--ui-sidebar-ink:#f6f7f7;--ui-topbar:#fafafae8;--ui-control:#fff;--ui-control-ink:#222d33;--ui-control-line:#d2d8dc;--ui-focus:#687881}
@@ -203,4 +209,8 @@
  .sidebar-utility-row>[data-view=settings]{grid-column:1;min-width:0}
  .sidebar-utility-row>[data-view=settings] .nav-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
  .dashboard-search-field:not(:has(input)){display:none!important}
+}
+@media screen{
+ .dash-table-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}.dash-table-grid>*{min-width:0}.dash-pending .table-scroll{max-height:640px;overflow:auto}.dash-pending td{white-space:normal;min-width:90px}.dash-pending td:nth-child(2){min-width:180px}.dash-pending h2{padding-top:8px}.dash-pipeline-card .pipeline-bar-track button{height:100%;min-width:0;padding:0;border:0}.dash-pipeline-card .pipeline-bar-track button:focus-visible{outline:3px solid #111;outline-offset:-3px}.budget-row-val small{display:block;font-size:11px}.dashboard-command-bar .period-control{flex-wrap:wrap!important}.dashboard-command-bar .field{flex:1 1 150px;min-width:0}.dashboard-command-bar .field select{width:100%;min-width:0}.dash-pipeline-card .stage-mini-track{display:block;width:100%}
+ @media(max-width:1100px){.dash-table-grid{grid-template-columns:minmax(0,1fr)}}
 }

@@ -22,6 +22,18 @@ import fs from 'node:fs/promises';import path from 'node:path';const root=proces
   if(view!=='dashboard')await nav(view);await p.waitForTimeout(200);
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,view+' page overflow at '+width);
   surfaces.push(view);
+  if(view==='dashboard'){
+   assert.equal(await p.locator('.pipeline-stages .pipeline-stage').count(),5);
+   const percentages=await p.locator('.pipeline-stages .stage-badge').allTextContents();assert(Math.abs(percentages.reduce((sum,text)=>sum+parseFloat(text),0)-100)<.03);
+   assert.equal(await p.locator('.dash-pipeline-title .sub').count(),0);
+   assert(await p.locator('.dash-pending').innerText().then(text=>text.includes('รอส่งมอบงาน')),'completed handover is pending');
+   await p.locator('.pipeline-stage[data-dashboard-status=deliver]').click();assert.equal(await p.locator('#dashboard-stage').inputValue(),'deliver');assert.equal(await p.locator('#app').getAttribute('data-screen'),'dashboard');await p.getByRole('button',{name:'ล้างตัวกรอง',exact:true}).click();
+   const route=p.locator('#dashboard-route'),firstRoute=await route.locator('option').nth(1).getAttribute('value',{timeout:5000}).catch(async error=>{console.log('ROUTE DIAGNOSTIC',width,errors,calls,await p.locator('#app').innerText());throw error;});await route.selectOption(firstRoute);assert.equal(await p.locator('#dashboard-route').inputValue(),firstRoute);assert(await p.locator('.dash-table-grid .table-card tbody').innerText().then(text=>text.includes('ทล. '+firstRoute)));
+   await p.getByRole('button',{name:'ล้างตัวกรอง',exact:true}).click();
+   const search=p.locator('#search');await search.fill('NO-MATCH-UNIQUE-QUERY');await p.waitForFunction(()=>document.querySelector('.dash-table-grid .table-card tbody')?.textContent.includes('ไม่พบโครงการตามตัวกรอง'));assert.match(await p.locator('.dash-kpis').innerText(),/0/);await search.fill('');await p.waitForFunction(()=>!document.querySelector('.dash-table-grid .table-card tbody')?.textContent.includes('ไม่พบโครงการตามตัวกรอง'));
+   try{const [file]=await Promise.all([p.waitForEvent('download',{timeout:10000}),p.getByRole('button',{name:'ส่งออก CSV',exact:true}).click({timeout:10000})]);assert.match(file.suggestedFilename(),/\.csv$/);}catch(error){console.log('DASHBOARD EXPORT',errors,await p.locator('#toast').textContent(),await p.getByRole('button',{name:'ส่งออก CSV',exact:true}).evaluate(el=>({html:el.outerHTML,handler:String(el.onclick)})));throw error;}
+   await p.getByRole('button',{name:'พิมพ์สรุป',exact:true}).click();await p.frameLocator('#dashboard-print-frame').getByRole('heading',{name:'ภาพรวมโครงการ',exact:true}).waitFor();await p.locator('#modal [data-close]').click();
+  }
   if(view==='weekly'){
    assert.equal(await p.locator('.weekly-bento-card').count(),6);
    const boxes=await p.locator('.weekly-bento-card').evaluateAll(items=>items.map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,overflow:el.scrollWidth>el.clientWidth})));

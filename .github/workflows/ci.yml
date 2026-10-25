@@ -29,6 +29,7 @@ jobs:
       - run: npm run verify-schema
       - run: node tests/p301-export-dto.mjs
       - run: npm test
+      - run: node --test tests/dashboard-contract.mjs
       - run: node --test tests/agent-workflow.mjs
       - run: node tests/sidebar-interactions.mjs
       - run: npm run qa
