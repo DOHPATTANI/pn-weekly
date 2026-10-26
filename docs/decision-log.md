@@ -33,6 +33,7 @@
 - **Validation:** Focused Chromium shell tests and168 unit cases passed before full QA. Final seven-gate run and release handoff are recorded under ignored work/agent-runs and work/sidebar; these are test evidence, not deployment proof. Full-app QA/CI must pass before delivery. Model delegation occurs via Codex agents; the CLI records handoffs/QA only.
 - **Rollback:** Revert sidebar feature commit and rebuild generated bundles. Local preference key may remain unused harmlessly. No database rollback.
 - **Sources:** index.html, src/sidebar.js, src/manifest.json, src/cascade-06.css, tests/sidebar-interactions.mjs; package/cache version refs26.0.1 and generated assets. Independent roles: sidebar_review, sidebar_qa, sidebar_safety.
+
 ## 25 October 2026 — v27 UI integration validation
 
 Release follow-up: fresh audit now exercises advanced budget filter select/clear on weekly/registry/assets and theme/font/motion changes on both desktop and375px. All pass. Visual screenshot inspection identified cramped sidebar Settings text; utility grid now gives Settings a readable full column. Unit168, sidebar, schema and build were rerun successfully. Deployment is tracked separately by GitHub Actions and live smoke verification.
@@ -42,10 +43,12 @@ Owner authorized the screenshot-led dashboard, sidebar navigation, manual contex
 Integration fixed missing parentheses in advanced-filter/table markup, a removed notification element's startup handler, unmounted advanced filters and missing quality counts. Responsive regression caught six weekly cards squeezed into legacy columns at375px; explicit two-column mobile layout retains the full-width total. Sidebar tests wait for the media-state transition before opening the mobile drawer.
 
 Validation actually run: npm test168/168; npm run qa at1500/900/640/375; npm run qa:audit across9screens at1500/375; npm run verify-schema; npm run build; node tools.mjs verify-source; git diff --check; focused sidebar interaction test. All passed in local fixtures. Full QA began before the final filter/font/motion hookup; final audit covered those rendered surfaces, not every new interaction. Theme preview has no separate confirmation step. No production deployment performed by this integration agent.
+
 ## 25 October 2026 — Agent efficiency policy and compact metrics
 
 Owner authorized auditing quota waste and applying improvements. Evidence: v27 release notes, actual delegation/rework in task history, current runner/tests/CI. Provider token/quota telemetry is unavailable; no per-agent usage ranking or savings percentage is claimed. Consolidated role/ownership/context/testing/polling policy into docs/AGENT-EFFICIENCY.md; existing workflow docs link to it. Added read-only --summary with gate attempts/failures/duration/log bytes, explicitly not tokens. Existing confirmation, hash/rework and release protections remain unchanged. No runtime/database/data/security changes or web deployment required. Fresh validation: node --check tools/agent-workflow.mjs, node --test tests/agent-workflow.mjs (9/9), git diff --check pass. UI QA not run because only docs/runner output changed. Rollback via revert.
-# 26 October 2026 — uploaded dashboard document /27.1
+
+## 26 October 2026 — uploaded dashboard document /27.1
 
 Pre-release CI exposed a delayed-scope disclosure race at640px: opening the P301 command menu before scope completion was undone by rerender. Added per-view open-state preservation and made the browser workflow open menus only if closed, retaining the immediate settings/scope test rather than force-clicking hidden controls. The failing CI attempt is retained as evidence; publication waits for a new passing head.
 
@@ -98,3 +101,30 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 
 **Rollback**
 - Revert this release commit and redeploy the previous complete source and generated bundles.
+
+## 2026-10-27 — v27.3 Unified Extensible Architecture and Live Database Dashboard
+
+**Context**
+- The owner provided `plannet_doh.html` as a strict visual reference for the operational shell and dashboard components (e.g., emerald/gold theme, specific KPI card layouts).
+- Previous implementations occasionally mixed data retrieval, business rules, and HTML templating, which risked destabilizing official report constraints when updating UI designs.
+- The supplied HTML reference contained illustrative mock data (`SEED_DATA`) and destructive scripts (`indexedDB.deleteDatabase`).
+
+**Decision**
+- **Live Data Mandate:** 100% of dashboard metrics, KPI cards, and status pipelines must bind to live Supabase/IndexedDB state via `latestScopeReport()`. Mock records, fabricated budget multipliers, and destructive bootstrap scripts are strictly prohibited.
+- **View Model Separation:** `src/dashboard-selectors.js` now exclusively owns data aggregation and pure business rules (e.g., status distributions, budget progress, pending action rows). UI renderers must only consume these resolved view models.
+- **Design Tokens & Variants:** Implemented the requested emerald/gold theme using CSS Design Tokens (`:root`) and Component Variants (`.dash-v25-*`). These isolate the dashboard UI from official report layouts (`.main-report`, `.p301-accessible`), ensuring print compliance remains untouched.
+- **Responsive Exemption:** Explicitly excluded the dual bottom dashboard tables (`.dash-v25-clean-table`) from the standard `mountResponsiveRows` mobile card transformation to preserve their intended multi-column grid layout at ≤640px.
+
+**Reason**
+- This architectural separation allows the UI to flexibly match the owner's latest design references without compromising data integrity, historical snapshots, or the strict dimensional requirements of official A4 reports.
+
+**Alternatives not chosen**
+- Importing the reference HTML's `SEED_DATA` (causes severe data corruption).
+- Hardcoding formulas for missing budget data (violates the financial data contract).
+- Adding external UI frameworks like Tailwind (adds unnecessary dependency and bloat).
+
+**Impact**
+- UI presentation, CSS cascade architecture, and module structure separation. No database schema, API, authentication, or data import contract changes.
+
+**Rollback**
+- Revert the v27.3 architectural updates and restore v27.2.1 source and generated bundles.
