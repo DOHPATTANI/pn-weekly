@@ -40,7 +40,7 @@
 
 ## Step 5: Implement
 
-แก้เฉพาะ scope ที่ยืนยัน แก้น้อยที่สุด ใช้ component/utility/service/pattern เดิมก่อนสร้างใหม่ ใช้กฎ TypeScript/Zod/auth/RLS เฉพาะที่ตรงกับเทคโนโลยีและข้อตกลงจริง ห้ามเพิ่มเทคโนโลยีหรือระบบ login เพียงเพราะ template ระบุไว้
+แก้เฉพาะ scope ที่ยืนยัน แก้น้อยที่สุด ใช้ component/utility/service/pattern เดิมก่อนสร้างใหม่ ใช้กฎ TypeScript/Zod/auth/RLS เฉพาะที่ตรงกับเทคโนโลยีและข้อตกลงจริง ห้ามเพิ่มเทคโนโลยีหรือระบบ login เพียงเพราะ template ระบุไว้ **ต้องดึงข้อมูลจากฐานข้อมูลจริง (Live Data) เท่านั้น ห้ามใช้ข้อมูลจำลอง (Mock Data) และต้องแยกชั้นการคำนวณ (View Model) ออกจากชั้นแสดงผล (UI) เสมอ**
 
 เอเจนต์แต่ละตัวต้องอ่านกฎและใช้สกิล/ปลั๊กอินที่เหมาะสมจริง บันทึกเครื่องมือที่ใช้และผลส่งต่อ ห้ามอ้างงานผ่านเพียงจากสถานะที่ runner สร้างเอง เก็บ decision ใน docs/decision-log.md หรือมาตรฐานโครงการเดิม
 
@@ -50,6 +50,6 @@
 
 เทียบ requirement/implementation/result/source files แบบ traceability รายงานคำสั่งที่รันจริงและ Pass/Fail/Not run พร้อมเหตุผล ครอบคลุม typecheck, lint, unit/integration/E2E, build, security/auth, migration, UX/accessibility ตาม scope
 
-ตรวจ input → validation → transform → storage → display → edit → export/re-import ถ้าเกี่ยวข้อง ตรวจ secrets/credentials/debug/mock/temporary artifacts ห้ามลบ configuration ที่โครงการกำหนดโดยไม่วิเคราะห์ผลกระทบ Performance ต้องมี environment, data size, metric และข้อจำกัดจากการวัดจริง
+ตรวจ input → validation → transform → storage → display → edit → export/re-import ถ้าเกี่ยวข้อง **และต้องตรวจสอบให้แน่ใจว่าไม่มีสคริปต์ล้างฐานข้อมูล ข้อมูลจำลอง หรือ Hardcoded String หลงเหลืออยู่ใน UI** ตรวจ secrets/credentials/debug/mock/temporary artifacts ห้ามลบ configuration ที่โครงการกำหนดโดยไม่วิเคราะห์ผลกระทบ Performance ต้องมี environment, data size, metric และข้อจำกัดจากการวัดจริง
 
 สรุป Files Changed, Decision Log, Remaining Risks/Uncertainties, Recommended reviewer focus และ Final Summary (Completed, Not completed/reason, Rollback available, Next required action) งานเสร็จเมื่อ scope ที่อนุมัติครบ ตรวจตามเกณฑ์ มีหลักฐาน ข้อจำกัดและ decision log ไม่อ้าง deployment จาก local build
