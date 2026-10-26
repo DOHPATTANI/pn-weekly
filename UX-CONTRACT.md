@@ -153,3 +153,13 @@ Authority: Latest baseline specified in `AGENTS.md` (v27.3) and `DESIGN.md` (v27
 - **View Model Separation:** `src/dashboard-selectors.js` acts as the canonical View Model layer. UI renderers (HTML template strings) must only consume resolved view models and must not contain raw data mapping or business calculations.
 - **Status Pipeline & Rules:** The dashboard features a 5-stage contract status card (`ongoing`, `deliver`, `pay`, `paid`, `expired`). KPI calculations (e.g., budget accounts, delayed projects) must strictly use actual database values (no arbitrary multipliers for empty data).
 - **Responsive Table Exemption:** The dashboard's dual bottom tables (`ตารางโครงการทั้งหมด` and `งานค้างดำเนินการ`) use `.tbl.dash-v25-clean-table` and explicitly opt out of the standard `mountResponsiveRows` mobile card transformation at ≤640px to preserve their multi-column grid layouts.
+
+## v27.3 Global UI Layout Standards
+
+Canonical layout, toolbar, filter, overlay and responsive rules are maintained in `docs/UI-LAYOUT-STANDARDS-v27.3.md` and implemented by the shared application-shell styles in `src/cascade-06.css`. The standard owner is presentation-only: it does not change selector calculations, API contracts, database state, authentication, or official report surfaces.
+
+- Primary page actions stay in the right side of the shared operational toolbar; secondary actions use the existing disclosure/menu owners.
+- Search and primary filters share one horizontal bar. Secondary filters use the existing advanced-filter disclosure and active chips.
+- Layer ownership uses `--z-sticky`, `--z-dropdown`, `--z-dropdown-submenu`, `--z-popover`, `--z-modal`, and `--z-toast`; screen-local numeric z-index values are not canonical.
+- General operational tables may use the existing mobile labeled-card owner at ≤640px. Dashboard clean tables and official report tables retain their horizontal multi-column exception.
+- Busy primary actions preserve geometry and expose both `data-loading="true"` and `aria-busy="true"`.

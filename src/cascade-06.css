@@ -1,5 +1,5 @@
 /* v26: one operational command owner; report documents have their own layout. */
-:root{--operational-shell-top:64px;--operational-header-top:120px}
+:root{--operational-shell-top:64px;--operational-header-top:120px;--z-base:0;--z-sticky:80;--z-dropdown:100;--z-dropdown-submenu:120;--z-popover:130;--z-navigation:300;--z-modal-backdrop:1490;--z-modal:1500;--z-toast:1600;--z-tour:1700}
 #app .operational-dock{position:sticky;top:var(--operational-shell-top);z-index:74;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;background:var(--surface,#fff);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:16px;box-shadow:0 3px 10px #103e3210}
 #app .operational-dock .weekly-batch-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex:1;min-width:0}
 #app .operational-dock .command-menu-panel{right:0;left:auto;max-height:60dvh;overflow:auto;min-width:min(300px,85vw)}
@@ -163,6 +163,52 @@
 }
 @media(prefers-reduced-motion:reduce){#app .weekly-bento-card{transition:none!important}#app .weekly-bento-card:hover{transform:none}}
 @media print{.operational-table-head,.operational-dock{display:none!important}}
+
+/* v27.3 global layout contract. Scoped to the application shell; official
+   report surfaces keep their independent print/document owners. */
+@media screen{
+ #app .operational-dock{z-index:var(--z-sticky);align-items:center;justify-content:flex-end;min-height:58px}
+ #app .operational-dock .page-primary-actions{margin-inline-start:auto;display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+ #app .operational-dock .btn.primary,[data-action="new-report"],#app .topbar .page-primary-actions .btn.primary{min-height:44px;font-weight:700}
+ #app .operational-dock [data-loading="true"],#app .operational-dock [aria-busy="true"]{pointer-events:none;cursor:wait;min-width:var(--busy-control-width,8rem)}
+ #app .command-menu,#app .file-menu,#app .advanced-filter-menu{position:relative;z-index:var(--z-dropdown)}
+ #app .command-menu[open],#app .file-menu[open],#app .advanced-filter-menu[open]{z-index:var(--z-dropdown-submenu)}
+ #app .command-menu-panel,#app .file-menu-items,#app .advanced-filter-panel{z-index:var(--z-dropdown);isolation:isolate}
+ #app .file-submenu[open]{z-index:var(--z-dropdown-submenu)}
+ #app .command-menu-panel,#app .file-menu-items{max-height:min(60dvh,480px);overflow:auto;overscroll-behavior:contain}
+ #app .advanced-filter-panel{position:absolute;inset-inline-end:0;top:calc(100% + 8px);width:min(760px,calc(100vw - 32px));padding:14px;background:var(--surface,#fff);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px #173a3224}
+ #app .advanced-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ #app .advanced-filter-grid .field{min-width:0}
+ #app .active-filter-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+ #app .filter-chip{min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--mint);color:var(--ink);font-size:12px}
+ #app .filter-chip:hover{border-color:var(--green)}
+ #app .filter-bar-inline,#app .audit-toolbar,#app .registry-control-tools,#app .command-search-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+ #app .filter-bar-inline>.period-control,#app .audit-toolbar>.search-field,#app .registry-control-tools>.search-field,#app .command-search-row>.search-field{flex:1 1 260px;min-width:0}
+ #app .filter-bar-inline>.actions,#app .audit-toolbar>.actions,#app .registry-control-tools>.actions,#app .command-search-row>.actions{margin-inline-start:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+ #app .search-field{position:relative;min-width:0}
+ #app .search-field>input{min-height:44px;padding-inline-end:38px}
+ #app .search-clear{z-index:var(--z-popover)}
+ #app .table-density{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+ #app .table-density>.search-field{flex:1 1 280px;min-width:180px}
+ #app .table-density>.selection-toolbar{margin-inline-start:auto}
+ #app .table-scroll{scrollbar-gutter:stable;overscroll-behavior:contain}
+ #app :is(.command-menu-panel,.file-menu-items,.advanced-filter-panel) :is(button,a,summary,select,input){scroll-margin:8px}
+ html{--z-base:0;--z-sticky:80;--z-dropdown:100;--z-dropdown-submenu:120;--z-popover:130;--z-navigation:300;--z-modal-backdrop:1490;--z-modal:1500;--z-toast:1600;--z-tour:1700}
+ #toast{z-index:var(--z-toast)}
+ dialog{z-index:var(--z-modal)}
+ dialog::backdrop{z-index:var(--z-modal-backdrop)}
+}
+@media(max-width:760px){
+ #app .advanced-filter-panel{position:static;width:auto;margin-top:8px;box-shadow:none}
+ #app .advanced-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app .filter-bar-inline>.actions,#app .audit-toolbar>.actions,#app .registry-control-tools>.actions,#app .command-search-row>.actions{margin-inline-start:0;width:100%}
+}
+@media(max-width:640px){
+ #app .advanced-filter-grid{grid-template-columns:1fr}
+ #app .operational-dock .page-primary-actions{width:100%;margin-inline-start:0}
+ #app .operational-dock .page-primary-actions .btn.primary{flex:1 1 100%}
+ #app .table-density>.search-field{flex-basis:100%;min-width:0}
+}
 
 #app .catalog-tab-group{display:flex;align-items:center;gap:8px;padding:8px 10px;border-right:1px solid var(--line);flex-shrink:0}
 #app .catalog-group-label{font-size:11px;color:var(--muted);max-width:95px;white-space:normal;line-height:1.5}

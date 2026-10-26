@@ -1,5 +1,25 @@
 # Decision log
 
+## 2026-10-26 — Global UI layout standards v27.3
+
+**Context**
+- Toolbar, filters, dropdowns and responsive layout had multiple screen-local variants.
+
+**Decision**
+- Establish one Vanilla JS/CSS-token contract for action placement, filters, overlay layers and responsive table exceptions. Adopt `docs/UI-LAYOUT-STANDARDS-v27.3.md` and shared `--z-*` tokens.
+
+**Reason**
+- A shared contract removes duplicated CSS overrides while preserving live View Models and official report surfaces.
+
+**Alternatives not chosen**
+- Framework rewrite, new data state, or changing report HTML/CSS; all are outside this UI-only scope.
+
+**Impact**
+- Presentation and interaction layering only. No database, API, authentication, calculation, import, or export contract changes.
+
+**Rollback**
+- Revert the standards document and scoped cascade additions; generated assets can be rebuilt from `src/manifest.json`.
+
 ## 2026-10-24 — Rules continuity and evidence-based agent workflow
 
 - **Decision:** Rules.md delegates to canonical AGENTS.md; docs/DEVELOPMENT-WORKFLOW.md records the owner's six-step workflow. Agent code validates explicit plan confirmation, per-role handoffs and existing hashed evidence. Codex performs actual agent delegation.
