@@ -52,3 +52,29 @@ Pre-release CI exposed a delayed-scope disclosure race at640px: opening the P301
 Owner requested reading, analysis and execution of ข้อความที่วาง.txt. Implemented against actual version1 state and existing store/RPC/save owners, retaining historical snapshots and official reports. Added immutable filter/stage/distribution/pending/account/KPI selectors, exclusive five-stage dashboard-only display, main+pending responsive tables, route/supervisor/stage filters, scoped CSV/print, asset-history navigation and explicit connection status. Removed obsolete English pipeline subtitle. Added real calendar/null workspace guards, new-input financial limits and RFC7807 timestamp. No schema/auth/dependency/package change; fonts extend the existing stylesheet owner with offline fallbacks.
 
 Actual local validation:168unit +3focused domain tests, sidebar interactions, audit9screens1500/375 including filters/search/CSV/print, full QA1500/900/640/375, schema/source/build and diff checks passed. Subsequent small display/cross-filter changes receive exact-commit CI before merge. Screenshots reviewed at desktop/mobile. Historical monetary sparklines are not invented because monetary history is not stored weekly. Sample store keys/default departments were deliberately not installed. Release/live status is recorded separately after deployment; local passes are not a deployment claim.
+
+## 26 October 2026 — Confirmed dashboard and device theme update
+
+**Context**
+- The uploaded HTML is a presentation reference. Existing dashboard projections, live records, business calculations, save owners and official exports must stay authoritative.
+- The existing theme selector saved immediately and styled mainly the shell. The latest owner request asks for preview before confirmation and a theme across the website.
+
+**Decision**
+- Use the current data selectors for dashboard cards. The second card displays real average cumulative progress and historical trend; the pending card is labeled as work requiring follow-up because its selector includes handover and payment items.
+- Place secondary dashboard export/refresh controls in one disclosure. Keep the primary create-week action visible in the topbar.
+- Preview theme and light/dark icon changes in the DOM; persist only on confirmation. Settings cancel restores the saved selection. Theme CSS covers the web shell, operational summary cards and non-semantic chart palette while preserving status meanings and the existing report/print renderers.
+- Retain the existing P301 per-record party role and shared vector/XLSX label renderer, and the manually launched guide covering nine pages.
+
+**Reason**
+- The reference figures are examples, while the live state defines the true values. A disclosure prevents mobile actions from crowding the header. Device-local preview avoids unintentional preference changes.
+
+**Alternatives not chosen**
+- Installing the uploaded HTML/store or changing business projections would break source ownership and risk historical data. A new theme persistence table is unnecessary for a device preference.
+
+**Impact**
+- Presentation and local preference only; no database, API, authentication, or export data change. Existing theme preferences remain readable.
+
+**Rollback**
+- Revert the source and regenerated bundles. The existing local theme key can remain without affecting business data.
+
+**Release verification note — v27.2.0:** A new rendered dark-mode assertion exposed the pre-existing `#app:not([data-screen="dashboard"]) .card { background: white !important; }` override. The theme rule now takes precedence in screen media. The test waits for the card's CSS transition to finish before checking its final color. Audit passed on 1500px and 375px after this correction; it also verifies that preview does not write localStorage and confirmation does.
