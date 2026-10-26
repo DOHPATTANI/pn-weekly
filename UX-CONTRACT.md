@@ -60,6 +60,7 @@ Cold reference fields are omitted in the dossier and screen payload, not deleted
 - `mountContractFooter` is the contract-form dialog variant. Body alone scrolls; footer and header are outside its clipping boundary. Footer buttons retain the contract form via native form association. Errors preserve input, focus the field and remain visible in the footer; submission blocks duplicate save/close as before.
 - `arrangeWeeklyControls` reuses period/summary/filter/review fragments in the registry control frame. Weekly selection mounts in this same frame; count has one owner. Entry-only autosaves regenerate the same heading-free status-card fragment. The table keeps its own horizontal scroll and pagination. Empty report behavior remains unchanged.
 - Executive remarks use `reportValues` without per-export substitution, including paid rows and blank notes. Excel may convert the date columns to BE formatting but cannot replace the remarks cell with payment date/status. HTML/print, image and Excel share the saved weekly note for the selected report.
+
 ## v15 approved interaction changes
 
 Business authority: owner decisions in this chat on 19 October 2026. `tableSize`, `tableSorts`, `mountTablePresentation` and `mountReadTables` extend the existing native-table and selection owners. Primary lists paginate their complete loaded scope before rendering; selection/export remains across all filtered pages. Selection begins empty and its count appears only while active. Catalog actions appear above Search/Select. Management buttons stay in a non-wrapping first visible column. Report documents and row editors retain their structural header/child grouping; audit keeps its server cursor.
@@ -69,6 +70,7 @@ Business authority: owner decisions in this chat on 19 October 2026. `tableSize`
 Weekly text edits use double-click or Enter/F2; coarse pointers may tap. Row amendment uses the Confirmation pencil and existing audited dialog. Clicking the contract number opens registry details using the stable relation, with the weekly context retained for return. Date defaults prefer registry values per field; opening/canceling never mutates data and only changed fields save.
 
 `changeFingerprint` owns recursive canonical review identity. Cold source coordinates and bookkeeping do not invalidate review after a screen reload, while real field edits do. SQL backup/screen-reload verification is required for this flow. All executive renderers share `widths` and `reportValues`, including exact saved remarks. Calendar BE presentation never changes underlying ISO CE dates.
+
 ## v16 owner-approved changes
 
 Source: explicit owner instructions and start/resume approval in this chat. `mountTablePresentation`, `sizeOperationalColumns`, `pinIdentityColumns` and `mountSelections` remain shared table owners. Management is rightmost and hidden outside selection; child contract editors retain visible icon actions. `disclosureFilters` owns weekly/archive filter visibility. Density precedes Select. All frame controls align right; registry commands follow Search as Import/Export then Add.
@@ -76,6 +78,7 @@ Source: explicit owner instructions and start/resume approval in this chat. `mou
 `reportLinkAudit` performs read-only identity/scope comparison; `fillMissingReportContracts` adds missing rows only in the latest draft through existing compact audited mutation. Do not rewrite existing weekly data, infer source progress as weekly progress, or auto-repair historical reports. `selectedReport` narrows only for explicit selection, never merely because a status/search filter is set. `submitWeeklyEdit` routes closed edits through `saveAmendment`, preserving server validation and subsequent-week reconciliation. Numeric/remarks double-click uses the same draft/error owner as ordinary entry edits.
 
 `reportLayout` isolates province auto-measured dimensions from unchanged DOH document widths; operational table widths are separate from document layout. Both funding sources keep unfinished rows first. Browser and SQL-copy tests must verify fill idempotence, frozen-history preservation, closed amendment, scope counts and province exports. Audit history retains server paging; ordered child editors retain parent/child grouping.
+
 ## v17 — automatic linkage and revised control rows
 
 Authority: latest explicit owner instruction in this chat to always populate weekly membership from scoped registry. This supersedes v15/v16 closed-membership restrictions only for additive links. `fillMissingReportContracts(...,{automatic:true})` adds missing entries and, for closed reports, new snapshots. It does not replace existing entry/snapshot values. `synchronizeReport` persists through compact audited import, does nothing on repeat, and loads only selected scope. Default helper mode still guards manual draft-only operations. Do not infer source progress as weekly progress. A private backup precedes publication; actual SQL-copy/reload tests cover closed additions and prior baseline carry-forward.
@@ -95,7 +98,6 @@ Source: owner request in chat, 19 October 2026, including explicit independent D
 
 ## v19 confirmed requirements and owners
 Source: user chat on 20 October 2026 and attached Master Developer Rules report. Existing record/date/import/security owners remain unchanged. finishCommandLayout owns the compact command-frame variant; confirmWeeklySelection uses the audited mutation owner and selected stable project IDs. No confirmation column. Historical form remains accessible via selection edit and inline cells. Personnel editor layout excludes the operational measurement owner. operationFeedback extends the existing toast/form/request owners, with modal-aware top-layer placement, genuine/indeterminate progress, persistent errors and safe retry. Database migration compatibility is verified before Pages deploy; neither prior snapshots nor registry membership is reset.
-
 
 ## v21 — owner PDF and highway asset history
 - Latest owner examples supersede v20 presentation: P.3-01 has 12 columns including a separate unit-price column. Acquisition date stays in column 1; signed date and calculation period belong in document column 2. Repeat the full heading, metadata and acquisition row on continuation pages; signatures only on the final page. Preserve the approved depreciation formula and 1-baht residual.
@@ -138,6 +140,16 @@ Authority: owner's pending requirements after v23 and explicit start instruction
 Canonical owner: src/sidebar.js + static index.html shell; runtime tokens in src/cascade-06.css. The current user-authorized sidebar requirement owns this extension. Expanded desktop252px, collapsed80px; `.is-collapsed` hides `.nav-text`, `.nav-header`, `.badge`, branding/profile details, while native icon actions retain Thai accessible names/title. Toggle persists only a boolean device preference; failure to access localStorage never blocks navigation. Early root bootstrap prevents refresh expansion flash. Mobile uses existing drawer at<=850px with expanded content and preserves desktop preference.
 
 Ctrl/Cmd+K and search icon expand/focus menu search. Search matches navigation labels only; clear restores all items, unknown query shows a no-results message. Modal open/composition guards protect active workflows. Menu search does not reset report/form/data filters. Width changes notify canonical sticky-table sizing, including reduced-motion mode. Shared exports and business-state owners are untouched. Verify with tests/sidebar-interactions.mjs and existing full-app QA.
-# v27.1 dashboard interaction
+
+## v27.1 dashboard interaction
 
 Search, route, supervisor, type, budget and display stage apply to latest scoped report projections. Clear resets filters. CSV uses visible scope; print summary opens independently of official outputs. Pending includes handover/payment at100%, excludes paid and prioritizes expired. Display partition never changes entries or snapshots.
+
+## v27.3 — Unified Extensible Architecture & Live Database Dashboard
+
+Authority: Latest baseline specified in `AGENTS.md` (v27.3) and `DESIGN.md` (v27.3). 
+- **Flexible Dashboard & Instruction Precedence:** The operational shell and dashboard must adapt to `plannet_doh.html` visuals (emerald/gold theme, `.dash-v25-*` components) or new user instructions. Latest user commands override prior reference images, mockups, or legacy section locks, provided core data/report contracts are preserved.
+- **100% Live Database State:** **Mock data (`SEED_DATA`), database reset scripts, and hardcoded logic are strictly prohibited**. All dashboard metrics, 4 KPI cards, status pipelines, charts, and tables must be entirely bound to live Supabase/IndexedDB state via `latestScopeReport()`.
+- **View Model Separation:** `src/dashboard-selectors.js` acts as the canonical View Model layer. UI renderers (HTML template strings) must only consume resolved view models and must not contain raw data mapping or business calculations.
+- **Status Pipeline & Rules:** The dashboard features a 5-stage contract status card (`ongoing`, `deliver`, `pay`, `paid`, `expired`). KPI calculations (e.g., budget accounts, delayed projects) must strictly use actual database values (no arbitrary multipliers for empty data).
+- **Responsive Table Exemption:** The dashboard's dual bottom tables (`ตารางโครงการทั้งหมด` and `งานค้างดำเนินการ`) use `.tbl.dash-v25-clean-table` and explicitly opt out of the standard `mountResponsiveRows` mobile card transformation at ≤640px to preserve their multi-column grid layouts.
