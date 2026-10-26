@@ -194,3 +194,51 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 - Unit168/168 and dashboard domain4/4 passed. Full browser QA passed1500/900/640/375px, with errors[] and official P301, historical amendments, imports, offline replay and conflict flows intact.
 - A subsequent CSS-only substitution centralized23 shared palette values into `:root --dash-ref-*` tokens without changing their values. On that final source, regeneration, build, verify-source, and nine-screen audit at1440/375px passed. The final GitHub CI must recheck the exact release digest; the preceding full-QA result is behavior evidence before that token-only substitution.
 - Schema verification and P301 DTO invariance passed. Screenshots inspected at work/v26/dashboard-1440.png and dashboard-375.png; reference geometry and remaining differences are recorded in ignored work/dashboard-reference-v27.3.1.md. No claim of100% pixel identity: actual records, persisted theme/device preferences, sidebar/topbar and browser font rendering affect the result.
+
+## 2026-10-26 — Deterministic visual regression gate
+
+**Context**
+- Dashboard data must remain live at runtime; an arbitrary browser run against a changing remote dataset cannot establish a valid pixel baseline.
+- The project needed a reusable Playwright configuration and a container fallback without claiming screenshot parity before an approved comparison exists.
+
+**Decision**
+- Add a Playwright visual-test entry point with desktop, tablet and mobile projects, a Dashboard screenshot assertion, and a mobile page-width assertion.
+- Gate screenshot execution on an explicitly approved deterministic target (`PLAYWRIGHT_VISUAL_APPROVED=1` and `PLAYWRIGHT_BASE_URL`). The suite therefore cannot silently create or validate a baseline from an uncontrolled live environment.
+- Add a Docker Compose runner using the repository’s Playwright version and record the environment fallback policy in `AGENTS.md`.
+
+**Reason**
+- This keeps runtime Dashboard data live while making visual regression reproducible once a stable approved test environment and reviewed baseline are available.
+
+**Alternatives not chosen**
+- Generating a baseline from production or fabricating dashboard data would make visual evidence unreliable and conflict with the live-data policy.
+
+**Impact**
+- Test tooling and documentation only; no runtime data binding, API, authentication, database, report, or Dashboard calculation changes.
+
+**Rollback**
+- Revert the visual-test tooling commit and remove its script; no data rollback is required.
+
+
+## 2026-10-26 — Dashboard layout presets and acceptance traceability
+
+**Context**
+- Dashboard presentation needed a selectable structure independent of live-data selectors, and UI geometry values were split between legacy and new screen styles.
+- Delivery evidence needed a consistent mapping from approved requirements to validation.
+
+**Decision**
+- Add immutable `operational` and `executive` Dashboard layout presets beside the existing view configuration. The renderer reads the preset only to order or omit presentation panels; `selectDashboardViewModel` remains the sole source for live scoped metrics.
+- Centralize the requested emerald, gold, surface, border, spacing, radius, control-height and sidebar-width tokens in the screen stylesheet while keeping official report selectors excluded.
+- Require a Requirement-to-Acceptance Matrix in project rules and the development workflow.
+
+**Reason**
+- UI composition can evolve without duplicating, fabricating or recalculating Dashboard data, while each accepted change has a testable delivery record.
+
+**Alternatives not chosen**
+- Storing the layout choice in business records would mix device presentation with audited data.
+- Replacing report CSS with shared tokens would risk official print geometry.
+
+**Impact**
+- Dashboard presentation/configuration, shared operational tokens and documentation only. No API, database, authentication, live-data calculation or PDF/XLSX semantics change.
+
+**Rollback**
+- Revert this change set; no data migration or rollback is required.

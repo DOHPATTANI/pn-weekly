@@ -8,6 +8,18 @@ export const DASHBOARD_STAGES=Object.freeze([
 ]);
 /** Presentation defaults for the two dashboard summary tables and work-type chart. */
 export const DASHBOARD_VIEW_CONFIG=Object.freeze({pageSize:8,workTypeColors:Object.freeze(['#0f766e','#22a06b','#4fbf9f','#c99a2e','#5b6f8f','#d45b72','#8b6bb1','#6b7c72'])});
+/** UI-only layout presets. They never change the live dashboard view model or business calculations. */
+export const DASHBOARD_LAYOUT_PRESETS=Object.freeze({
+ operational:Object.freeze({showBudgetChart:true,showStatusDonut:true,showPendingBreakdown:true,cardOrder:Object.freeze(['summary','pipeline','budget','distribution'])}),
+ executive:Object.freeze({showBudgetChart:true,showStatusDonut:false,showPendingBreakdown:false,cardOrder:Object.freeze(['summary','budget','pipeline'])})
+});
+/** Resolve a safe UI-only Dashboard layout preset.
+ * @param {string} name Requested preset name.
+ * @returns {Readonly<object>} A known layout preset, falling back to operational.
+ */
+export function dashboardLayoutPreset(name='operational'){
+ return DASHBOARD_LAYOUT_PRESETS[name]||DASHBOARD_LAYOUT_PRESETS.operational;
+}
 /** @param {Array} rows Report rows. @param {object} filters Committed filters.
  * @param {Array} registry Scope registry. @param {string} date Reference date.
  * @param {Array} workCodes Loaded work-code masters.

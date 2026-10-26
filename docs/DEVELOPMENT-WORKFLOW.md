@@ -16,6 +16,19 @@
 
 จัด Impact Assessment: Business, UX/UI/accessibility, Data/lifecycle, Security/auth/privacy, API/integration, Performance/reliability/scalability, Maintenance, migration/rollback/compatibility โดยระบุ impact, risk และเหตุผล ตรวจเอกสารทางการและเวอร์ชันก่อนอ้างความสามารถเทคนิค ถ้าข้อมูลขาดเปลี่ยนข้อสรุปให้ถามเฉพาะที่จำเป็น ถ้าความเสี่ยงต่ำให้ระบุสมมติฐานแบบถ้า–แล้ว ห้ามแต่งตัวเลข ผลทดสอบ หรือแหล่งอ้างอิง หากหลักฐานไม่พอให้ใช้ “ยังยืนยันไม่ได้” ทุกข้อเสนอสำคัญต้องมีเหตุผลและทางแก้/ทางสำรองพร้อม trade-off เลือกแนวทางง่ายที่สุดที่ตอบโจทย์
 
+## Requirement-to-Acceptance Matrix
+
+ทุกแผนและผลตรวจต้องมีตาราง traceability ตามนี้ โดยระบุเฉพาะ requirement ใน scope และคำสั่ง/วิธีตรวจที่รันจริง
+
+| Requirement | Source | Implementation area | Acceptance criteria | Validation |
+|---|---|---|---|---|
+| เปลี่ยนสี sidebar | User instruction | design tokens / styles | สีเปลี่ยนทุก operational screen ตาม token | visual check |
+| เพิ่ม KPI | User instruction | dashboard selector + renderer | KPI ใช้ live scoped data เท่านั้น | selector test + UI test |
+| ปรับตารางมือถือ | DESIGN.md | responsive renderer | ≤640px แสดง labeled cards ไม่มี horizontal overflow | browser/mobile test |
+| คง export เดิม | AGENTS.md | export model | PDF/XLSX columns และ data semantics ไม่เปลี่ยน | export regression test |
+
+สถานะ validation ต้องเป็น Pass, Fail หรือ Not run พร้อมเหตุผล ห้ามสรุปว่าผ่านโดยไม่มีผลตรวจจริง
+
 ## Step 3: Implementation Plan
 
 ต้องมี Recommended Approach พร้อมเหตุผล, Alternatives พร้อม benefits/trade-offs/recommendation, Must have, Should have, Out of scope และ Planned Changes ที่ระบุ order/action/files/risk/dependencies

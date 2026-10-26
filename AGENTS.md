@@ -492,6 +492,40 @@
 
 ### 15.2 ชุดคำสั่งทดสอบบังคับ (Automated Test & Release Gates)
 
+### Requirement-to-Acceptance Matrix
+
+ก่อนเริ่มแก้ไขและในผลตรวจของทุกงาน ให้สร้างและเติมตารางนี้ตาม requirement ที่ได้รับอนุมัติ ห้ามปิดงานหาก requirement ที่อยู่ใน scope ไม่มี acceptance criteria และหลักฐาน validation ที่ตรวจได้จริง
+
+| Requirement | Source | Implementation area | Acceptance criteria | Validation |
+|---|---|---|---|---|
+| เปลี่ยนสี sidebar | User instruction | design tokens / styles | สีเปลี่ยนทุก operational screen ตาม token | visual check |
+| เพิ่ม KPI | User instruction | dashboard selector + renderer | KPI ใช้ live scoped data เท่านั้น | selector test + UI test |
+| ปรับตารางมือถือ | DESIGN.md | responsive renderer | ≤640px แสดง labeled cards ไม่มี horizontal overflow | browser/mobile test |
+| คง export เดิม | AGENTS.md | export model | PDF/XLSX columns และ data semantics ไม่เปลี่ยน | export regression test |
+
+### Visual Verification Capability Policy
+
+ก่อนทำ visual verification ให้ตรวจความสามารถของ environment ตามลำดับ:
+
+1. ตรวจว่ารัน package manager, development server และ Playwright Chromium ได้หรือไม่
+2. หากได้ ให้รัน visual regression test ใน environment ปัจจุบัน
+3. หากรัน Chromium/localhost ไม่ได้ ให้ตรวจว่ามี Docker หรือ container runtime หรือไม่
+4. หาก Docker ใช้ได้ ให้รัน visual test ผ่าน Playwright container
+5. หากรัน browser ไม่ได้ทั้งสองวิธี ให้รัน static checks ที่มี เช่น lint, typecheck, unit test และ build
+6. หาก repository มี CI visual regression ให้ระบุว่า CI เป็น visual quality gate หลัก
+7. ห้ามอ้างว่า UI ตรงกับภาพ 100% หากไม่ได้รัน screenshot comparison สำเร็จ
+
+รูปแบบรายงานเมื่อ visual test รันไม่ได้:
+
+```text
+Visual verification:
+- Status: not run
+- Reason: Chromium/localhost is unavailable in the current environment
+- Completed alternatives: lint/typecheck/test/build
+- Required follow-up: run `npm run test:visual` locally, through Docker, or in CI
+- Confidence: implementation reviewed statically only; pixel-level match is not yet confirmed
+```
+
 ต้องรันเฉพาะ command ที่มีอยู่จริงใน repository และรายงานผลจริงเท่านั้น:
 
 **Minimum integrated gates:**

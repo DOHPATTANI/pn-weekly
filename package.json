@@ -1,6 +1,6 @@
 {
   "name": "pn-weekly",
-  "version": "27.3.2",
+  "version": "27.3.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,6 +13,7 @@
     "verify-schema": "node tools.mjs verify-schema",
     "schema": "node tools.mjs schema",
     "qa:audit": "node tests/audit-regressions.mjs",
+    "test:visual": "playwright test --config=playwright.config.ts",
     "agent:workflow": "node tools/agent-workflow.mjs"
   },
   "engines": {
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.9",
+    "@playwright/test": "^1.64.0",
     "flatpickr": "4.6.13",
     "playwright": "1.64.0"
   }

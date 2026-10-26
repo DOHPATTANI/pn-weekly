@@ -19,6 +19,14 @@ test('dashboard view model derives actual scope values and keeps source rows imm
  assert.equal(model.workTypes[0].count,2);assert.equal(model.workTypes[0].name,'งานทาง');assert.equal(model.pendingCounts.incomplete,1);assert.equal(model.pendingCounts.followup,0);assert.equal(A.selectDashboardViewModel({state,rows,year:2569,funding:'DOH',asOfDate:'2026-10-26',pendingQuery:'NO MATCH'}).pendingProjectRows.length,0);assert.equal(model.workTypes[0].percent,100);assert.equal(model.projectRows[0].record.id,'r');assert.equal(model.pendingRows.length,1);
  assert.equal(A.DASHBOARD_VIEW_CONFIG.pageSize,8);assert.deepEqual(rows,before);
 });
+test('dashboard layout presets remain UI-only, ordered and safely fall back',()=>{
+ assert.equal(A.dashboardLayoutPreset('operational').showStatusDonut,true);
+ assert.equal(A.dashboardLayoutPreset('executive').showStatusDonut,false);
+ assert.equal(A.dashboardLayoutPreset('executive').showPendingBreakdown,false);
+ assert.deepEqual(A.dashboardLayoutPreset('executive').cardOrder,['summary','budget','pipeline']);
+ assert.equal(A.dashboardLayoutPreset('unknown'),A.DASHBOARD_LAYOUT_PRESETS.operational);
+ assert(Object.isFrozen(A.DASHBOARD_LAYOUT_PRESETS));
+});
 test('date and workspace guards reject malformed data before replacement',()=>{
  for(const date of ['2026-02-29','2026-02-31','2026-13-01','not-date']){assert.equal(A.isValidISODate(date),false);assert.throws(()=>A.validateDates({paymentDate:date}));}
  assert(A.isValidISODate('2028-02-29'));assert.throws(()=>A.validateLoadedWorkspace({loadedScope:{}}),/โครงสร้าง/);assert.throws(()=>A.validateBackup(null),/รูปแบบ/);
