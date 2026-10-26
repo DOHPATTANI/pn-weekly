@@ -1227,3 +1227,108 @@
  #app[data-screen="dashboard"] .dash-v25-hero-card{background:linear-gradient(100deg,var(--color-emerald-800),var(--color-emerald-950))!important}
  #app[data-screen="dashboard"] .dash-v25-hero-card .hbadge{background:var(--color-gold-500)}
 }
+
+/* Shared operational layout standard. Screen-only: official report classes are intentionally excluded. */
+@media screen {
+  :root {
+    --doh-forest-950: #082d22;
+    --doh-forest-900: #0f3e2f;
+    --doh-highway-gold: #e4b84a;
+    --toolbar-gap: 12px;
+    --filter-gap: 16px;
+  }
+
+  #app .scope-command-bar {
+    align-items: center;
+    justify-content: space-between !important;
+    gap: var(--filter-gap);
+    text-align: start !important;
+  }
+  #app .scope-command-bar > .period-control {
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  #app .scope-command-bar .inline-period-field {
+    align-items: center;
+    flex-direction: row;
+    gap: var(--space-2);
+    min-width: 0;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  #app .scope-command-bar .inline-period-field :is(select, input) {
+    min-height: var(--control-height);
+    min-width: min(13rem, 100%);
+  }
+  #app .scope-command-bar > .actions {
+    margin-inline-start: auto;
+    justify-content: flex-end !important;
+  }
+  #app .scope-command-bar :is(.command-menu, .file-menu) { position: relative; z-index: var(--z-dropdown, 100); }
+  #app .scope-command-bar :is(.command-menu, .file-menu)[open] { z-index: var(--z-dropdown-submenu, 120); }
+
+  #app .table-density {
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 10px var(--toolbar-gap);
+    min-width: 0;
+    text-align: start !important;
+  }
+  #app .table-density > .search-box.search-field,
+  #app .table-density > .search-field {
+    flex: 1 1 260px;
+    max-width: 420px;
+    min-width: 0;
+    margin: 0;
+  }
+  #app .table-density > .filter-toggle { flex: 0 0 auto; order: 2; }
+  #app .table-density > .selection-toolbar {
+    flex: 0 1 auto;
+    order: 3;
+    margin-inline-start: auto;
+  }
+  #app .table-density > label {
+    flex: 0 0 auto;
+    order: 4;
+    margin-inline-start: 0;
+    white-space: nowrap;
+  }
+  #app .table-density > :is(.search-box, .search-field) + .filter-toggle ~ label { margin-inline-start: auto; }
+  #app .search-box.search-field { position: relative; min-height: var(--control-height); }
+  #app .search-box.search-field .search-icon { position: absolute; inset-inline-start: 12px; top: 50%; transform: translateY(-50%); z-index: 1; }
+  #app .search-box.search-field :is(input.search, input[type='search']) { min-height: var(--control-height); padding-inline: 32px 36px !important; }
+  #app .search-box.search-field .search-shortcut { position: absolute; inset-inline-end: 9px; top: 50%; transform: translateY(-50%); }
+  #app .search-box.search-field .search-clear { min-width: 32px; min-height: 32px; }
+  #app .search-box.search-field :is(.search-shortcut, .search-clear)[hidden] { display: none; }
+
+  #modal .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+  #modal .form-grid > .field.wide { grid-column: 1 / -1; }
+  #modal :is(form, .form-grid) > .field { gap: 7px; font-weight: 600; }
+  #modal .dialog-footer { position: sticky; bottom: 0; z-index: var(--z-sticky, 80); padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+
+  #app .weekly-table :is(.weekly-input[type='number'], [data-inline-entry][type='number']) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  #app .weekly-table :is(.weekly-input[type='number'], [data-inline-entry][type='number']):focus {
+    border-color: var(--doh-forest-900);
+    box-shadow: 0 0 0 3px rgb(20 93 71 / 14%);
+    outline: none;
+  }
+}
+
+@media screen and (min-width: 641px) {
+  #app .weekly-table .identity-column,
+  #app table[data-table-owner='registry'] .identity-column { z-index: 2; }
+}
+
+@media screen and (max-width: 640px) {
+  #app .scope-command-bar > .period-control { width: 100%; }
+  #app .scope-command-bar .inline-period-field { width: 100%; justify-content: space-between; }
+  #app .scope-command-bar .inline-period-field :is(select, input) { flex: 1 1 12rem; min-width: 0; }
+  #app .table-density { flex-wrap: wrap; }
+  #app .table-density > :is(.search-box, .search-field) { flex-basis: 100%; max-width: none; }
+  #app .table-density > .selection-toolbar { margin-inline-start: 0; }
+}

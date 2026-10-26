@@ -1,7 +1,8 @@
 // PLANNET DOH v6: หมวดทดสอบ / สร้างเว็บ / เปิดเซิร์ฟเวอร์ ในไฟล์เดียว
-import fs from 'node:fs/promises';import path from 'node:path';import{fileURLToPath}from'node:url';
-const root=path.dirname(fileURLToPath(import.meta.url)),mode=process.argv[2]||'serve';
-async function sourceBundles(write=false){
+import fs from 'node:fs/promises';import path from 'node:path';import{fileURLToPath}from'node:url';import{execFile}from'node:child_process';import{promisify}from'node:util';
+const root=path.dirname(fileURLToPath(import.meta.url)),mode=process.argv[2]||'serve',run=promisify(execFile);
+async function compileTailwind(){const bin=path.join(root,'node_modules','.bin','tailwindcss');await fs.access(bin);await run(bin,['-i','src/tailwind.css','-o','src/tailwind.generated.css','--minify'],{cwd:root});}
+async function sourceBundles(write=false){await compileTailwind();
  const manifest=JSON.parse(await fs.readFile(path.join(root,'src/manifest.json'),'utf8'));
  for(const [target,files] of Object.entries(manifest)){
   const content=(await Promise.all(files.map(file=>fs.readFile(path.join(root,file),'utf8')))).join('');

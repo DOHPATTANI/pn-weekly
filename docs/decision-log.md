@@ -242,3 +242,26 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 
 **Rollback**
 - Revert this change set; no data migration or rollback is required.
+
+## 2026-10-26 — Tailwind build-time coexistence for operational layout
+
+**Context**
+- The owner explicitly authorized Tailwind to coexist with the established Vanilla ESM and custom-CSS architecture while asking for consistent scope bars, table toolbars, form fields and responsive operational tables.
+- Existing operational layouts contain legacy cascade overrides; report layouts must remain isolated.
+
+**Decision**
+- Add Tailwind 3 as a development-only compiler with `tw-` prefix and Preflight disabled.
+- Compile `src/tailwind.css` into `src/tailwind.generated.css` before the existing source bundle is assembled; the generated utilities are ordered before `src/cascade-06.css`.
+- Keep data selectors, API/RPC, state, reports and exports unchanged. Use the established presentation owner to place search, filter disclosure, selection toolbar and page-size controls.
+
+**Reason**
+- Prefixing and no reset prevent collisions with existing CSS while allowing scoped utility composition for shared operational layout. The final cascade remains the existing custom token/component layer.
+
+**Alternatives not chosen**
+- Tailwind CDN/runtime and global Preflight, because either could change unrelated UI and official report styling.
+
+**Impact**
+- Development build dependencies and screen-only presentation code. No schema, API, authentication, live-data calculation, or document-rendering change.
+
+**Rollback**
+- Revert the Tailwind config, generated source entry, dev dependencies and screen-layout changes; regenerate `app.js` and `styles.css`.

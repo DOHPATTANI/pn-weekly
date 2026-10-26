@@ -88,3 +88,24 @@ Dropdown/popover ต้องปิดด้วย click-outside และ Escap
 - [ ] ตรวจ reduced motion, focus, contrast และ touch target
 - [ ] ตรวจว่า `.main-report` และ `.p301-accessible` ไม่เปลี่ยน
 - [ ] รัน source consistency, unit, QA, audit, schema และ build
+
+## Tailwind coexistence policy
+
+Tailwind is permitted only as a **build-time** utility compiler for operational screen layout.
+
+- `tailwind.config.cjs` uses prefix `tw-` and disables Preflight, so global reset rules and existing component classes remain untouched.
+- `src/tailwind.css` is compiled into `src/tailwind.generated.css` before source bundling. The generated file is ordered before `src/cascade-06.css`, allowing the canonical component variants to remain the final presentation owner.
+- Do not load Tailwind CDN, add a Tailwind runtime, or use unprefixed utility classes.
+- Do not use Tailwind selectors in `.main-report`, `.p301-accessible`, print-only output, or dashboard live-data calculation code.
+- The existing `:root` tokens remain the canonical source for Forest Green, Highway Gold, spacing, radii and control height. Tailwind theme values only mirror these values for isolated screen utilities.
+
+## Requirement-to-Acceptance Matrix
+
+| Requirement | Implementation area | Acceptance criteria | Validation |
+|---|---|---|---|
+| Scope/period labels stay with controls | `periodBar`, `mountTablePresentation`, `.scope-command-bar` | label and select are a single inline field on desktop | UI layout contract + browser QA |
+| Search/filter/table controls have fixed order | `mountTablePresentation`, `.table-density` | search → filter disclosure → selection → page size | UI layout contract + browser QA |
+| Form and weekly entry ergonomics | `cascade-06.css`, weekly renderer | two-column form, sticky footer, descriptive `aria-label`, numeric focus ring | UI layout contract + browser QA |
+| Mobile operational tables remain readable | `mountResponsiveRows`, mobile CSS | label/value cards at ≤640px with no page overflow | browser QA |
+| Dashboard/report isolation | CSS scope and responsive exception | dashboard tables remain scrollable; official reports unchanged | source check + browser QA |
+| Tailwind coexists safely | Tailwind config/build input | build-time only, `tw-` prefix, no Preflight | UI layout contract + build |

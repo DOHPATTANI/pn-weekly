@@ -22,6 +22,7 @@
     "src/cascade-03.css",
     "src/cascade-04.css",
     "src/cascade-05.css",
+    "src/tailwind.generated.css",
     "src/cascade-06.css"
   ]
 }

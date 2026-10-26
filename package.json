@@ -1,6 +1,6 @@
 {
   "name": "pn-weekly",
-  "version": "27.3.3",
+  "version": "27.3.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,9 @@
     "schema": "node tools.mjs schema",
     "qa:audit": "node tests/audit-regressions.mjs",
     "test:visual": "playwright test --config=playwright.config.ts",
-    "agent:workflow": "node tools/agent-workflow.mjs"
+    "agent:workflow": "node tools/agent-workflow.mjs",
+    "css:tailwind": "tailwindcss -i src/tailwind.css -o src/tailwind.generated.css --minify",
+    "source": "node tools.mjs source"
   },
   "engines": {
     "node": ">=20"
@@ -22,7 +24,10 @@
   "devDependencies": {
     "@electric-sql/pglite": "0.5.9",
     "@playwright/test": "^1.64.0",
+    "autoprefixer": "^10.4.20",
     "flatpickr": "4.6.13",
-    "playwright": "1.64.0"
+    "playwright": "1.64.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
   }
 }

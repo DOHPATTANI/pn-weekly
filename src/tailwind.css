@@ -1,0 +1,10 @@
+/* Build-time utility layer only. Preflight is disabled; official documents are excluded. */
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  #app .tw-scope-command-bar { @apply tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-4; }
+  #app .tw-period-control { @apply tw-flex tw-min-w-0 tw-flex-1 tw-flex-wrap tw-items-center tw-gap-3; }
+  #app .tw-inline-period-field { @apply tw-inline-flex tw-items-center tw-gap-2 tw-whitespace-nowrap; }
+  #app .tw-table-toolbar { @apply tw-flex tw-items-center tw-gap-3; }
+}
