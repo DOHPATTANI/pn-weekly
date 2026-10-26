@@ -1,30 +1,31 @@
 # PN Weekly agent workflow
 
-นโยบายลดงานซ้ำและรวมบทบาทอยู่ที่ [AGENT-EFFICIENCY.md](AGENT-EFFICIENCY.md) เป็นแหล่งเดียว Stage ในตารางไม่บังคับสร้างเอเจนต์แยก ใช้ `npm run agent:workflow -- --summary` แทน `--status` เมื่อต้องการเพียงภาพรวมและค่า gate metrics; ไม่มีข้อมูล token/โควตาใน CLI
+นโยบายลดงานซ้ำและยุบรวมบทบาทอยู่ที่ `docs/AGENT-EFFICIENCY.md` เป็นแหล่งอ้างอิงเดียว **Stage ในตารางด้านล่างนี้เป็นเพียง Checklist ไม่บังคับสร้างเอเจนต์แยก** ให้ใช้คำสั่ง `npm run agent:workflow -- --summary` แทน `--status` เมื่อต้องการเพียงภาพรวมและค่า gate metrics (เนื่องจากระบบไม่มีข้อมูล Token/โควตาจริงแสดงใน CLI)
 
-อ่าน Rules.md → AGENTS.md → docs/DEVELOPMENT-WORKFLOW.md ก่อนเริ่ม เอเจนต์จริงรับงานจาก Codex coordinator ผ่านเครื่องมือ delegation ที่มีใน session ส่วน CLI นี้ตรวจหลักฐาน handoff และเรียก QA commands เท่านั้น ไม่เรียกโมเดลหรือทำงานเบื้องหลังเมื่อปิด session
+อ่าน `Rules.md` → `AGENTS.md` → `docs/DEVELOPMENT-WORKFLOW.md` ก่อนเริ่มงานเสมอ เอเจนต์จริงรับงานจาก Codex Coordinator ผ่านเครื่องมือ Delegation ที่มีใน Session ส่วน CLI ตัวนี้มีหน้าที่ตรวจหลักฐาน Handoff และเรียกคำสั่ง QA เท่านั้น จะไม่มีการเรียกโมเดลหรือทำงานเบื้องหลังเมื่อปิด Session
 
-## บทบาทและลำดับ
+## บทบาทและลำดับ (Stage Checklist)
 
 | Stage | หน้าที่ | สกิล/ปลั๊กอินที่พิจารณาเมื่อเกี่ยวข้อง |
 |---|---|---|
 | audit | ตรวจ rules, repo และ root cause | full-stack-integrity / code analysis ที่มี |
-| plan | Facts/Assumptions/Unknowns, scope, แผนและเกณฑ์ตรวจรับ | สกิลโดเมนของงาน |
-| confirmation | บันทึกคำยืนยันผู้ใช้ที่ผูกกับแผน | coordinator บันทึกข้อความจริง |
-| data | DB/API/data contract หรือระบุไม่เกี่ยวข้องพร้อมเหตุผล | supabase / postgres best practices |
-| ui | Implementation และ UX ตาม scope หรือเหตุผลที่ไม่เกี่ยวข้อง | frontend-design-premium / impeccable |
-| performance | ตรวจผลกระทบและข้อจำกัดการวัด | เครื่องมือ profiling ที่เหมาะกับ stack |
-| security | ตรวจความเสี่ยงจาก diff | สกิล security ตามพื้นที่ที่แก้ |
-| qa | รัน CI gates เดิมและเก็บ logs | web-qa-release |
-| release | ตรวจผลจริง ข้อจำกัด และ decision log | verification/release skills ที่มี |
+| plan | ระบุ Facts/Assumptions/Unknowns, scope, แผน และเกณฑ์ตรวจรับ | สกิลโดเมนของงาน |
+| confirmation | บันทึกคำยืนยันผู้ใช้ที่ผูกกับแผนการทำงาน | coordinator บันทึกข้อความจริงจากผู้ใช้ |
+| data | จัดการ DB/API/data contract (หากไม่เกี่ยวให้ระบุเหตุผล) | supabase / postgres best practices |
+| ui | Implementation และ UX ตาม scope (หากไม่เกี่ยวให้ระบุเหตุผล) | frontend-design-premium / impeccable |
+| performance | ตรวจผลกระทบด้านประสิทธิภาพและข้อจำกัดการวัด | เครื่องมือ profiling ที่เหมาะกับ stack |
+| security | ตรวจความเสี่ยงจาก Code Diff | สกิล security ตามพื้นที่ที่แก้ไข |
+| qa | รัน CI gates บังคับและเก็บ logs | web-qa-release |
+| release | ตรวจผลจริง ข้อจำกัด และอัปเดต decision log | verification/release skills ที่มี |
 
-ห้ามใช้สกิลผิด stack หรือระบุว่าใช้เพียงเพราะอยู่ในตาราง หากบทบาทไม่เกี่ยวข้องให้แนบ rationale เป็น evidence และบอกว่าไม่ได้ตรวจด้านนั้น อย่าอ้างว่าระบบทั้งด้านผ่านแล้ว
+**ข้อห้าม:** ห้ามใช้สกิลผิด Stack หรืออ้างว่าใช้สกิลเพียงเพื่อให้ครบตามตาราง หากบทบาทหรือ Stage ใดไม่เกี่ยวข้องกับงาน ให้แนบ Rationale เป็น Evidence และระบุชัดเจนว่าไม่ได้ตรวจด้านนั้น (ห้ามอ้างว่าระบบด้านนั้นผ่านแล้วหากไม่ได้รันจริง)
 
-## ใช้งาน
+## การใช้งาน CLI
 
 ```bash
 npm run agent:workflow -- --init work/task.md
 npm run agent:workflow -- --status
+npm run agent:workflow -- --summary
 npm run agent:workflow -- --handoff work/audit.json
 npm run agent:workflow -- --handoff work/plan.json
 npm run agent:workflow -- --confirm work/confirmation.json
