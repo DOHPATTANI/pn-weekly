@@ -78,3 +78,23 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 - Revert the source and regenerated bundles. The existing local theme key can remain without affecting business data.
 
 **Release verification note — v27.2.0:** A new rendered dark-mode assertion exposed the pre-existing `#app:not([data-screen="dashboard"]) .card { background: white !important; }` override. The theme rule now takes precedence in screen media. The test waits for the card's CSS transition to finish before checking its final color. Audit passed on 1500px and 375px after this correction; it also verifies that preview does not write localStorage and confirmation does.
+
+## 2026-10-26 — Compact dashboard release v27.2.1
+
+**Context**
+- The owner compared v27.2.0 with the supplied visual reference and found oversized hero/KPI panels and charts split across rows. The source-only dashboard layout updates reached main without regenerated runtime assets.
+
+**Decision**
+- Publish the existing dashboard-scoped compact layout and matching generated runtime assets together. Increment the application and offline cache version to v27.2.1 so installed browsers fetch the new layout.
+
+**Reason**
+- The layout follows the reference hierarchy while leaving data projections, API, authentication and official exports intact. A new cache identity avoids serving v27.2.0 assets after release.
+
+**Alternatives not chosen**
+- Replacing the application with the illustrative HTML would lose live data behavior and source ownership.
+
+**Impact**
+- Dashboard presentation and shell asset cache only; no schema or business calculation change.
+
+**Rollback**
+- Revert this release commit and redeploy the previous complete source and generated bundles.
