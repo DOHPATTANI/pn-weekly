@@ -1,6 +1,14 @@
-# Third-party notices
+Third-party notices
 
-Flatpickr 4.6.13 — MIT License. JavaScript and Thai locale are bundled in app.js; CSS in styles.css.
+This application incorporates the following third-party software and assets:
+
+Flatpickr
+
+Version: 4.6.13
+
+License: MIT License
+
+Notes: JavaScript and Thai locale are bundled in app.js; CSS in styles.css.
 
 The MIT License (MIT)
 
@@ -23,3 +31,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+TH Sarabun PSK (Font)
+
+License: SIPA Open Font License / Freeware (GPL + Font Exception)
+
+Notes: Bundled as THSarabun.ttf for official A4 landscape report generation.
+
+Copyright (c) 2007, Suppakit Chalermlarp. All rights reserved.
+
+Released by the Software Industry Promotion Agency (SIPA) and the Department of Intellectual Property (DIP), Ministry of Commerce, Thailand.
+This font is officially provided for public and government use to support Thai typography standards.
