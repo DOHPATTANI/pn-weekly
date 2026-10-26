@@ -153,3 +153,24 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 - `node tools.mjs verify-source`, `npm run build`, `npm run verify-schema`, `node tests/p301-export-dto.mjs`, `npm test` (168 passed), `node --test tests/dashboard-contract.mjs` (4 passed), `npm run qa` (1500/900/640/375px), and `npm run qa:audit` (nine surfaces at 1500/375px) passed after the source was frozen. The dashboard audit checks both clean tables remain tables and the project table renders at most eight rows.
 - Browser screenshots were inspected locally at 1500px and 375px. This is a rendered check, not a pixel-perfect comparison with the illustrative attachment. No production data was altered or directly inspected in these local fixture tests.
 - The existing `docs/ARCHITECTURE-DECISIONS-v26.md` is the maintained architecture file; there is no unversioned `docs/ARCHITECTURE-DECISIONS.md`. Legacy simulator CSS is unused; the runtime handler and fabricated record action were removed.
+
+## 2026-10-26 — Dashboard reference parity (v27.3.1)
+
+**Context**
+- The owner approved applying `ภาพรวมโครงการ.html.txt` and its fully loaded Google Sites preview specifically to Dashboard. The previous dashboard only reused class aliases and compact geometry, rather than the reference component structure.
+
+**Decision**
+- Reuse the reference's screen-scoped hero, four KPI cards, five status pills, budget tracks, work-type donut and dual table components. Replace the obsolete compact Dashboard override block instead of layering another cosmetic alias. All values still resolve through the existing live selectors; no sample records, synthetic monetary fallback, database cleanup script, API/auth/schema or official report change is included.
+- Preserve route/supervisor/status filters, CSV, print and refresh in a collapsed secondary disclosure. New pending-table search/chips use read-only view-model projections. Dashboard clean tables bypass the generic presentation and mobile-card transformation, retaining their own contract buttons and local horizontal scrolling.
+- Scope CSS to screen media and `#app[data-screen="dashboard"]`; the shared sidebar/topbar and other pages retain their owners. Version/cache identity advances to27.3.1.
+
+**Reason**
+- The reference's actual HTML structure and measured geometry (168px hero,148px KPI cards,20px grid gaps and2:1:1 chart row at1440px) are necessary to reproduce the requested visual hierarchy. Data values and text wrapping vary with actual records.
+
+**Rollback**
+- Revert this release commit and redeploy the prior complete source/runtime assets; no data rollback is required.
+
+**Actual validation**
+- Unit168/168 and dashboard domain4/4 passed. Full browser QA passed1500/900/640/375px, with errors[] and official P301, historical amendments, imports, offline replay and conflict flows intact.
+- A subsequent CSS-only substitution centralized23 shared palette values into `:root --dash-ref-*` tokens without changing their values. On that final source, regeneration, build, verify-source, and nine-screen audit at1440/375px passed. The final GitHub CI must recheck the exact release digest; the preceding full-QA result is behavior evidence before that token-only substitution.
+- Schema verification and P301 DTO invariance passed. Screenshots inspected at work/v26/dashboard-1440.png and dashboard-375.png; reference geometry and remaining differences are recorded in ignored work/dashboard-reference-v27.3.1.md. No claim of100% pixel identity: actual records, persisted theme/device preferences, sidebar/topbar and browser font rendering affect the result.

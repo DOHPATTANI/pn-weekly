@@ -64,7 +64,7 @@ export function computeKpiMetrics(rows=[],registry=[]){const ids=new Set(rows.ma
  * @param {{state:object,rows:Array,filters:object,year:number,funding:string,asOfDate:string}} input Loaded workspace and selected scope.
  * @returns {object} Resolved metrics, trend, charts and table rows for presentation.
  */
-export function selectDashboardViewModel({state,rows=[],filters={},year,funding,asOfDate=today()}){
+export function selectDashboardViewModel({state,rows=[],filters={},pendingQuery='',pendingMode='all',year,funding,asOfDate=today()}){
  const registry=state.contractRegistry||[];
  rows=filterDashboardRows(rows,filters,registry,asOfDate,state.workCodes||[]);
  const scopedRegistry=registry.filter(r=>!r.deletedAt&&(r.funding||'DOH')===funding&&r.year===year);
@@ -82,10 +82,14 @@ export function selectDashboardViewModel({state,rows=[],filters={},year,funding,
  const projectTypes=new Map((state.projects||[]).map(p=>[p.id,p.workTypeId]));
  const typeNames=new Map((state.workTypes||[]).map(type=>[type.id,type.name]));
  const workTypeMap=new Map();
- for(const {p={}} of rows){const id=p.workTypeId||projectTypes.get(p.id)||'__none__',name=typeNames.get(id)||'ยังไม่ระบุประเภทงาน',item=workTypeMap.get(id)||{id,name,count:0};item.count++;workTypeMap.set(id,item);}
+ for(const {p={}} of rows){const id=p.workTypeId||projectTypes.get(p.id)||(byId.get(p.registryId)||byId.get(p.id))?.workTypeId||'__none__',name=typeNames.get(id)||'ยังไม่ระบุประเภทงาน',item=workTypeMap.get(id)||{id,name,count:0};item.count++;workTypeMap.set(id,item);}
  let offset=0;
  const workTypes=[...workTypeMap.values()].sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'th')).map(item=>{const percent=rows.length?item.count/rows.length*100:0,result={...item,percent,offset};offset+=percent;return result;});
- const projectRows=rows.map(({p={},e={}})=>{const record=byId.get(p.registryId)||byId.get(p.id)||{},stage=deriveContractStage({p,e},asOfDate);return {p,e,record,stage:DASHBOARD_STAGES.find(item=>item.key===stage),actualPct:Math.min(100,Math.max(0,Number(e.actual)||0))};});
+ const projectRows=rows.map(({p={},e={}})=>{const record=byId.get(p.registryId)||byId.get(p.id)||{},stage=deriveContractStage({p,e},asOfDate);const behind=Number(e.actual)<Number(e.plan)&&!complete(e);return {p,e,record,stage:DASHBOARD_STAGES.find(item=>item.key===stage),actualPct:Math.min(100,Math.max(0,Number(e.actual)||0)),planPct:Math.min(100,Math.max(0,Number(e.plan)||0)),statusLabel:stage==='ongoing'&&behind?'ล่าช้า':DASHBOARD_STAGES.find(item=>item.key===stage)?.label||'ยังไม่ระบุ',statusTone:stage==='expired'||behind?'red':stage==='paid'?'green':stage==='deliver'||stage==='pay'?'blue':'amber'};});
  const attention=rows.filter(({p={},e={}})=>!complete(e)&&(expired(p,asOfDate)||Number(e.actual)<Number(e.plan))).sort((a,b)=>(Number(b.e?.plan)-Number(b.e?.actual))-(Number(a.e?.plan)-Number(a.e?.actual)));
- return {rows,actual,plan,overallDiff:actual-plan,done:rows.filter(({e})=>complete(e)).length,metrics,finance,disbursedMB:finance.actualCost/1000000,disbursedPct:finance.percent===null?null:+finance.percent.toFixed(1),diffActual,delayedDiff,history,attention,statusDistribution:computeStatusDistribution(rows,asOfDate),pendingRows:selectPendingActionRows(rows,asOfDate),budgetGroups:aggregateProgressByBudgetAccount(rows,registry),workTypes,projectRows};
+ const pendingAll=selectPendingActionRows(rows,asOfDate),projectById=new Map(projectRows.map(item=>[item.p.id,item]));
+ const pendingCounts={all:pendingAll.length,incomplete:pendingAll.filter(item=>!complete(item.e)).length,expired:pendingAll.filter(item=>item.stage==='expired').length,followup:pendingAll.filter(item=>['deliver','pay'].includes(item.stage)).length};
+ const needle=String(pendingQuery||'').trim().toLocaleLowerCase('th');
+ const pendingProjectRows=pendingAll.filter(item=>(pendingMode==='all'||pendingMode==='incomplete'&&!complete(item.e)||pendingMode==='expired'&&item.stage==='expired'||pendingMode==='followup'&&['deliver','pay'].includes(item.stage))&&(!needle||[item.p.contract,item.p.title,item.p.contractor].join(' ').toLocaleLowerCase('th').includes(needle))).map(item=>projectById.get(item.p.id)).filter(Boolean);
+ return {routeOptions:[...new Set(scopedRegistry.flatMap(record=>(record.segments||[]).map(segment=>segment.routeNumber)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th',{numeric:true})),supervisorOptions:[...new Set(rows.map(item=>item.p.supervisor).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th')),rows,pendingCounts,pendingProjectRows,incompleteCount:rows.filter(item=>!complete(item.e)).length,actual,plan,overallDiff:actual-plan,done:rows.filter(({e})=>complete(e)).length,metrics,finance,disbursedMB:finance.actualCost/1000000,disbursedPct:finance.percent===null?null:+finance.percent.toFixed(1),diffActual,delayedDiff,history,attention,statusDistribution:computeStatusDistribution(rows,asOfDate),pendingRows:selectPendingActionRows(rows,asOfDate),budgetGroups:aggregateProgressByBudgetAccount(rows,registry),workTypes,projectRows};
 }
