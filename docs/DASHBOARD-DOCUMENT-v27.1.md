@@ -21,7 +21,7 @@ Alternatives rejected: copied sample state model (incompatible), framework/Tailw
 
 ## Data flow and traceability
 
-Scoped latest report → activeRows (saved snapshot/entry) → filterDashboardRows with scoped registry → computeStatusDistribution / aggregateProgressByBudgetAccount / selectPendingActionRows → escaped renderers → existing native controls/save/detail owners.
+Scoped latest report → activeRows (saved snapshot/entry) → filterDashboardRows with scoped registry → selectDashboardViewModel (KPI, history, exclusive stages, budget/work types, pending and project rows) → escaped renderers → existing native controls/save/detail owners. The view model is read-only and never writes Supabase or IndexedDB.
 
 | Request | Owner / resolution |
 |---|---|
@@ -31,7 +31,7 @@ Scoped latest report → activeRows (saved snapshot/entry) → filterDashboardRo
 | Account progress | Indexed registry projection; count, actual/plan averages |
 | Work-type donut | Existing actual workTypes; shared category filter |
 | Search / route / supervisor / status / clear | Native dashboard toolbar, no extra dependency |
-| Main and pending tables | Side by side on desktop, stacked/cards on mobile; bounded table owners |
+| Main and pending tables | Side by side on desktop, stacked sections with table-local horizontal scroll on mobile; both `.dash-v25-clean-table` tables opt out of mobile record-card conversion and display eight rows per page |
 | Null/invalid workspace guard | validateLoadedWorkspace rejects before replacing state |
 | Calendar validation | isValidISODate and validateDates reject impossible dates, preserve ISO CE |
 | Financial inputs | Existing registry import/manual preview rejects negative/nonfinite or over-contract cost before saving; existing records are not rewritten |

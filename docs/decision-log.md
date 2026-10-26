@@ -128,3 +128,28 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 
 **Rollback**
 - Revert the v27.3 architectural updates and restore v27.2.1 source and generated bundles.
+
+## 2026-10-26 — v27.3 dashboard live-data view model
+
+**Context**
+- The v27.3 policy documents reached main before the implementation. Dashboard metrics, trend and work-type calculations remained inside the HTML renderer, and a hidden simulator still contained a fabricated 47-contract action.
+
+**Decision**
+- Keep the existing Supabase/IndexedDB scope and report selection. Move filtered KPI, history, status, budget, work-type, pending and project-row preparation to `selectDashboardViewModel` in `src/dashboard-selectors.js`. Remove the simulator handler and illustrative data branch. Use a central eight-row dashboard table setting and screen-only `.dash-v25-*` variants; exempt the two summary tables from mobile card conversion.
+
+**Reason**
+- The renderer can now consume a resolved read-only projection without inventing records or changing persisted lifecycle and official report contracts. The mobile table exception follows the owner's latest UX rule.
+
+**Alternatives not chosen**
+- Importing sample records or changing database schema would risk historical data. A framework rewrite would add unrelated complexity.
+
+**Impact**
+- Dashboard read and screen presentation paths only. No database migration, API, authentication, import, or official export changes. Legacy CSS for hidden simulator states remains inert and may be removed in a separate cleanup.
+
+**Rollback**
+- Revert this commit and redeploy v27.2.1. Workspace data requires no rollback.
+
+**Validation for v27.3.0 (local, 2026-10-26)**
+- `node tools.mjs verify-source`, `npm run build`, `npm run verify-schema`, `node tests/p301-export-dto.mjs`, `npm test` (168 passed), `node --test tests/dashboard-contract.mjs` (4 passed), `npm run qa` (1500/900/640/375px), and `npm run qa:audit` (nine surfaces at 1500/375px) passed after the source was frozen. The dashboard audit checks both clean tables remain tables and the project table renders at most eight rows.
+- Browser screenshots were inspected locally at 1500px and 375px. This is a rendered check, not a pixel-perfect comparison with the illustrative attachment. No production data was altered or directly inspected in these local fixture tests.
+- The existing `docs/ARCHITECTURE-DECISIONS-v26.md` is the maintained architecture file; there is no unversioned `docs/ARCHITECTURE-DECISIONS.md`. Legacy simulator CSS is unused; the runtime handler and fabricated record action were removed.

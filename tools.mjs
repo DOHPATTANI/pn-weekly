@@ -476,14 +476,15 @@ test('v24.4 Dashboard Bento KPIs, 5-stage Contract Status Pipeline and Budget Ac
  assert.ok(appJs.includes('กำลังดำเนินการ') && appJs.includes('รอส่งมอบงาน') && appJs.includes('รอเบิกจ่าย') && appJs.includes('เบิกจ่ายแล้ว') && appJs.includes('หมดอายุสัญญา'));
 });
 
-test('v24.5 Dashboard Data-Driven UI: SVG Bezier Sparklines, Unified Divided Strip & 4-State Resilience',async()=>{
+test('Dashboard uses live projections and excludes illustrative simulator records',async()=>{
  const css=await fs.readFile('styles.css','utf8');
- for(const cls of ['.dash-simulator-bar','.simulator-title','.simulator-buttons','.state-btn','.dash-skeleton-grid','.dash-skeleton-card','.dash-skeleton-pipeline','.dash-empty-card','.dash-error-card','.stage-divider','.dash-pipeline-divider']){
+ for(const cls of ['.dash-skeleton-grid','.dash-skeleton-card','.dash-skeleton-pipeline','.dash-empty-card','.dash-error-card','.stage-divider','.dash-pipeline-divider']){
   assert.ok(css.includes(cls),'styles.css must include '+cls);
  }
  const appJs=await fs.readFile('app.js','utf8');
  assert.ok(appJs.includes('calcPipelineWeights'),'app.js must include calcPipelineWeights');
- assert.ok(appJs.includes('dash-simulator-bar'),'app.js must include dash-simulator-bar');
+ assert.ok(appJs.includes('selectDashboardViewModel'),'app.js must use the dashboard view model');
+ assert.ok(!appJs.includes('SEED_DATA')&&!appJs.includes('โหลดข้อมูลมาตรฐาน (47 สัญญา)')&&!appJs.includes('setDashboardState'),'runtime must not expose illustrative data states');
  assert.deepEqual(App.calcPipelineWeights(6,1,0,40,4),{ongoing:600/47,deliver:100/47,pay:0,paid:4000/47,expired:0});
  assert.ok(appJs.includes("miniSparklineSVG(histActuals")&&appJs.includes("miniSparklineSVG(histDelays"),'KPI trends use actual history');
 });

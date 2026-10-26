@@ -3243,3 +3243,14 @@ body:has(> main > #app) {
  @media(max-width:1000px){#app .dashboard-shell .dash-visual-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#app .dashboard-shell .dash-pipeline-card{grid-column:1/-1}}
  @media(max-width:700px){#app .dashboard-shell .dash-hero{grid-template-columns:1fr;gap:8px}#app .dashboard-shell .dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}#app .dashboard-shell .dash-visual-grid,#app .dashboard-shell .dash-table-grid{grid-template-columns:1fr}#app .dashboard-shell .dash-pipeline-card{grid-column:auto}#app .dashboard-shell .dash-visual-grid>.card{min-height:0}#app .dashboard-shell .dash-kpi-card{min-height:100px;height:100px}}
 }
+
+/* v27.3 dashboard component tokens; screen presentation only. */
+:root{--dash-v25-gap:12px;--dash-v25-radius:10px;--dash-v25-gold:var(--gold);--dash-v25-ink:var(--ink);--dash-v25-surface:var(--surface,#fff)}
+@media screen{
+ #app .dashboard-shell .dash-v25-hero-card{border-radius:var(--dash-v25-radius);border-top-color:var(--dash-v25-gold)}
+ #app .dashboard-shell .dash-v25-kpi-card{border-radius:var(--dash-v25-radius)}
+ #app .dashboard-shell .dash-v25-card{border-radius:var(--dash-v25-radius)}
+ #app .dashboard-shell .dash-visual-grid,#app .dashboard-shell .dash-table-grid{gap:var(--dash-v25-gap)}
+ #app .dashboard-shell .dash-v25-clean-table{width:100%;min-width:460px}
+ #app .dashboard-shell .dash-v25-clean-table th,#app .dashboard-shell .dash-v25-clean-table td{white-space:normal}
+}

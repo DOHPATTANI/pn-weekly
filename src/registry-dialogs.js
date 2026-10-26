@@ -81,7 +81,7 @@ if(typeof document!=='undefined'&&document.querySelector('#app')&&!globalThis.__
 
 // The same maintained bundle is also the offline service worker.
 if(typeof document==='undefined'&&typeof self!=='undefined'&&typeof self.skipWaiting==='function'){
- const CACHE='pn-weekly-shell-v27-2-1',scope=new URL('./',self.location.href),assets=['','index.html','app.js','app.js?v=27.2.1','styles.css','styles.css?v=27.2.1','THSarabun.ttf'].map(x=>new URL(x,scope).href);
+ const CACHE='pn-weekly-shell-v27-3-0',scope=new URL('./',self.location.href),assets=['','index.html','app.js','app.js?v=27.3.0','styles.css','styles.css?v=27.3.0','THSarabun.ttf'].map(x=>new URL(x,scope).href);
  self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(assets)).then(()=>self.skipWaiting())));
  self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('pn-weekly-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
  self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==scope.origin||!url.pathname.startsWith(scope.pathname))return;event.respondWith(fetch(event.request).then(response=>{if(response.ok&&['document','script','style','font'].includes(event.request.destination)){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{const cached=await caches.match(event.request,{ignoreSearch:true});if(cached)return cached;if(event.request.mode==='navigate')return caches.match(new URL('index.html',scope).href);throw Error('ยังไม่ได้เก็บไฟล์นี้สำหรับออฟไลน์');}));});

@@ -9,6 +9,15 @@ test('five dashboard stages are exclusive, calendar-reference aware and immutabl
 test('budget averages and filters use registry identities, preserve route zeros and escape-independent values',()=>{
  const rows=[row('p',20),row('q',80)],registry=[{id:'r',projectId:'p',budgetAccount:'สป.',workTypeId:'T',segments:[{routeNumber:'0042',controlSection:'0100'}]},{id:'s',projectId:'q',budgetAccount:'สป.'}];
  assert.equal(A.aggregateProgressByBudgetAccount(rows,registry)[0].actual,50);assert.equal(A.filterDashboardRows(rows,{route:'0042'},registry).length,1);assert.equal(A.filterDashboardRows(rows,{query:'0100'},registry).length,1);assert.equal(A.filterDashboardRows(rows,{route:'42'},registry).length,0);
+ registry[0].workCodeId='wc-1';assert.equal(A.filterDashboardRows(rows,{query:'สป.'},registry).length,2);assert.equal(A.filterDashboardRows(rows,{query:'WC001'},registry,'2026-10-26',[{id:'wc-1',code:'WC001'}]).length,1);
+});
+test('dashboard view model derives actual scope values and keeps source rows immutable',()=>{
+ const rows=[row('p',25,'รอส่งมอบงาน','2026-12-31'),row('q',100,'เบิกจ่ายแล้ว','2026-12-31')],before=structuredClone(rows);
+ const state={contractRegistry:[{id:'r',projectId:'p',year:2569,funding:'DOH',budgetAccount:'สป.',workTypeId:'road',contractValue:100,actualCost:25},{id:'s',projectId:'q',year:2569,funding:'DOH',budgetAccount:'สป.',workTypeId:'road',contractValue:200,actualCost:100}],projects:[],workTypes:[{id:'road',name:'งานทาง'}],reports:[]};
+ const model=A.selectDashboardViewModel({state,rows,year:2569,funding:'DOH',asOfDate:'2026-10-26'});
+ assert.equal(model.actual,62.5);assert.equal(model.plan,90);assert.equal(model.metrics.total,2);assert.equal(model.statusDistribution.reduce((sum,item)=>sum+item.count,0),2);
+ assert.equal(model.workTypes[0].count,2);assert.equal(model.workTypes[0].percent,100);assert.equal(model.projectRows[0].record.id,'r');assert.equal(model.pendingRows.length,1);
+ assert.equal(A.DASHBOARD_VIEW_CONFIG.pageSize,8);assert.deepEqual(rows,before);
 });
 test('date and workspace guards reject malformed data before replacement',()=>{
  for(const date of ['2026-02-29','2026-02-31','2026-13-01','not-date']){assert.equal(A.isValidISODate(date),false);assert.throws(()=>A.validateDates({paymentDate:date}));}
