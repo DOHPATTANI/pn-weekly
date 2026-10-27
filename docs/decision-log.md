@@ -291,3 +291,26 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 
 **Rollback**
 - Revert the Tailwind config, generated source entry, dev dependencies and screen-layout changes; regenerate `app.js` and `styles.css`.
+
+## 2026-10-27 — Operational records and export traceability
+
+**Context**
+- Contract amendments needed a single, auditable list of extension or reduction events.
+- P.3-01 needs its configured party role reflected consistently, and downloaded records must be distinguishable by Thai local export time.
+
+**Decision**
+- Store extension events as approved records with sequence, type, days, prior end date, and derived end date; retain legacy records as positive extensions.
+- Use the existing P.3-01 confirmation as the source of the completed status and strike the two non-selected party labels.
+- Apply a Thailand-local timestamp centrally when files are downloaded.
+
+**Reason**
+- This keeps contract dates calculable from source records, avoids a second completion checkbox, and prevents duplicate export filenames.
+
+**Alternatives not chosen**
+- Free-form date edits without an event record; rejected because the audit trail and recalculation would be lost.
+
+**Impact**
+- Existing extension records remain valid. New records may reduce as well as extend an end date.
+
+**Rollback**
+- Revert this commit; no database migration or persisted schema change is introduced.

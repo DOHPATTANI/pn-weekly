@@ -1332,3 +1332,9 @@
   #app .table-density > :is(.search-box, .search-field) { flex-basis: 100%; max-width: none; }
   #app .table-density > .selection-toolbar { margin-inline-start: 0; }
 }
+
+/* Weekly executive report status colors stay in report previews and printed output only. */
+.main-report tr.paid td{color:#d12626!important}.main-report tr.waiting-delivery td{color:#167a45!important}.main-report tr.waiting-payment td{color:#1267b3!important}
+#app .weekly-table .contract-link{ text-decoration:none; }
+
+#app .contract-title-progress{display:grid;gap:5px}.inline-contract-progress{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px}.inline-contract-progress::before{content:'';width:64px;height:5px;border-radius:9px;background:#e4ece7;overflow:hidden}.inline-contract-progress{position:relative}.inline-contract-progress>span{position:absolute;left:0;top:2px;width:0;height:5px;border-radius:9px;background:var(--doh-forest-800,#0f4c38)}.inline-contract-progress small{font-size:10px;color:inherit;white-space:nowrap}
