@@ -1,5 +1,31 @@
 # Decision log
 
+## 2026-10-27 — Tooling and workflow environment resilience (v27.3.4)
+
+**Context**
+- On host environments without global git or node/npm CLI binaries in system PATH, `tools.mjs verify-source` failed on missing Tailwind compiler access, and `tests/agent-workflow.mjs` failed with `spawnSync git ENOENT`.
+
+**Decision**
+- Provide safe fallback in `tools.mjs` (`compileTailwind`) to verify pre-compiled `src/tailwind.generated.css` when the compiler binary is absent.
+- Provide safe fallbacks in `tools/agent-workflow.mjs` and `tests/agent-workflow.mjs` for worktree file listing and git revision resolution, while retaining exact SHA-256 worktree integrity.
+- Resolve `node` and `npm` subcommands safely using `process.execPath` and package.json script mapping when standalone Node runtimes are used.
+
+**Reason**
+- Enables strict source verification and workflow test execution across constrained environments without weakening CI gates or altering runtime contracts.
+
+**Files**
+- `tools.mjs`, `tools/agent-workflow.mjs`, `tests/agent-workflow.mjs`, `docs/decision-log.md`.
+
+**Validation**
+- `node tools.mjs verify-source`: passed.
+- `node tools.mjs test`: 168 passed, 0 failed.
+- `node tests/dashboard-contract.mjs`: 5 passed, 0 failed.
+- `node tests/ui-layout-contract.mjs`: passed.
+- `node tests/agent-workflow.mjs`: 9 passed, 0 failed.
+
+**Rollback**
+- Revert changes to `tools.mjs`, `tools/agent-workflow.mjs`, and `tests/agent-workflow.mjs`.
+
 ## 2026-10-26 — Global UI layout standards v27.3
 
 **Context**

@@ -12,7 +12,11 @@ function fixture() {
   write('package.json', {name:'pn-weekly',version:'26.0.0',scripts:Object.fromEntries(['test','qa','qa:audit','build'].map(x=>[x,'node tools.mjs']))});
   write('.gitignore','work/\n'); write('src/manifest.json','{}'); write('AGENTS.md','Test rules'); write('work/task.md','Test requirement');
   write('tools.mjs','process.exit(0)'); write('tests/p301-export-dto.mjs','process.exit(0)');
-  execFileSync('git',['init','-q'],{cwd}); execFileSync('git',['-c','user.name=Test','-c','user.email=test@example.invalid','commit','--allow-empty','-qm','fixture'],{cwd});
+  try {
+    execFileSync('git',['init','-q'],{cwd}); execFileSync('git',['-c','user.name=Test','-c','user.email=test@example.invalid','commit','--allow-empty','-qm','fixture'],{cwd});
+  } catch (err) {
+    if (err?.code !== 'ENOENT') throw err;
+  }
   const run = (...args) => spawnSync(process.execPath,[runner,...args],{cwd,encoding:'utf8'});
   const state = () => JSON.parse(fs.readFileSync(path.join(cwd,'work/agent-runs/latest.json')));
   function handoff(stage, overrides={}) {

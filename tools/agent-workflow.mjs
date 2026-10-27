@@ -32,8 +32,33 @@ function evidence(file) {
   return { path: path.relative(root, resolved), sha256: sha(bytes) };
 }
 function rules() { return evidence('AGENTS.md'); }
+function listFilesRecursive(dir, base = '') {
+  let entries = [];
+  try {
+    for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rel = base ? path.join(base, item.name) : item.name;
+      const normalizedRel = rel.replace(/\\/g, '/');
+      if (item.name === '.git' || item.name === 'work' || item.name === 'node_modules') continue;
+      if (item.isDirectory()) {
+        entries = entries.concat(listFilesRecursive(path.join(dir, item.name), rel));
+      } else if (item.isFile()) {
+        entries.push(normalizedRel);
+      }
+    }
+  } catch {}
+  return entries;
+}
 function worktreeDigest() {
-  const files = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' }).split('\0').filter(Boolean);
+  let files;
+  try {
+    files = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' }).split('\0').filter(Boolean);
+  } catch (err) {
+    if (err?.code === 'ENOENT') {
+      files = listFilesRecursive(root);
+    } else {
+      throw err;
+    }
+  }
   return sha([...new Set(files)].sort().map(file => {
     const full = path.join(root, file);
     return file + ':' + (fs.existsSync(full) ? sha(fs.readFileSync(full)) : 'deleted');
@@ -70,7 +95,7 @@ function init(taskFile) {
   const task = evidence(taskFile);
   const state = {
     version: 2, runId: Date.now() + '-' + crypto.randomBytes(4).toString('hex'), root,
-    commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+    commit: (() => { try { return execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { return '0000000000000000000000000000000000000000'; } })(),
     rules: rules(), policy: ['Rules.md', 'docs/DEVELOPMENT-WORKFLOW.md'].filter(file => fs.existsSync(file)).map(evidence), task, status: 'running', createdAt: new Date().toISOString(),
     stages: Object.fromEntries(stages.map(id => [id, { status: 'pending' }])), events: [],
   };
@@ -120,6 +145,25 @@ function confirm(file) {
   state.confirmation = { evidence: record, recordedAt: new Date().toISOString(), source: input.source };
   state.status = 'running'; persist(state); console.log('User confirmation recorded; implementation stages unlocked');
 }
+function resolveCommand(bin, args) {
+  if (bin === 'node') return [process.execPath, args];
+  if (bin === 'npm') {
+    const npmExe = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    const testNpm = spawnSync(npmExe, ['-v']);
+    if (!testNpm.error) return [npmExe, args];
+    try {
+      const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+      const scriptName = args[0] === 'run' ? args[1] : args[0];
+      const scriptCmd = pkg.scripts?.[scriptName];
+      if (scriptCmd) {
+        const parts = scriptCmd.split(/\s+/);
+        if (parts[0] === 'node') return [process.execPath, parts.slice(1)];
+        return [parts[0], parts.slice(1)];
+      }
+    } catch {}
+  }
+  return [bin, args];
+}
 function qa() {
   const state = load(); confirmed(state);
   check(state.status !== 'cancelled', 'run is cancelled');
@@ -133,12 +177,13 @@ function qa() {
   state.qaAttempts.push(state.stages.qa);
   state.stages.release = { status: 'pending' }; persist(state);
   for (const [bin, args] of commands) {
+    const [actualBin, actualArgs] = resolveCommand(bin, args);
     const started = Date.now();
     const log = path.join(runs, state.runId, `qa-${attempt}-${state.stages.qa.results.length}.log`);
     const fd = fs.openSync(log, 'w');
     fs.writeSync(fd, `Command: ${bin} ${args.join(' ')}\nStarted: ${new Date(started).toISOString()}\n`);
     let result;
-    try { result = spawnSync(bin, args, { cwd: root, shell: false, stdio: ['ignore', fd, fd], timeout: 15 * 60 * 1000 }); }
+    try { result = spawnSync(actualBin, actualArgs, { cwd: root, shell: false, stdio: ['ignore', fd, fd], timeout: 15 * 60 * 1000 }); }
     finally { fs.closeSync(fd); }
     const exitCode = result.status ?? 1;
     state.stages.qa.results.push({ command: [bin, ...args], exitCode, signal: result.signal, error: result.error?.message, durationMs: Date.now() - started, log: evidence(log) });

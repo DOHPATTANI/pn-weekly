@@ -1,8 +1,20 @@
 // PLANNET DOH v6: หมวดทดสอบ / สร้างเว็บ / เปิดเซิร์ฟเวอร์ ในไฟล์เดียว
 import fs from 'node:fs/promises';import path from 'node:path';import{fileURLToPath}from'node:url';import{execFile}from'node:child_process';import{promisify}from'node:util';
 const root=path.dirname(fileURLToPath(import.meta.url)),mode=process.argv[2]||'serve',run=promisify(execFile);
-async function compileTailwind(){const bin=path.join(root,'node_modules','.bin','tailwindcss');await fs.access(bin);await run(bin,['-i','src/tailwind.css','-o','src/tailwind.generated.css','--minify'],{cwd:root});}
-async function sourceBundles(write=false){await compileTailwind();
+async function compileTailwind(required=false){
+ const bin=path.join(root,'node_modules','.bin',process.platform==='win32'?'tailwindcss.cmd':'tailwindcss');
+ const fallback=path.join(root,'node_modules','.bin','tailwindcss');
+ try{
+  const targetBin=await fs.access(bin).then(()=>bin,()=>fs.access(fallback).then(()=>fallback));
+  await run(targetBin,['-i','src/tailwind.css','-o','src/tailwind.generated.css','--minify'],{cwd:root});
+ }catch(err){
+  const generated=path.join(root,'src/tailwind.generated.css');
+  const exists=await fs.access(generated).then(()=>true,()=>false);
+  if(exists&&!required)return;
+  throw err;
+ }
+}
+async function sourceBundles(write=false){await compileTailwind(write);
  const manifest=JSON.parse(await fs.readFile(path.join(root,'src/manifest.json'),'utf8'));
  for(const [target,files] of Object.entries(manifest)){
   const content=(await Promise.all(files.map(file=>fs.readFile(path.join(root,file),'utf8')))).join('');
