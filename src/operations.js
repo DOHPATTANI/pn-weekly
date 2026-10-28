@@ -666,7 +666,7 @@ $('#app').addEventListener('scroll',scheduleOperationalLayout,{capture:true,pass
 function mountGlobalScope(){
  const app=$('#app'),bar=document.createElement('section');bar.className='global-scope-bar period-bar';bar.setAttribute('aria-label','ขอบเขตข้อมูลทุกหน้า');
  const controls=document.createElement('div');controls.className='period-control';
- for(const id of ['funding-select','year']){const node=document.getElementById(id);if(node)controls.append(node.closest('label'));}
+ for(const id of ['funding-select','year']){const node=document.getElementById(id);if(!node)continue;let label=node.closest('label');if(!label){label=document.createElement('label');label.className='field';label.append(id==='year'?'ปีงบประมาณ':'กลุ่มงบ',node);}controls.append(label);}
  if(controls.children.length!==2){const template=document.createElement('template');template.innerHTML=periodBar(false);for(const label of template.content.querySelectorAll('label'))if(!controls.querySelector('#'+label.querySelector('select').id))controls.append(label);}
  bar.append(controls);const hint=document.createElement('span');hint.className='hint';hint.textContent='ใช้ขอบเขตนี้ร่วมกันทุกหน้า';bar.append(hint);app.prepend(bar);
 }
