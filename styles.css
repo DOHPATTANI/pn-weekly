@@ -4288,7 +4288,7 @@ body:has(> main > #app) {
  #app[data-screen=weekly] .weekly-summary .summary-count{border-radius:8px!important;box-shadow:none!important}
  #app .global-scope-bar .period-control{column-gap:16px!important;row-gap:12px!important}
  #app .global-scope-bar .period-control>label{flex:0 0 auto!important;width:auto!important;max-width:none!important;min-width:0!important}
- #app .global-scope-bar .period-control>label select{box-sizing:border-box!important;flex:none!important;width:180px!important;max-width:240px!important}
+ #app .global-scope-bar .period-control>label select{box-sizing:border-box!important;min-width:0!important;flex:none!important;width:180px!important;max-width:240px!important}
  #app .global-scope-bar .period-control>label.week-control select{width:240px!important}
  @media(max-width:640px){#app .global-scope-bar .period-control>label{display:flex!important;flex:1 1 100%!important;justify-content:space-between}#app .global-scope-bar .period-control>label select{width:min(240px,65vw)!important;min-width:0!important}}
 }
@@ -4307,4 +4307,40 @@ body:has(> main > #app) {
  #app table.operational-table td{font-variant-numeric:tabular-nums}
  #app .global-scope-bar .btn.primary{background:var(--doh-forest);border-color:var(--doh-forest)}
  #app .global-scope-bar .btn.primary:hover{filter:brightness(1.12)}
+}
+/* Highways: shared operational surfaces. Official report/P301 renderers excluded. */
+@media screen{
+ html[data-ui-theme=emerald]{--highways-brand:#0f3e2f;--highways-accent:#e4b84a;--highways-paper:#fff;--highways-page:#f1f5f3;--highways-rule:#d8e2dc;--highways-shadow:0 2px 8px rgb(15 62 47 / 5%)}
+ html[data-ui-theme=emerald][data-ui-mode=light] body{background:var(--highways-page)}
+ html[data-ui-theme=emerald] .sidebar{background:var(--highways-brand)!important}
+ html[data-ui-theme=emerald] .sidebar .brand{border-color:rgb(255 255 255 / 12%);box-shadow:none}
+ html[data-ui-theme=emerald] .sidebar nav button.active{border-left:3px solid var(--highways-accent);background:rgb(228 184 74 / 13%)}
+ #app.highways-ui{padding:24px!important}
+ #app.highways-ui>.global-scope-bar{border-top:3px solid var(--doh-highway-gold);border-radius:10px!important;box-shadow:var(--doh-panel-shadow);margin-bottom:20px!important}
+ #app.highways-ui>.card,#app.highways-ui .table-card,#app.highways-ui .registry-panel,#app.highways-ui .archive-panel{border-radius:10px;box-shadow:var(--doh-panel-shadow)}
+ #app.highways-ui .table-density{padding:14px 16px!important;gap:12px!important;min-height:72px}
+ #app.highways-ui .table-density .search-field{max-width:460px;flex:1 1 260px}
+ #app.highways-ui .table-density>.selection-toolbar{margin-left:auto!important;display:flex;align-items:center;gap:8px}
+ #app.highways-ui .table-density>label{margin:0!important;flex:none;white-space:nowrap}
+ #app.highways-ui .operational-table th{font-size:12px;font-weight:600;text-align:left;line-height:1.6}
+ #app.highways-ui .operational-table td{font-size:14px;line-height:1.65;font-variant-numeric:tabular-nums}
+ html[data-ui-mode=light] #app.highways-ui .operational-table th{background:#edf3ef;color:#244b3a;border-bottom:1px solid #c7d8cc}
+ #app.highways-ui .operational-table .sub{font-size:12px;line-height:1.6;margin-top:4px}
+ #app.highways-ui .operational-table .sort-head{gap:8px}
+ #app.highways-ui .catalog-tabs{padding:12px!important;gap:8px!important}
+ #app.highways-ui .catalog-group-label{font-size:11px;font-weight:600;line-height:1.4}
+ #app.highways-ui .catalog-table,.highways-ui .archive-table{margin-top:0!important}
+ #app.highways-ui .p301-register{padding:16px!important}
+ #app.highways-ui .p301-summary{margin:16px 0!important}
+ #app.highways-ui .p301-stat{border-radius:10px!important;box-shadow:var(--doh-panel-shadow)}
+ #app.highways-ui .p301-stat>span{font-size:14px;font-weight:500}
+ #app.highways-ui .p301-stat>strong{font-size:28px;font-variant-numeric:tabular-nums}
+ #app.highways-ui .global-scope-bar .period-control{justify-content:flex-start!important}
+ #app.highways-ui .global-scope-bar .period-control>label{min-width:max-content!important;flex:none!important}
+ #app.highways-ui .global-scope-bar .period-control>label select{min-width:0!important;box-sizing:border-box!important}
+ #app.highways-ui .btn{border-radius:8px;min-height:40px;font-weight:500}
+ #app.highways-ui .btn:focus-visible{outline:3px solid var(--doh-highway-gold);outline-offset:2px}
+ #app.highways-ui .notice{border-radius:8px;line-height:1.65}
+ @media(max-width:850px){#app.highways-ui{padding:16px!important}}
+ @media(max-width:640px){#app.highways-ui{padding:12px!important}#app.highways-ui .table-density{flex-wrap:wrap}#app.highways-ui .table-density>.search-field{flex-basis:100%;max-width:none}#app.highways-ui .table-density>.selection-toolbar{margin-left:0!important}#app.highways-ui .global-scope-bar .period-control>label{min-width:0!important;flex:1 1 100%!important}#app.highways-ui .btn{min-height:44px}#app.highways-ui .operational-table input{font-size:16px}}
 }
