@@ -156,6 +156,8 @@ Authority: Latest baseline specified in `AGENTS.md` (v27.3) and `DESIGN.md` (v27
 
 ## v27.3 Global UI Layout Standards
 
+UI release acceptance is maintained in [docs/UI-RELEASE-GATE.md](docs/UI-RELEASE-GATE.md). Shared shell changes require reviewing every affected screen; empty containers, duplicate scope/IDs, duplicated CTAs, unintended card wrapping and fragmented toolbars block release. Automated functional success does not establish visual approval.
+
 Canonical layout, toolbar, filter, overlay and responsive rules are maintained in `docs/UI-LAYOUT-STANDARDS-v27.3.md` and implemented by the shared application-shell styles in `src/cascade-06.css`. The standard owner is presentation-only: it does not change selector calculations, API contracts, database state, authentication, or official report surfaces.
 
 - Primary page actions stay in the right side of the shared operational toolbar; secondary actions use the existing disclosure/menu owners.

@@ -53,6 +53,8 @@
 
 ## Step 6: Validation Result
 
+งานที่เปลี่ยน UI ต้องผ่าน [UI Release Gate](UI-RELEASE-GATE.md) ก่อน push ที่นำไป deploy และตรวจ live revision หลังเผยแพร่ โดยมีภาพ/ผลตรวจของทุกหน้าที่ได้รับผล การแก้ shared shell ต้องตรวจครบหน้าหลัก ไม่ใช้ build หรือ functional QA เป็นหลักฐานแทน visual review และไม่ต้องขอผู้ใช้ยืนยันซ้ำสำหรับการตรวจตามปกติ
+
 คำสั่งให้ทำจนเสร็จทั้งหมดสำหรับเว็บรวมถึง deploy สำเร็จและ production smoke ที่ยืนยันว่าพร้อมใช้งานตามขอบเขตที่อนุญาต ไม่ถามยืนยันซ้ำในแต่ละขั้น และไม่ปิดงานเมื่อทำได้เพียงบางรายการ หากมี blocker จริงต้องระบุหลักฐานตามจริงโดยไม่อ้างพร้อมใช้งาน
 
 เทียบ requirement/implementation/result/source files แบบ traceability รายงานคำสั่งที่รันจริงและ Pass/Fail/Not run พร้อมเหตุผล ครอบคลุม typecheck, lint, unit/integration/E2E, build, security/auth, migration, UX/accessibility ตาม scope

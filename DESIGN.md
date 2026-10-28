@@ -59,6 +59,12 @@ Thai locale, Bangkok business timezone, Buddhist years (พ.ศ.) in display, Gr
 
 ## Layout
 
+### DOH operational refinement — 2026-10-28
+
+หน้าปฏิบัติงานใช้ภาพลักษณ์ศูนย์ควบคุมงานทาง: เขียวป่า `#0f3e2f` และทองเส้นทาง `#e4b84a` เป็น brand accents บนพื้นขาว ตัวอักษรไทยใช้ font stack เดิม ตารางและตัวเลขใช้ tabular numerals ลำดับสำคัญคือ scope หนึ่งชุด → คำสั่งในกรอบเดียว → สรุปที่สัมพันธ์กับงาน → ตาราง หลีกเลี่ยงกรอบซ้อน แถบปุ่มเปลืองพื้นที่และเงาหลายชั้น ความพรีเมียมมาจาก alignment ความหนาแน่นที่อ่านง่าย และความสม่ำเสมอ ไม่เพิ่มของตกแต่งที่ไม่ช่วยเจ้าหน้าที่ทำงาน
+
+Runtime owner คือ `src/cascade-06.css` ผ่าน `--doh-forest` / `--doh-highway-gold` และ business-named operational selectors เท่านั้น ไม่เปลี่ยนสีตัวอักษรเอกสารราชการหรือ semantic status ด้วย brand tokens
+
 Desktop collapsible sidebar + document-scrolling content. Archive: group/year filters, local search, five-column native table, latest end date first. Table owns horizontal overflow; the page must not overflow horizontally. Loading/error feedback must not move primary controls.
 
 ## Elevation & Depth

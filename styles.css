@@ -4261,3 +4261,37 @@ body:has(> main > #app) {
 #app .contract-title-progress{display:grid;gap:5px}.inline-contract-progress{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px}.inline-contract-progress::before{content:'';width:64px;height:5px;border-radius:9px;background:#e4ece7;overflow:hidden}.inline-contract-progress{position:relative}.inline-contract-progress>span{position:absolute;left:0;top:2px;width:0;height:5px;border-radius:9px;background:var(--doh-forest-800,#0f4c38)}.inline-contract-progress small{font-size:10px;color:inherit;white-space:nowrap}
 
 @media screen{#app>.global-scope-bar{border-top:3px solid var(--doh-highway-gold,#e4b84a);background:var(--surface,#fff);margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap}#app>.global-scope-bar label{display:inline-flex;flex-direction:row;align-items:center;gap:8px;white-space:nowrap}#app>.global-scope-bar select{width:auto;min-width:120px}.inline-contract-progress>span{max-width:64px}.p301-settings-group{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:12px;background:var(--surface,#fff)}.p301-settings-group>summary{cursor:pointer;font-weight:700;color:var(--green);padding:8px 0}.p301-settings-group>label{margin-top:12px}.p301-layout-controls .p301-settings-group{grid-column:1/-1}}
+@media screen{
+ #app>.global-scope-bar{padding:14px 18px!important;min-height:72px;align-items:center!important;justify-content:space-between;gap:12px!important;border-radius:12px}
+ #app>.global-scope-bar>.period-control{display:flex!important;align-items:center;justify-content:flex-start!important;gap:16px!important;flex-wrap:wrap;width:auto!important;flex:1}
+ #app>.global-scope-bar>.hint{display:none}
+ #app>.global-scope-bar .operational-dock{position:static!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;min-height:0!important;background:transparent!important;width:auto!important}
+ #app .weekly-controls,#app .registry-controls{padding:16px!important;min-height:0!important;gap:16px!important}
+ #app .weekly-controls .period-bar:empty,#app .registry-controls .period-control:empty{display:none!important}
+ #app .p301-summary{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+ #app .p301-stat{min-height:110px!important;padding:18px!important}
+ #app .table-density{display:flex!important;align-items:center!important;gap:12px!important;padding:14px 16px!important}
+ #app .table-density>.selection-toolbar{margin-left:auto!important}
+ #app .table-density>.search-field{flex:1 1 260px;max-width:460px}
+ #app .p301-scope{padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important;margin:0 0 12px!important;min-height:0!important}
+ #app .registry-control-tools:empty{display:none!important}
+ @media(max-width:900px){#app .p301-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
+ @media(max-width:640px){#app .p301-summary{grid-template-columns:repeat(2,minmax(0,1fr))}#app>.global-scope-bar>.period-control{align-items:stretch!important}#app>.global-scope-bar label{white-space:normal!important;flex:1 1 140px}#app>.global-scope-bar select{min-width:0!important;width:100%!important}#app .table-density{flex-wrap:wrap}}
+}
+/* DOH operational identity: screen components only; official report styles stay isolated. */
+:root{--doh-forest:#0f3e2f;--doh-highway-gold:#e4b84a;--doh-control-radius:8px;--doh-panel-shadow:0 2px 8px rgba(15,62,47,.05)}
+@media screen{
+ #app>.global-scope-bar{position:sticky;top:var(--operational-shell-top,70px);z-index:70;border-top:3px solid var(--doh-highway-gold);box-shadow:var(--doh-panel-shadow)}
+ #app>.global-scope-bar .period-control>label{font-size:13px;font-weight:600;gap:8px}
+ #app>.global-scope-bar select{height:44px;max-width:260px;border-radius:var(--doh-control-radius);font-weight:500}
+ #app .table-density{background:var(--surface,#fff);border-radius:0;border-bottom:1px solid var(--line);box-shadow:none}
+ #app .table-density .search{font-size:14px}
+ #app .table-density .selection-toolbar .btn{white-space:nowrap}
+ #app .registry-controls,#app .weekly-controls{box-shadow:var(--doh-panel-shadow)}
+ #app .weekly-controls .week-management{margin:0!important;padding:0!important}
+ #app .weekly-controls .summary-items{margin:0!important}
+ #app table.operational-table th{font-size:12px;letter-spacing:0;font-weight:600}
+ #app table.operational-table td{font-variant-numeric:tabular-nums}
+ #app .global-scope-bar .btn.primary{background:var(--doh-forest);border-color:var(--doh-forest)}
+ #app .global-scope-bar .btn.primary:hover{filter:brightness(1.12)}
+}

@@ -392,6 +392,7 @@
 ## 11. UI, Design Tokens, Accessibility และ Responsive
 
 ### 11.1 General UI, Design Tokens และ Component Variants
+- บังคับใช้ [UI Release Gate](docs/UI-RELEASE-GATE.md) ทุกงาน UI: ตรวจภาพทุกหน้าที่ได้รับผลก่อนเผยแพร่ ห้ามผ่านกรอบว่าง ตัวกรอง/ID ซ้ำ CTA ซ้ำ กรอบเครื่องมือซ้อน หรือการ์ดตกแถวโดยไม่ตั้งใจ ห้ามใช้ test/build ผ่านแทนการตรวจหน้าตา
 - ใช้ **CSS Design Tokens (`:root`)** ควบคุมสี พื้นผิว ขอบมน ระยะห่าง และฟอนต์จากจุดเดียว:
   - Sidebar โทนสีเขียวเข้มกรมทางหลวงพร้อมแถบไฮไลต์สีทอง (`--g900`, `--g800`, `--gold`) และโลโก้ `PLANNET DOH` สองสี (`brand-gold` / `brand-cream`)
   - Topbar โปร่งแสงพร้อมป้าย Breadcrumb ทรงแคปซูลและจุดสถานะสีเขียว
