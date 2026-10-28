@@ -1358,6 +1358,15 @@
  @media(max-width:640px){#app .p301-summary{grid-template-columns:repeat(2,minmax(0,1fr))}#app>.global-scope-bar>.period-control{align-items:stretch!important}#app>.global-scope-bar label{white-space:normal!important;flex:1 1 140px}#app>.global-scope-bar select{min-width:0!important;width:100%!important}#app .table-density{flex-wrap:wrap}}
 }
 /* DOH operational identity: screen components only; official report styles stay isolated. */
+@media screen{
+ body:has(#app[data-screen=weekly]) .topbar .page-primary-actions{display:none!important}
+ #app[data-screen=weekly]>.weekly-controls{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+ #app[data-screen=weekly]>.weekly-controls .week-management{margin:0 0 12px!important}
+ #app[data-screen=weekly] .weekly-table-panel{border:1px solid var(--line);box-shadow:var(--doh-panel-shadow)}
+ #app[data-screen=weekly] .weekly-table thead th{background:#edf3ef!important}
+ #app[data-screen=weekly] .weekly-summary .summary-count{border-radius:8px!important;box-shadow:none!important}
+ #app .global-scope-bar .period-control{column-gap:16px!important;row-gap:12px!important}
+}
 :root{--doh-forest:#0f3e2f;--doh-highway-gold:#e4b84a;--doh-control-radius:8px;--doh-panel-shadow:0 2px 8px rgba(15,62,47,.05)}
 @media screen{
  #app>.global-scope-bar{position:sticky;top:var(--operational-shell-top,70px);z-index:70;border-top:3px solid var(--doh-highway-gold);box-shadow:var(--doh-panel-shadow)}
