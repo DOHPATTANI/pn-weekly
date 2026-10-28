@@ -1367,7 +1367,7 @@
  #app[data-screen=weekly] .weekly-summary .summary-count{border-radius:8px!important;box-shadow:none!important}
  #app .global-scope-bar .period-control{column-gap:16px!important;row-gap:12px!important}
  #app .global-scope-bar .period-control>label{flex:0 0 auto!important;width:auto!important;max-width:none!important;min-width:0!important}
- #app .global-scope-bar .period-control>label select{flex:none!important;width:180px!important;max-width:240px!important}
+ #app .global-scope-bar .period-control>label select{box-sizing:border-box!important;flex:none!important;width:180px!important;max-width:240px!important}
  #app .global-scope-bar .period-control>label.week-control select{width:240px!important}
  @media(max-width:640px){#app .global-scope-bar .period-control>label{display:flex!important;flex:1 1 100%!important;justify-content:space-between}#app .global-scope-bar .period-control>label select{width:min(240px,65vw)!important;min-width:0!important}}
 }
