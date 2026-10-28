@@ -314,3 +314,16 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 
 **Rollback**
 - Revert this commit; no database migration or persisted schema change is introduced.
+# 2026-10-28 — Close report status and asset workflow gaps
+
+**Context:** ผู้ใช้อนุญาตให้ปิดรายการทั้งหมดจนเผยแพร่โดยไม่ถามซ้ำ ปัจจุบันรายงานสีเขียวอิง payment default แม้งานยังไม่แล้วเสร็จ และทะเบียนทรัพย์สินรวมพร้อมจัดทำกับจัดทำแล้ว
+
+**Decision:** เงื่อนไขสีเขียวต้อง complete(e) ร่วมกับรอส่งมอบงานใน HTML, XLSX และภาพ แยกสถานะ workflow ทรัพย์สินออกจากสถานะ readiness ที่ใช้ตรวจสิทธิ์ส่งออก โดย exempt มีลำดับก่อน confirmed เพิ่ม pure chain recalculation ให้การแก้/ลบ extension ปรับวันที่ของรายการต่อเนื่อง และเก็บ legacy metadata เมื่อแก้ไข
+
+**Report layout:** signatureGap ใช้ทั้ง vector และ native workbook; สำรองความสูงลายเซ็นเมื่อแบ่งหน้า รูปภาพรายสัปดาห์สำรองพื้นที่ summary แยกหน้าเมื่อเกินขอบเขต แยกหมวดตัวจัดการ พ.3-01 โดยคง input names และ handlers เดิม
+
+**Validation:** unit tests 169 ผ่านและ build ผ่านก่อน workflow selector refinement; ต้องรัน final gates ใหม่กับ revision สุดท้าย ผลนี้ไม่ใช่หลักฐานว่า scope ทั้งหมดเสร็จหรือ deploy แล้ว
+
+**Impact:** ไม่เพิ่ม schema, auth หรือข้อมูลจำลอง ไม่เปลี่ยนสูตรค่าเสื่อม
+
+**Rollback:** revert source changes แล้ว regenerate ผ่าน node tools.mjs source ไม่แก้ข้อมูลจริง
