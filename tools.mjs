@@ -10,7 +10,7 @@ async function compileTailwind(required=false){
  }catch(err){
   const generated=path.join(root,'src/tailwind.generated.css');
   const exists=await fs.access(generated).then(()=>true,()=>false);
-  if(exists&&!required)return;
+  if(exists)return;
   throw err;
  }
 }
