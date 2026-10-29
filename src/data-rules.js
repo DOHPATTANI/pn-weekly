@@ -158,7 +158,8 @@ export function p301Record(s,r){
 }
 export const P301_COLUMNS=['วัน\nเดือน\nปี','ที่เอกสาร','รายการ','จำนวน\nหน่วย','ราคาต่อ\nหน่วย/ชุด/\nกลุ่ม','มูลค่ารวม','อายุใช้\nงาน','อัตรา\nค่าเสื่อม\nราคา','ค่าเสื่อมราคา\nประจำปี','ค่าเสื่อมราคา\nสะสม','มูลค่าสุทธิ','หมายเหตุ'];
 export const P301_DESCRIPTION_PADDING=18;
-export const P301_LAYOUT_DEFAULTS=Object.freeze({widths:[76,104,267,63,56,79,42,47,76,78,78,76],fontSize:16,rowHeight:20,descriptionHeight:128,signatureGap:64,margin:40,maxRows:14});
+// Relative widths measured from the owner-supplied P.3-01 workbook (2026-10-28).
+export const P301_LAYOUT_DEFAULTS=Object.freeze({widths:[107.97,143.95,319.93,116.93,71.99,111.96,60.97,71.96,107.97,106.96,96.98,96.98],fontSize:16,rowHeight:20,descriptionHeight:128,signatureGap:64,margin:35,maxRows:14});
 const p301ShortDate=value=>new Date(p301ISO(value,'วันที่')+'T00:00:00Z').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit',timeZone:'UTC'});
 const p301Money=n=>n==null?'–':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 export function p301LayoutConfig(value={}){const cfg={...P301_LAYOUT_DEFAULTS,...value,widths:[...(value.widths||P301_LAYOUT_DEFAULTS.widths)]};if(cfg.widths.length!==12||cfg.widths.some(x=>!Number.isFinite(+x)||+x<24||+x>1000))throw Error('กรุณาระบุความกว้าง 12 คอลัมน์ คอลัมน์ละ 24–1,000');for(const [key,min,max]of [['fontSize',10,20],['rowHeight',16,40],['descriptionHeight',80,300],['signatureGap',32,180],['margin',20,55],['maxRows',4,30]]){cfg[key]=Number(cfg[key]);if(!Number.isFinite(cfg[key])||cfg[key]<min||cfg[key]>max)throw Error('ค่ารูปแบบไม่ถูกต้อง: '+key);}cfg.widths=cfg.widths.map(Number);return cfg;}
@@ -170,9 +171,9 @@ function p301Line(page,x,y,x2,y2,dotted=false){page.commands.push({type:'line',x
 function p301Fit(page,text,x,y,width,size,align,measure){let font=size;while(font>10&&measure(text,font)>width)font-=.5;if(measure(text,font)>width)throw Error('ข้อความยาวเกินคอลัมน์ กรุณาขยายคอลัมน์หรือลดขนาดตัวอักษร');p301Text(page,text,x,y,font,align);}
 function p301PartyLabelRuns(record){const selected=record.partyRole||'contractor';return [{text:'ชื่อผู้ขาย',strike:selected!=='seller'},{text:'/'},{text:'ผู้รับจ้าง',strike:selected!=='contractor'},{text:'/'},{text:'ผู้บริจาค',strike:selected!=='donor'}];}
 function p301MetadataFields(record,font,measure){return [
- [[0,.23,38,'ประเภท',record.assetCategory],[.23,.35,25,'รหัส',record.workCode],[.35,.63,82,'ลักษณะ/คุณสมบัติ',record.featureLabel||'-'],[.63,1,48,'รุ่น/แบบ',record.modelSpec||'-']],
- [[0,.43,150,'สถานที่ตั้ง/หน่วยงานที่รับผิดชอบ',record.location||record.division],[.43,1,150,'ชื่อผู้ขาย/ผู้รับจ้าง/ผู้บริจาค',record.contractorName]],
- [[0,.43,25,'ที่อยู่',record.contractorAddress||''],[.43,1,48,'โทรศัพท์',record.contractorPhone||'']]
+ [[0,.2205,38,'ประเภท',record.assetCategory],[.2205,.3308,25,'รหัส',record.workCode],[.3308,.624,82,'ลักษณะ/คุณสมบัติ',record.featureLabel||'-'],[.624,1,48,'รุ่น/แบบ',record.modelSpec||'-']],
+ [[0,.4141,0,'สถานที่ตั้ง/หน่วยงานที่รับผิดชอบ',record.location||record.division],[.4141,1,0,'ชื่อผู้ขาย/ผู้รับจ้าง/ผู้บริจาค',record.contractorName]],
+ [[0,.4141,25,'ที่อยู่',record.contractorAddress||''],[.4141,1,48,'โทรศัพท์',record.contractorPhone||'']]
 ].map(row=>row.map(([a,b,minWidth,label,value])=>[a,b,Math.max(minWidth,Math.ceil(measure(label,font))+8),label,value||'']));}
 function p301Header(record,layout,measure){const page={width:1122.52,height:793.7,commands:[],layout,record},m=layout.margin,right=page.width-m,font=layout.fontSize,field=(label,value,x,y,w,labelWidth)=>{p301Text(page,label,x,y,font,'left',false,label==='ชื่อผู้ขาย/ผู้รับจ้าง/ผู้บริจาค'?p301PartyLabelRuns(record):null);const valueX=x+labelWidth,valueWidth=w-labelWidth,lines=p301Wrap(value,valueWidth-8,font,measure);for(let i=0;i<lines.length;i++)p301Text(page,lines[i],valueX+valueWidth/2,y+i*(font+1),font,'center');p301Line(page,valueX,y+2+(lines.length-1)*(font+1),x+w,y+2+(lines.length-1)*(font+1),true);return Math.max(19,lines.length*(font+1)+3);};
  p301Text(page,'ทะเบียนคุมทรัพย์สิน',page.width/2,49,18,'center',true);p301Text(page,'พ.3-01',right,70,16,'right');p301Text(page,'เริ่มใช้ ส.ค.2546',right,90,16,'right');p301Text(page,'ส่วนราชการ   '+(record.department||P301_DEFAULTS.department),right-230,109,font);p301Text(page,'หน่วยงาน      '+(record.division||P301_DEFAULTS.division),right-230,129,font);
