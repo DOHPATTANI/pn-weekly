@@ -16,6 +16,9 @@ test('dashboard view model derives actual scope values and keeps source rows imm
  const state={contractRegistry:[{id:'r',projectId:'p',year:2569,funding:'DOH',budgetAccount:'สป.',workTypeId:'road',contractValue:100,actualCost:25},{id:'s',projectId:'q',year:2569,funding:'DOH',budgetAccount:'สป.',workTypeId:'road',contractValue:200,actualCost:100}],projects:[],workTypes:[{id:'road',name:'งานทาง'}],reports:[]};
  const model=A.selectDashboardViewModel({state,rows,year:2569,funding:'DOH',asOfDate:'2026-10-26'});
  assert.equal(model.actual,62.5);assert.equal(model.plan,90);assert.equal(model.metrics.total,2);assert.equal(model.statusDistribution.reduce((sum,item)=>sum+item.count,0),2);
+ assert.equal(model.diffActual,null,'no previous report must not imply a measured zero change');
+ const empty=A.selectDashboardViewModel({state,rows,filters:{query:'NO MATCH'},year:2569,funding:'DOH',asOfDate:'2026-10-26'});
+ assert.equal(empty.rows.length,0);assert.equal(empty.diffActual,null,'empty search must not produce a negative trend');
  assert.equal(model.workTypes[0].count,2);assert.equal(model.workTypes[0].name,'งานทาง');assert.equal(model.pendingCounts.incomplete,1);assert.equal(model.pendingCounts.followup,0);assert.equal(A.selectDashboardViewModel({state,rows,year:2569,funding:'DOH',asOfDate:'2026-10-26',pendingQuery:'NO MATCH'}).pendingProjectRows.length,0);assert.equal(model.workTypes[0].percent,100);assert.equal(model.projectRows[0].record.id,'r');assert.equal(model.pendingRows.length,1);
  assert.equal(A.DASHBOARD_VIEW_CONFIG.pageSize,8);assert.deepEqual(rows,before);
 });

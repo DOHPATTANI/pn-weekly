@@ -272,4 +272,18 @@
  @media(max-width:850px){#app.highways-ui .dash-v25-filter{display:flex;flex-wrap:wrap}}
  @media(prefers-reduced-motion:reduce){.highways-shell *{scroll-behavior:auto!important}}
 }
+/* Shared operational rhythm; print/export geometry remains independently owned. */
+@media screen{
+ :root{--ops-section-gap:24px;--ops-content-gap:16px;--ops-control-gap:8px}
+ #app.highways-ui .dashboard-shell{gap:var(--ops-section-gap)}
+ #app.highways-ui :is(.dash-kpis,.dash-visual-grid,.dash-table-grid,.reference-metrics,.p301-summary){gap:var(--ops-content-gap)}
+ #app.highways-ui .dashboard-shell>:is(.dash-kpis,.dash-visual-grid,.dash-table-grid){margin-bottom:0}
+ #app.highways-ui :is(.table-density,.registry-control-tools){display:flex;flex-wrap:wrap;align-items:center;gap:var(--ops-control-gap)!important;min-width:0}
+ #app.highways-ui .table-density>.search-field{flex:1 1 260px;min-width:0;max-width:none}
+ #app.highways-ui :is(.weekly-control-tools,.selection-toolbar){display:flex;flex-wrap:wrap;align-items:center;gap:var(--ops-control-gap);min-width:0;max-width:100%}
+ #app.highways-ui :is(.dash-pipeline-card,.dash-visual-grid>.route,.dash-visual-grid>.donut-card){height:auto;overflow:visible}
+ #app.highways-ui .dash-v25-filter{height:auto;min-height:48px}
+ @media(max-width:850px){#app.highways-ui[data-screen=dashboard] .dash-visual-grid{grid-template-columns:minmax(0,1fr)}#app.highways-ui .dash-v25-filter{display:grid;grid-template-columns:minmax(0,1fr)}#app.highways-ui .dash-v25-filter>*{grid-column:1!important;grid-row:auto!important;min-width:0}}
+ @media(max-width:640px){:root{--ops-section-gap:16px;--ops-content-gap:12px}#app.highways-ui .table-density>.search-field{flex-basis:100%}}
+}
 @media print{.institutional-header{display:none!important}}

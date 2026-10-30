@@ -123,11 +123,11 @@ export function selectDashboardViewModel({state,rows=[],filters={},pendingQuery=
  const average=(items,key)=>items.length?items.reduce((sum,row)=>sum+Number(row.e?.[key]||0),0)/items.length:0;
  const actual=average(rows,'actual'),plan=average(rows,'plan');
  const history=(state.reports||[]).filter(r=>reportMatchesScope(state,r,year,funding)&&Object.keys(r.entries||{}).length).sort((a,b)=>(b.end||b.reference||'').localeCompare(a.end||a.reference||'')).slice(0,6).reverse().map(report=>{
-  const reportRows=rowsFor({...state,activeFunding:funding},report,year);
+  const reportRows=filterDashboardRows(rowsFor({...state,activeFunding:funding},report,year),filters,registry,asOfDate,state.workCodes||[]);
   return {report,rows:reportRows,actual:average(reportRows,'actual'),plan:average(reportRows,'plan'),pendingCount:selectPendingActionRows(reportRows,report.end||asOfDate).length,entryCount:Object.keys(report.entries||{}).length};
  });
  const previous=history.length>1?history[history.length-2]:null;
- const diffActual=actual-(previous?previous.actual:actual);
+ const diffActual=rows.length&&previous?.rows.length?actual-previous.actual:null;
  const metrics=computeKpiMetrics(rows,scopedRegistry),finance=metrics.finance;
  const delayedDiff=metrics.behind-(previous?computeKpiMetrics(previous.rows,scopedRegistry).behind:metrics.behind);
  const byId=new Map();for(const record of registry){byId.set(record.id,record);if(record.projectId)byId.set(record.projectId,record);}
