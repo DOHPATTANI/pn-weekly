@@ -500,7 +500,8 @@ test('Dashboard uses live projections and excludes illustrative simulator record
  assert.ok(appJs.includes('selectDashboardViewModel'),'app.js must use the dashboard view model');
  assert.ok(!appJs.includes('SEED_DATA')&&!appJs.includes('โหลดข้อมูลมาตรฐาน (47 สัญญา)')&&!appJs.includes('setDashboardState'),'runtime must not expose illustrative data states');
  assert.deepEqual(App.calcPipelineWeights(6,1,0,40,4),{ongoing:600/47,deliver:100/47,pay:0,paid:4000/47,expired:0});
- assert.ok(appJs.includes("spark(m.history.map(item=>item.actual)")&&appJs.includes("spark(m.history.map(item=>item.pendingCount)"),'KPI trends use actual history');
+ assert.ok(appJs.includes("spark(m.history.map(item=>item.actual)")&&appJs.includes('แนวโน้ม ${values.length} รอบรายงานล่าสุด'),'progress trend uses actual history and identifies its reporting window');
+ assert.ok(appJs.includes('work-type-bars')&&appJs.includes('สัดส่วนสัญญาตามประเภทงาน'),'work type comparison uses labeled bars');
 });
 }else if(mode==='qa'){
  const {PGlite}=await import('@electric-sql/pglite'),{chromium}=await import('playwright'),{default:assert}=await import('node:assert/strict'),A=await import('./app.js');
