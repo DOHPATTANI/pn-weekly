@@ -1,0 +1,275 @@
+/* 2026-10-30 owner reference. Operational screen geometry only. */
+:root{
+ --ref-forest:#0a2e23;--ref-gold:#e4b84a;--ref-paper:#fff;--ref-page:#f3f6f3;
+ --ref-line:#dbe4df;--ref-ink:#0d281e;--ref-muted:#526b62;
+ --ref-shadow:0 1px 3px rgb(10 46 35 / 4%),0 6px 18px -4px rgb(10 46 35 / 6%);
+ --ref-header:56px;--ref-radius:12px;
+}
+@media screen{
+ /* Resolve previous cascade variants at the shared reference owner. */
+ .highways-shell{background:var(--ref-page)!important;background-image:none!important}
+ html[data-ui-mode=dark] .highways-shell{background:var(--ui-page)!important}
+ html[data-ui-mode=light] .highways-shell .sidebar nav button.active{background:#e7f2ec!important;color:#10553d!important}
+ html[data-ui-mode=light] .highways-shell .sidebar .nav-caption{color:var(--ref-muted)!important}
+ .highways-shell #app-sidebar .sidebar-toggle{top:12px!important;right:14px!important;transform:none!important;width:30px!important;height:30px!important}
+ .highways-shell .sidebar-management{margin-top:0}
+ .highways-shell .sidebar-connection{flex:none}
+ #institutional-scope select{appearance:auto!important;background:var(--ref-forest)!important;color:white!important;border:0!important;border-radius:4px!important;min-height:34px!important;padding-right:4px!important}
+ .highways-shell .topbar .page-context>.field{white-space:nowrap;min-width:0;flex:none;width:auto}
+ .highways-shell .topbar .page-context>.field select{min-width:220px;width:auto}
+ body.highways-shell:has(#app[data-screen]) .topbar .page-primary-actions:not(:empty){display:flex!important}
+ .highways-shell .topbar [hidden]{display:none!important}
+ #app.highways-ui[data-screen] .weekly-bento-card,#app.highways-ui[data-screen] .budget-summary-card{background:var(--ui-control-bg,white)!important;border:1px solid var(--ref-line)!important;border-top:3px solid var(--bento-accent,var(--green))!important;box-shadow:var(--ref-shadow)!important;border-radius:12px!important;min-height:126px;padding:16px!important}
+ #app.highways-ui[data-screen] .weekly-bento-card.active,#app.highways-ui[data-screen] .budget-summary-card.active{outline:2px solid var(--green);outline-offset:1px}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-hero-card .hname{font-size:30px!important;line-height:1.3!important}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-hero-card .hweek{font-size:12px!important;line-height:1.6}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-card.pipe .pbar{display:none}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-card{min-height:0;padding:20px!important}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-card.pipe{padding-bottom:16px!important}
+ #app.highways-ui[data-screen=dashboard] .dash-visual-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-kpi-card{background:var(--ui-control-bg,white)!important;border-color:var(--ref-line);border-top-color:var(--green)}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-kpi-card.k2{border-top-color:#00af80}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-kpi-card.k3{border-top-color:#3264ed}
+ #app.highways-ui[data-screen=dashboard] .dash-v25-kpi-card.k4{border-top-color:#e5385f}
+ #app.highways-ui[data-screen=dashboard] .pill-box{background:var(--ui-control-bg,white)!important;border-color:var(--ref-line);border-top-color:var(--ref-gold)}
+ #app.highways-ui[data-screen=dashboard] .pill-box.p1{border-top-color:#177245}
+ #app.highways-ui[data-screen=dashboard] .pill-box.p3{border-top-color:#1455aa}
+ #app.highways-ui[data-screen=dashboard] .pill-box.p4{border-top-color:#e22222}
+ #app.highways-ui[data-screen=dashboard] .pill-box.p5{border-top-color:#64748b}
+ html[data-ui-mode=light] .highways-shell{background:var(--ref-page)}
+ .institutional-header{position:fixed;inset:0 0 auto;z-index:130;min-height:var(--ref-header);display:flex;align-items:center;gap:20px;padding:10px 24px;background:var(--ref-forest);border-bottom:1px solid var(--ref-gold);color:white;box-shadow:0 2px 6px rgb(10 46 35 / 12%)}
+ .institutional-header .brand{display:flex;align-items:center;gap:12px;padding:0;margin:0;border:0;background:none;box-shadow:none;min-width:0;color:white;letter-spacing:0;font-size:17px;line-height:1.3}
+ .institutional-header .logo{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--ref-gold);border-radius:11px;font-size:20px;flex:none;background:#104d3a}
+ .institutional-header .logo span{color:var(--ref-gold)}
+ .institutional-header .logo img{width:100%;height:100%;object-fit:contain}
+ .institutional-header .brand-details{display:block!important}
+ .institutional-header .brand small{display:block;color:#c6e1d5;font-size:11px;line-height:1.6;font-weight:400}
+ #institutional-scope{margin-left:auto;min-width:0}
+ #institutional-scope .period-control{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+ #institutional-scope .field{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:8px!important;margin:0!important;padding:3px 10px;min-width:0!important;width:auto!important;flex:none!important;border:1px solid #28705a;border-radius:7px;color:#c6e1d5;font-size:11px;white-space:nowrap}
+ #institutional-scope select{width:auto!important;min-width:72px!important;max-width:190px;box-sizing:border-box;flex:none;background:var(--ref-forest);color:white;border:0;box-shadow:none;height:34px;padding:4px 22px 4px 4px;font-size:12px;font-weight:600}
+ #institutional-scope option{background:var(--ref-forest);color:white}
+ .institutional-help{border:1px solid #28705a;background:#164f3e;color:#e5f3eb;border-radius:7px;min-height:40px;padding:8px 12px;font-size:12px;white-space:nowrap}
+ .highways-shell .sidebar{top:var(--ref-header)!important;height:calc(100dvh - var(--ref-header));padding:18px 14px 12px!important;overflow-y:auto;border-right:1px solid var(--ref-line);box-shadow:none}
+ html[data-ui-mode=light] .highways-shell .sidebar{background:var(--ref-paper)!important;color:var(--ref-ink)}
+ .sidebar-section-title{padding:0 10px 16px;font-size:12px;font-weight:600;border-bottom:1px solid var(--ref-line);margin-bottom:12px}
+ .sidebar-section-title small{display:block;font-size:10px;font-weight:400;color:var(--ref-muted);margin-top:3px}
+ .highways-shell .sidebar .sidebar-toggle{position:absolute;right:14px;top:12px;left:auto;transform:none;width:30px;height:30px;min-height:30px;border:0;border-radius:6px;background:transparent;color:var(--ref-muted);box-shadow:none}
+ .highways-shell .sidebar.is-collapsed{padding-top:56px!important}
+ .highways-shell .sidebar.is-collapsed .sidebar-toggle{right:22px}
+ .highways-shell .sidebar .nav-caption{font-size:10px;color:var(--ref-muted);letter-spacing:0;margin:16px 10px 8px}
+ .highways-shell .sidebar nav button{padding:10px 11px;min-height:40px;margin-bottom:4px;gap:10px;border:0;border-left:3px solid transparent;border-radius:7px;font-size:12px;line-height:1.4}
+ html[data-ui-mode=light] .highways-shell .sidebar nav button{color:#334b42;background:transparent}
+ html[data-ui-mode=light] .highways-shell .sidebar nav button:hover{background:#f0f6f2;color:#145d47}
+ html[data-ui-mode=light] .highways-shell .sidebar nav button.active{background:#e7f2ec;color:#10553d;border-left-color:#145d47;font-weight:600}
+ .highways-shell .sidebar .nav-text{font-size:12px}
+ .highways-shell .sidebar .nav-icon{width:17px;height:17px;flex:none}
+ .highways-shell .sidebar .badge{background:#e8f3ee;color:#145d47;font-size:10px}
+ .highways-shell .sidebar .sidebar-utility-row{display:flex;flex-direction:column;align-items:stretch;gap:0}
+ .highways-shell .sidebar .sidebar-quality{width:100%}
+ .highways-shell .sidebar .sidebar-quality::after{content:'ตรวจข้อมูล';font-size:12px}
+ .highways-shell .sidebar.is-collapsed .sidebar-quality::after{display:none}
+ .highways-shell .sidebar-connection{margin-top:auto;padding:14px 10px 4px;border-top:1px solid var(--ref-line);color:var(--ref-muted);font-size:10px}
+ .highways-shell .release-label{font-size:9px;color:var(--ref-muted);padding:4px 10px}
+ .highways-shell main{padding-top:calc(var(--ref-header) + 24px)}
+ .highways-shell .topbar{position:relative!important;top:auto!important;z-index:75;height:auto;min-height:88px;margin:0 24px;padding:18px 22px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 20px;border:1px solid var(--ref-line);border-radius:var(--ref-radius);box-shadow:var(--ref-shadow);backdrop-filter:none}
+ html[data-ui-mode=light] .highways-shell .topbar{background:white}
+ .highways-shell .topbar .breadcrumb{display:block;min-width:0}
+ .highways-shell #crumb{font:600 24px/1.4 'Kanit','IBM Plex Sans Thai',Tahoma,sans-serif;letter-spacing:-.4px;margin:0;padding:0;border:0;background:none;color:var(--ui-control-ink,var(--ref-ink));box-shadow:none;border-radius:0}
+ .highways-shell #crumb::before,.highways-shell #crumb::after{display:none}
+ #page-description{font-size:12px;color:var(--ref-muted);line-height:1.6;margin:4px 0 0}
+ #page-description:empty{display:none}
+ .highways-shell .topbar .executive-eyebrow,.highways-shell .topbar .top-actions{display:none}
+ .highways-shell .topbar .page-primary-actions{display:flex!important;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:0;min-width:0}
+ .highways-shell .topbar .operational-dock{display:flex;flex-direction:row;position:static!important;inset:auto;gap:8px;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;min-height:0;flex:none;width:auto}
+ .highways-shell .topbar .operational-dock:empty,.highways-shell .page-primary-actions:empty{display:none!important}
+ .highways-shell .page-context{grid-row:2;grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding-top:14px;border-top:1px solid var(--ref-line)}
+ .highways-shell .page-context[hidden]{display:none}
+ .highways-shell .page-context>.field{display:inline-flex;flex-direction:row;align-items:center;gap:10px;font-size:12px;margin:0}
+ .highways-shell .page-context select{height:40px;max-width:320px;padding:8px 12px;border:1px solid var(--ref-line);border-radius:7px;background:var(--ui-control-bg,white);color:inherit}
+ .highways-shell .page-context .weekly-batch-tools{margin-left:auto}
+ .highways-shell .page-context .week-management{margin:0;display:flex;gap:8px}
+ .highways-shell .save-status-bar:has(#save-status:empty){display:none}
+ .highways-shell #app.highways-ui{padding:20px 24px 32px!important;max-width:none;min-height:calc(100vh - 220px)}
+ #app.highways-ui:has(>.operational-dock){padding-top:0!important}
+ #app.highways-ui>.operational-dock{margin-top:0!important;margin-bottom:20px;border:1px solid var(--ref-line);border-top:0;border-radius:0 0 12px 12px;box-shadow:var(--ref-shadow)}
+ #app.highways-ui>.page-heading,.highways-ui .dash-v25-header-bar{display:none!important}
+ .highways-shell .topbar .btn,#app.highways-ui .btn{min-height:38px;border-radius:7px;font-size:12px;font-weight:500;padding:8px 12px}
+ .highways-shell :is(.topbar,#app) .btn.primary{background:#145d47;border-color:#145d47;color:white;box-shadow:0 2px 4px rgb(10 46 35 / 12%)}
+ .highways-shell :is(.institutional-header,.topbar,#app) :is(button,a,select,input):focus-visible{outline:3px solid var(--ref-gold);outline-offset:3px}
+ #app.highways-ui :is(.card,.table-card,.registry-panel,.archive-panel){border-radius:var(--ref-radius);box-shadow:var(--ref-shadow)}
+ #app.highways-ui :is(.registry-controls,.weekly-controls){padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;margin-bottom:20px;gap:16px!important}
+ #app.highways-ui :is(.weekly-summary,.registry-bento-summary,.register-summary){gap:16px!important}
+ #app.highways-ui .p301-controls{padding:0!important;border:0;box-shadow:none;background:none}
+ #app.highways-ui .p301-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin:0 0 20px!important}
+ #app.highways-ui .p301-stat{padding:20px;border-radius:12px!important;box-shadow:var(--ref-shadow);min-height:120px}
+ #app.highways-ui .p301-stat>span{font-size:13px;font-weight:500}
+ #app.highways-ui .p301-stat>strong{font-size:28px;font-variant-numeric:tabular-nums}
+ #app.highways-ui .p301-register{padding:0!important;overflow:visible}
+ #app.highways-ui .table-density{display:flex;align-items:center;gap:10px 12px!important;padding:12px 16px!important;min-height:64px;border:0;border-bottom:1px solid var(--ref-line);border-radius:12px 12px 0 0;box-shadow:none}
+ #app.highways-ui .table-density .search-field{flex:1 1 300px;max-width:560px}
+ #app.highways-ui .table-density>.selection-toolbar{margin-left:auto!important;display:flex;align-items:center;gap:8px}
+ #app.highways-ui .table-density>label{margin:0!important;flex:none;white-space:nowrap}
+ #app.highways-ui :is(.operational-table,.dash-v25-clean-table) th{font-size:12px;font-weight:600;text-align:left;line-height:1.6;padding:12px 14px}
+ #app.highways-ui :is(.operational-table,.dash-v25-clean-table) td{font-size:13px;line-height:1.65;padding:12px 14px;font-variant-numeric:tabular-nums}
+ #app.highways-ui .operational-table.sticky-head-docked>thead{visibility:hidden}
+ html[data-ui-mode=light] #app.highways-ui :is(.operational-table,.dash-v25-clean-table) th{background:#f4f9f6;color:#164c39;border-bottom:1px solid var(--ref-line)}
+ #app.highways-ui .operational-table .sub{font-size:11px;line-height:1.6;margin-top:4px}
+ #app.highways-ui .operational-table .sort-head{gap:8px}
+ #app.highways-ui .catalog-tabs{padding:12px!important;gap:8px!important}
+ #app.highways-ui .catalog-group-label{font-size:10px;font-weight:600;line-height:1.4}
+ #app.highways-ui .notice{padding:12px 16px;border-radius:10px;font-size:12px;line-height:1.6}
+ #app.highways-ui .dashboard-shell{max-width:none;padding:0;gap:20px}
+ #app.highways-ui .dash-v25-filter{display:grid;grid-template-columns:minmax(160px,210px) minmax(240px,1fr) auto auto;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--ref-line);box-shadow:none;border-radius:12px;margin-bottom:16px}
+ #app.highways-ui .dash-v25-filter>#category-filter{grid-column:1;grid-row:1;min-width:0;height:40px}
+ #app.highways-ui .dash-v25-filter>label.search{grid-column:2;grid-row:1;min-width:0;max-width:none;border:0;padding:0}
+ #app.highways-ui .dash-v25-filter>.dash-create-btn{grid-column:3;grid-row:1;white-space:nowrap}
+ #app.highways-ui .dash-v25-filter .search-field{width:100%;max-width:none}
+ #app.highways-ui .dash-reference-tools{grid-column:4;grid-row:1;min-width:0;margin:0;text-align:right}
+ #app.highways-ui .dash-reference-tools>summary{white-space:nowrap}
+ #app.highways-ui .dash-reference-tools[open]{grid-column:1/-1;grid-row:2;position:relative;z-index:80;width:100%;text-align:left}
+ #app.highways-ui .dash-reference-tools[open]>summary{display:flex;width:max-content;margin-left:auto}
+ #app.highways-ui .dash-reference-tools-panel{width:100%;box-sizing:border-box}
+ #app.highways-ui .dash-v25-hero-card{min-height:160px;padding:26px 30px;border-radius:16px;background:linear-gradient(110deg,#082d22,#145d47);border:1px solid #b7985070;box-shadow:0 8px 20px -8px #082d2240;margin:0 0 20px}
+ #app.highways-ui .dash-v25-hero-card::before{height:4px;background:var(--ref-gold)}
+ #app.highways-ui .dash-v25-hero-card .hname{font-size:30px;line-height:1.3;margin:10px 0 8px}
+ #app.highways-ui .dash-v25-hero-card .hscore{font-size:25px}
+ #app.highways-ui .dash-v25-hero-card .hbadge{font-size:12px;background:var(--ref-gold);color:#082d22}
+ #app.highways-ui .dash-v25-hero-card .hweek,#app.highways-ui .dash-v25-hero-card .hsub{font-size:12px}
+ #app.highways-ui .dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
+ #app.highways-ui .dash-v25-kpi-card{min-height:158px;padding:20px;border-radius:13px;border:1px solid var(--ref-line);border-top:3px solid var(--green);box-shadow:var(--ref-shadow);text-align:left;background:var(--ui-control-bg,white)}
+ #app.highways-ui .dash-v25-kpi-card.k2{border-top-color:#00af80}
+ #app.highways-ui .dash-v25-kpi-card.k3{border-top-color:#3264ed}
+ #app.highways-ui .dash-v25-kpi-card.k4{border-top-color:#e5385f}
+ #app.highways-ui .dash-v25-kpi-card h4{font-size:12px;font-weight:500;color:var(--ref-muted);margin:0 0 10px}
+ #app.highways-ui .dash-v25-kpi-card .v{font-size:29px;line-height:1.25;font-weight:700}
+ #app.highways-ui .dash-v25-kpi-card .s{font-size:11px;margin-top:5px}
+ #app.highways-ui .dash-visual-grid{gap:20px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);margin-bottom:20px}
+ #app.highways-ui .dash-visual-grid>.pipe{grid-column:1/-1}
+ #app.highways-ui .dash-v25-card{border:1px solid var(--ref-line);border-radius:13px;padding:20px;box-shadow:var(--ref-shadow)}
+ #app.highways-ui .dash-v25-card h3{font-size:14px;font-weight:600}
+ #app.highways-ui .pipe .pbar{display:none}
+ #app.highways-ui .pipe .pills{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:16px}
+ #app.highways-ui .pill-box{padding:12px;border-radius:9px;min-height:84px;background:var(--ui-control-bg,white);text-align:left;box-shadow:none;border:1px solid var(--ref-line);border-top:2px solid var(--ref-gold)}
+ #app.highways-ui .pill-box>span{font-size:11px;display:block}
+ #app.highways-ui .pill-box>b{font-size:16px;display:block;margin:4px 0}
+ #app.highways-ui .dash-table-grid{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:20px}
+ #app.highways-ui .dash-v25-clean-table{min-width:580px}
+ #app.highways-ui .dash-v25-card.table-card,#app.highways-ui .dash-v25-card.mini{padding:16px}
+ #app.highways-ui .dash-v25-card .chips{gap:6px;flex-wrap:wrap}
+ #app.highways-ui .dash-v25-card .chip{font-size:11px;padding:6px 8px}
+ #app.highways-ui .dash-pending{border-top:2px solid #e5385f}
+ .highways-shell main>footer{padding:12px 24px;color:var(--ref-muted);font-size:10px}
+ /* Refine to the compact proportions in the supplied PLANNET DOH screen. */
+ .institutional-header{min-height:var(--ref-header);padding:6px 18px;gap:14px}
+ .institutional-header .logo{width:34px;height:34px;font-size:17px;border-radius:9px}
+ .institutional-header .brand{font-size:15px;gap:10px}
+ .institutional-header .brand small{font-size:10px}
+ .institutional-help{min-height:34px;padding:6px 10px;font-size:11px}
+ #institutional-scope .field{padding:1px 8px;font-size:10px}
+ #institutional-scope select{height:30px;font-size:11px}
+ .highways-shell main{padding-top:calc(var(--ref-header) + 24px)}
+ .highways-shell .topbar:has(.page-context:not(:empty)){min-height:72px;padding:12px 20px}
+ .highways-shell .page-context{padding-top:9px;gap:9px}
+ .highways-shell .page-context select{height:36px}
+ #app.highways-ui{padding-top:16px!important}
+ #app.highways-ui .catalog-tabs{padding:6px!important}
+ #app.highways-ui .catalog-tabs .btn{min-height:34px;padding:6px 10px}
+ #app.highways-ui .basic-data{margin-top:12px}
+ .highways-shell main:has(>.topbar[data-screen=dashboard]){padding-top:calc(var(--ref-header) + 12px)}
+ .highways-shell main:has(>.topbar[data-screen=dashboard])>.topbar{display:none!important}
+ .highways-shell main:has(>.topbar[data-screen=dashboard])>#app.highways-ui{padding:0 24px 24px!important}
+ #app.highways-ui .dashboard-shell{gap:14px}
+ #app.highways-ui .dash-v25-filter{height:48px;min-height:48px;margin-bottom:12px;padding:5px 12px}
+ #app.highways-ui .dash-v25-filter>#category-filter{height:34px}
+ #app.highways-ui .dash-v25-hero-card{height:120px;min-height:120px;padding:14px 22px;margin-bottom:12px;border-radius:12px}
+ #app.highways-ui .dash-v25-hero-card .hname{font-size:24px;margin:4px 0}
+ #app.highways-ui .dash-v25-hero-card .hscore{font-size:20px}
+ #app.highways-ui .dash-kpis{gap:12px;margin-bottom:12px}
+ #app.highways-ui .dash-v25-kpi-card{height:122px;min-height:122px;padding:12px;border-radius:10px}
+ #app.highways-ui .dash-v25-kpi-card h4{margin-bottom:6px}
+ #app.highways-ui .dash-v25-kpi-card .v{font-size:24px}
+ #app.highways-ui .dash-v25-kpi-card .s{margin-top:3px;font-size:10px}
+ #app.highways-ui .dash-visual-grid{gap:12px;margin-bottom:12px}
+ #app.highways-ui .dash-v25-card{padding:12px;border-radius:10px}
+ #app.highways-ui .dash-pipeline-card{height:116px;min-height:116px;gap:0;padding:12px 14px;margin:0 0 12px;border:1px solid var(--ref-line);border-radius:10px;box-shadow:var(--ref-shadow);overflow:hidden}
+ #app.highways-ui .dash-pipeline-header{align-items:center;margin:0 0 8px;gap:8px}
+ #app.highways-ui .dash-pipeline-header h2{font-size:13px;line-height:1.3}
+ #app.highways-ui .dash-pipeline-header>span{font-size:10px;color:var(--ref-muted)}
+ #app.highways-ui .dash-pipeline-card .pipeline-bar-track{height:5px;margin-bottom:8px;border-radius:5px;background:#e7eee9}
+ #app.highways-ui .dash-pipeline-card .pipeline-stages{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;gap:2px 8px;min-width:0;height:58px;min-height:58px;padding:7px 9px;border:1px solid var(--ref-line);border-top:2px solid var(--ref-gold);border-radius:7px;background:#fff;text-align:left}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage.ongoing{border-top-color:#c58106}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage.deliver{border-top-color:#13804d}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage.pay{border-top-color:#2463c9}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage.paid{border-top-color:#00a97a}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage.expired{border-top-color:#dc354b}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage .stage-label{grid-column:1/2;grid-row:1;font-size:10px;line-height:1.3;margin:0;white-space:nowrap}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage .stage-val{grid-column:1;grid-row:2;gap:3px}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage .stage-val strong{font-size:14px;line-height:1.2}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage .stage-val{font-size:9px}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage .stage-badge{grid-column:2;grid-row:1;font-size:8px;padding:2px 5px}
+ #app.highways-ui .dash-pipeline-card .pipeline-stage .stage-mini-track{grid-column:2;grid-row:2;width:42px;height:4px;margin:0}
+ #app.highways-ui .dash-v25-card.table-card,#app.highways-ui .dash-v25-card.mini{padding:12px}
+ #app.highways-ui .dash-table-grid{gap:14px}
+ #app.highways-ui .dash-visual-grid>.route,#app.highways-ui .dash-visual-grid>.donut-card{height:174px;min-height:174px;overflow:hidden}
+ #app.highways-ui .dash-budget-progress .budget-chart-container{height:112px;min-height:112px}
+ #app.highways-ui .dash-pending>h2{margin-bottom:6px}
+ #app.highways-ui .dash-pending>.sub{margin:0 0 8px;font-size:10px}
+ #app.highways-ui .dash-table-grid .table-foot{padding-top:6px}
+ #app.highways-ui .reference-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 16px}
+ #app.highways-ui .reference-metric{display:flex;flex-direction:column;justify-content:space-between;gap:5px;min-width:0;min-height:112px;padding:15px 17px;border:1px solid var(--ref-line);border-top:3px solid #145d47;border-radius:11px;background:white;box-shadow:var(--ref-shadow)}
+ #app.highways-ui .reference-metric>span{font-size:12px;color:var(--ref-muted);line-height:1.5}
+ #app.highways-ui .reference-metric>strong{font-size:26px;line-height:1.2;font-weight:700;font-variant-numeric:tabular-nums;color:#0d281e}
+ #app.highways-ui .reference-metric>small{font-size:10px;line-height:1.45;color:var(--ref-muted)}
+ #app.highways-ui .reference-metric.green{border-top-color:#00a97a}
+ #app.highways-ui .reference-metric.blue{border-top-color:#3264ed}
+ #app.highways-ui .reference-metric.amber{border-top-color:#c58106}
+ #app.highways-ui .reference-metric.violet{border-top-color:#8b5cf6}
+ #app.highways-ui .reference-metric.red{border-top-color:#dc354b}
+ #app.highways-ui .reference-summary-filters{margin:0 0 14px;text-align:right}
+ #app.highways-ui .reference-summary-filters>summary{display:inline-flex;min-height:34px;padding:7px 11px;font-size:11px}
+ #app.highways-ui .reference-summary-filters[open]{text-align:left}
+ #app.highways-ui .reference-summary-filters[open]>.register-summary{margin-top:10px}
+ #app.highways-ui .reference-summary-filters:not([open])>.register-summary{display:none!important}
+ #app.highways-ui .weekly-table-panel .table-density,#app.highways-ui .registry-control-tools{position:relative}
+ #app.highways-ui .weekly-table-panel .table-density>.reference-summary-filters,#app.highways-ui .registry-control-tools>.reference-summary-filters{position:relative;display:inline-flex;flex:none;align-items:center;margin:0 0 0 8px}
+ #app.highways-ui .weekly-table-panel .table-density>.reference-summary-filters[open]>.register-summary,#app.highways-ui .registry-control-tools>.reference-summary-filters[open]>.register-summary{position:absolute;z-index:90;right:0;top:calc(100% + 8px);width:min(760px,calc(100vw - 48px));max-height:min(65vh,620px);overflow:auto;margin:0;padding:12px;border:1px solid var(--ref-line);border-radius:10px;background:#fff;box-shadow:0 12px 30px #0a2e2333}
+ #app.highways-ui .weekly-table-panel .table-density>.weekly-control-tools{display:flex;align-items:center;gap:8px;margin-left:auto}
+ #app.highways-ui .weekly-control-tools .advanced-filter-menu{margin:0}
+ #app.highways-ui .weekly-controls:empty{display:none!important}
+ #app.highways-ui .reference-summary-filters .budget-summary-grid{display:flex;flex-wrap:wrap;gap:8px}
+ #app.highways-ui .reference-summary-filters .budget-summary-card{min-width:180px;flex:1 1 180px;padding:10px 12px}
+ #app.highways-ui .reference-summary-filters .weekly-bento-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+ #app.highways-ui .reference-summary-filters .weekly-bento-card{min-width:0;min-height:76px;padding:10px;border:1px solid var(--ref-line);border-top:2px solid var(--ref-gold);border-radius:8px;background:#fff}
+ #app.highways-ui .reference-highway{padding:20px;margin:0 0 14px}
+ #app.highways-ui .reference-highway h2{font-size:15px}
+ #app.highways-ui .reference-highway h2 small{display:inline;margin-left:8px;color:var(--ref-muted);font-size:11px;font-weight:400}
+ #app.highways-ui .reference-highway .sub{margin:4px 0 14px;font-size:11px}
+ #app.highways-ui .reference-highway-scroll{overflow-x:auto;overscroll-behavior-inline:contain}
+ #app.highways-ui .reference-highway-chart{min-width:720px}
+ #app.highways-ui .reference-road-row{display:grid;grid-template-columns:132px minmax(0,1fr);align-items:center;gap:12px;margin:0 0 10px}
+ #app.highways-ui .reference-road-year{display:flex;flex-direction:column;gap:3px;color:#174b3a;font-size:12px}
+ #app.highways-ui .reference-road-year small{font-size:10px;color:var(--ref-muted)}
+ #app.highways-ui .reference-road-track{position:relative;min-width:0;overflow:hidden;border:1px solid #445166;border-radius:8px;background-color:#202a39;background-image:linear-gradient(90deg,transparent calc(25% - 1px),#8992a444 25%,transparent calc(25% + 1px)),linear-gradient(90deg,transparent calc(50% - 1px),#8992a444 50%,transparent calc(50% + 1px)),linear-gradient(90deg,transparent calc(75% - 1px),#8992a444 75%,transparent calc(75% + 1px))}
+ #app.highways-ui .reference-road-track::after{content:"";position:absolute;inset:50% 0 auto;border-top:1px dashed #d7dde455}
+ #app.highways-ui .reference-road-segment{position:absolute;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:92px;height:34px;padding:0 8px;overflow:hidden;border:1px solid #e4b84a;border-radius:6px;background:#135c47;color:white;font-size:10px;white-space:nowrap;text-overflow:ellipsis;box-shadow:0 2px 5px #0004}
+ #app.highways-ui .reference-road-segment b{overflow:hidden;text-overflow:ellipsis;font-size:11px}
+ #app.highways-ui .reference-road-row.tone-1 .reference-road-segment{background:#9a4c1c}
+ #app.highways-ui .reference-road-row.tone-2 .reference-road-segment{background:#2050a7;border-color:#91b6ff}
+ #app.highways-ui .reference-road-axis{display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;margin-top:8px}
+ #app.highways-ui .reference-road-axis>div{position:relative;height:23px;border-top:1px solid #b7c7bf}
+ #app.highways-ui .reference-road-axis span{position:absolute;top:3px;transform:translateX(-50%);font-size:9px;white-space:nowrap;color:var(--ref-muted)}
+ #app.highways-ui[data-screen=weekly] tr.waiting-delivery td{color:#167348}
+ #app.highways-ui[data-screen=weekly] tr.waiting-payment td{color:#1455aa}
+ #app.highways-ui[data-screen=weekly] tr.paid td{color:#d3263e}
+ #app.highways-ui[data-screen=weekly] tr:not(.waiting-delivery):not(.waiting-payment):not(.paid) td{color:#1e293b}
+ @media(min-width:851px){.highways-shell .sidebar{width:208px;padding-inline:12px!important}.highways-shell main{margin-left:208px}html.sidebar-is-collapsed .highways-shell .sidebar{width:80px}html.sidebar-is-collapsed .highways-shell main{margin-left:80px}}
+ @media(max-width:1200px){.institutional-header{gap:12px;padding-inline:16px}.institutional-header .brand small{max-width:240px}.institutional-help span{display:none}#app.highways-ui .dash-table-grid{grid-template-columns:1fr}#app.highways-ui .p301-summary{grid-template-columns:repeat(3,minmax(0,1fr))}#app.highways-ui .reference-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}#app.highways-ui .dash-pipeline-card .pipeline-stages{grid-template-columns:repeat(3,minmax(0,1fr))}}
+ @media(max-width:850px){:root{--ref-header:116px}.institutional-header{flex-wrap:wrap;gap:8px;padding:10px 16px}.institutional-header .brand{flex:1}.institutional-header #mobile-menu{order:2;display:inline-flex;align-items:center;justify-content:center;width:42px;height:38px;min-width:42px;min-height:38px;padding:0;border:1px solid #28705a;border-radius:7px;background:#164f3e;color:white;font-size:19px}.institutional-header #institutional-scope{order:3;width:100%;margin:0}.institutional-header .period-control{justify-content:flex-start}.institutional-header .institutional-help{order:2;margin-left:0}.highways-shell main{margin-left:0!important;padding-top:calc(var(--ref-header) + 16px)}.highways-shell .topbar{margin-inline:16px;padding:16px;grid-template-columns:auto minmax(0,1fr)}.highways-shell .topbar .breadcrumb{grid-column:2}.highways-shell .topbar .page-primary-actions{grid-column:1/-1;justify-content:flex-start}.highways-shell .page-context{grid-row:auto}.highways-shell #app.highways-ui{padding:16px!important}.highways-shell #crumb{font-size:21px}#app.highways-ui .dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}#app.highways-ui .dash-visual-grid{grid-template-columns:1fr}#app.highways-ui .dash-v25-hero-card{height:auto;min-height:190px;flex-wrap:wrap}#app.highways-ui .dash-pipeline-card{height:auto;min-height:0}#app.highways-ui .dash-pipeline-card .pipeline-stages{grid-template-columns:repeat(2,minmax(0,1fr))}#app.highways-ui .dash-pipeline-card .pipeline-stage{height:64px;min-height:64px}}
+ @media(max-width:640px){.institutional-header .brand{font-size:15px}.institutional-header .logo{width:34px;height:34px;font-size:18px}.institutional-header .brand small{font-size:10px}#institutional-scope .period-control{gap:8px}#institutional-scope .field{font-size:10px;padding-inline:6px;gap:4px!important}#institutional-scope select{font-size:12px;min-width:60px!important;max-width:136px;padding-inline:3px}.highways-shell .topbar{margin-inline:12px;padding:14px;gap:10px}.highways-shell #app.highways-ui{padding:16px 12px!important}.highways-shell .page-context{gap:10px}.highways-shell .page-context .weekly-batch-tools{margin-left:0}.highways-shell .page-context>.field{flex-wrap:wrap;max-width:100%}.highways-shell .page-context select{max-width:100%;width:100%}.highways-shell .topbar .btn,#app.highways-ui .btn{min-height:44px}#app.highways-ui .p301-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#app.highways-ui .p301-stat{padding:14px;min-height:100px}#app.highways-ui .table-density{flex-wrap:wrap}#app.highways-ui .table-density>.search-field{flex-basis:100%;max-width:none}#app.highways-ui .table-density>.selection-toolbar{margin-left:0!important;flex-wrap:wrap}#app.highways-ui .operational-table input{font-size:16px}#app.highways-ui .dash-v25-filter{height:auto;min-height:0;align-items:stretch;gap:8px;flex-wrap:wrap;padding:12px}#app.highways-ui .dash-v25-filter>.sel,#app.highways-ui .dash-v25-filter>label.search{flex:1 1 100%;min-width:0}#app.highways-ui .dash-v25-filter>.dash-create-btn{width:100%;justify-content:center}#app.highways-ui .dash-v25-filter>.dash-reference-tools{display:flex;justify-content:flex-start;flex-wrap:wrap;margin:0!important}#app.highways-ui .dash-v25-hero-card{padding:22px;min-height:220px}#app.highways-ui .dash-v25-hero-card .hname{font-size:26px}#app.highways-ui .dash-v25-hero-card .hscore{font-size:20px}#app.highways-ui .dash-v25-hero-card .hright{width:100%;text-align:left}#app.highways-ui .dash-kpis{gap:10px}#app.highways-ui .dash-v25-kpi-card{padding:14px;min-height:150px}#app.highways-ui .dash-v25-kpi-card .v{font-size:25px}#app.highways-ui .dash-v25-card{padding:14px}#app.highways-ui .pipe .pills{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+ @media(max-width:640px){#app.highways-ui .reference-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}#app.highways-ui .reference-metric{min-height:100px;padding:12px}#app.highways-ui .reference-metric>strong{font-size:21px}#app.highways-ui .reference-metric>span{font-size:11px}#app.highways-ui .reference-metric>small{font-size:9px}#app.highways-ui .reference-road-row{grid-template-columns:92px minmax(0,1fr);gap:8px}#app.highways-ui .reference-road-axis{grid-template-columns:92px minmax(0,1fr);gap:8px}#app.highways-ui .reference-road-year{font-size:10px}#app.highways-ui .reference-highway{padding:14px}#app.highways-ui .dash-visual-grid{gap:10px}#app.highways-ui .dash-v25-hero-card{height:auto;min-height:190px}#app.highways-ui .dash-v25-kpi-card{height:auto;min-height:140px}}
+ @media(max-width:850px){#app.highways-ui .dash-v25-filter{display:flex;flex-wrap:wrap}}
+ @media(prefers-reduced-motion:reduce){.highways-shell *{scroll-behavior:auto!important}}
+}
+@media print{.institutional-header{display:none!important}}

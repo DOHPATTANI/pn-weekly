@@ -12,6 +12,7 @@
     "src/application-shell.js",
     "src/linked-masters.js",
     "src/dashboard-selectors.js",
+    "src/reference-layout.js",
     "src/operations.js",
     "src/registry-dialogs.js"
   ],
@@ -24,6 +25,7 @@
     "src/cascade-05.css",
     "src/tailwind.generated.css",
     "src/cascade-06.css",
-    "src/highways-ui.css"
+    "src/highways-ui.css",
+    "src/reference-shell.css"
   ]
 }

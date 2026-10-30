@@ -7,7 +7,47 @@ export const DASHBOARD_STAGES=Object.freeze([
  {key:'expired',label:'หมดอายุสัญญา',color:'#e11d48'}
 ]);
 /** Presentation defaults for the two dashboard summary tables and work-type chart. */
-export const DASHBOARD_VIEW_CONFIG=Object.freeze({pageSize:8,workTypeColors:Object.freeze(['#0f766e','#22a06b','#4fbf9f','#c99a2e','#5b6f8f','#d45b72','#8b6bb1','#6b7c72'])});
+export const DASHBOARD_VIEW_CONFIG=Object.freeze({pageSize:8,recentPageSize:2,pendingPageSize:1,workTypeColors:Object.freeze(['#0f766e','#22a06b','#4fbf9f','#c99a2e','#5b6f8f','#d45b72','#8b6bb1','#6b7c72'])});
+/** Project the four reference KPI cards from the selected, real weekly rows.
+ * @param {Array} rows Canonical report rows, including historical snapshots.
+ * @returns {Array<object>} Display-ready metrics; no writes or inferred progress.
+ */
+export function selectWeeklyReferenceMetrics(rows=[]){
+ const count=rows.length,average=key=>count?rows.reduce((sum,x)=>sum+(Number(x.e?.[key])||0),0)/count:0;
+ const confirmed=rows.filter(x=>x.e?.confirmed).length,paid=rows.filter(x=>x.e?.payment==='เบิกจ่ายแล้ว').length;
+ return [
+  {tone:'green',label:'ผลงานเฉลี่ยสัปดาห์นี้',value:(average('weekly')>=0?'+':'')+average('weekly').toFixed(2)+'%',detail:'จากผลงานรายสัปดาห์ของสัญญาในรอบนี้'},
+  {tone:'blue',label:'ผลงานสะสมจริง',value:average('actual').toFixed(2)+'%',detail:'เป้าหมายแผนสะสม '+average('plan').toFixed(2)+'%'},
+  {tone:'amber',label:'ตรวจยืนยันความถูกต้อง',value:confirmed+' / '+count,detail:'เหลืออีก '+(count-confirmed)+' งานรอตรวจยืนยัน'},
+  {tone:'violet',label:'การเบิกจ่ายงวดงาน',value:paid+' สัญญา',detail:'เบิกจ่ายแล้วตามรายงานรอบนี้'}
+ ];
+}
+/** Project registry summary cards using canonical finance/progress/expiry owners.
+ * @param {object} state Live workspace. @param {Array} records Scoped registry records.
+ * @returns {Array<object>} Display-ready registry metrics, without mutation.
+ */
+export function selectRegistryReferenceMetrics(state,records=[]){
+ const finance=financialSummary(records),finished=records.filter(r=>registryCurrent(state,r).physicalComplete||registryCurrent(state,r).currentPayment==='เบิกจ่ายแล้ว').length;
+ const extended=records.filter(r=>(r.extensions||[]).some(x=>x.approved!==false&&Number(x.days)>0)).length;
+ return [
+  {tone:'forest',label:'วงเงินสัญญารวมทั้งหมด',value:(finance.contractValue/1000000).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})+' ลบ.',detail:records.length+' สัญญาในขอบเขตที่เลือก'},
+  {tone:'green',label:'สัญญาที่แล้วเสร็จ / ส่งมอบ',value:finished+' สัญญา',detail:'คิดเป็น '+(records.length?finished/records.length*100:0).toFixed(1)+'% ของสัญญาทั้งหมด'},
+  {tone:'amber',label:'สัญญาที่ได้รับอนุมัติขยายเวลา',value:extended+' สัญญา',detail:'ตามบันทึกการขยายอายุสัญญา'},
+  {tone:'red',label:'สัญญาที่เลยกำหนดสิ้นสุด',value:records.filter(r=>registryExpired(state,r)).length+' สัญญา',detail:'ยังไม่แล้วเสร็จและยังไม่เบิกจ่ายครบ'}
+ ];
+}
+/** Map real highway segments to non-overlapping year lanes on a shared distance axis.
+ * @param {Array} rows Canonical assetHistoryRows output.
+ * @returns {object} Chart coordinates and explicit missing-range count. No invented ranges.
+ */
+export function selectHighwayReferenceTimeline(rows=[]){
+ const segments=[],missing=[];
+ for(const row of rows)for(const segment of row.segments||[]){const a=kmMetres(segment.kmStart),b=kmMetres(segment.kmEnd);if(a===null||b===null||a===b){missing.push(row.id);continue;}segments.push({id:row.id,contract:row.contract,title:row.title,year:row.year,start:Math.min(a,b),end:Math.max(a,b),direction:segment.direction||''});}
+ if(!segments.length)return {years:[],ticks:[],missingCount:new Set(missing).size,minKm:null,maxKm:null};
+ const min=Math.min(...segments.map(x=>x.start)),max=Math.max(...segments.map(x=>x.end)),span=max-min;
+ const years=[...new Set(segments.map(x=>x.year))].sort((a,b)=>Number(b)-Number(a)).map((year,index)=>{const laneEnds=[],items=segments.filter(x=>x.year===year).sort((a,b)=>a.start-b.start||a.end-b.end).map(item=>{let lane=laneEnds.findIndex(end=>end<item.start);if(lane<0)lane=laneEnds.length;laneEnds[lane]=item.end;return {...item,lane,left:(item.start-min)/span*100,width:(item.end-item.start)/span*100,startLabel:(item.start/1000).toFixed(3),endLabel:(item.end/1000).toFixed(3)};});return {year,index,items,laneCount:laneEnds.length,count:new Set(items.map(x=>x.id)).size};});
+ return {years,ticks:Array.from({length:6},(_,i)=>({position:i*20,label:((min+span*i/5)/1000).toFixed(3)})),missingCount:new Set(missing).size,minKm:min/1000,maxKm:max/1000};
+}
 /** UI-only layout presets. They never change the live dashboard view model or business calculations. */
 export const DASHBOARD_LAYOUT_PRESETS=Object.freeze({
  operational:Object.freeze({showBudgetChart:true,showStatusDonut:true,showPendingBreakdown:true,cardOrder:Object.freeze(['summary','pipeline','budget','distribution'])}),
