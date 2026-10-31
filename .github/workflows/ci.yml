@@ -34,6 +34,16 @@ jobs:
       - run: node tests/sidebar-interactions.mjs
       - run: npm run qa
       - run: npm run qa:audit
+      - name: Preserve browser review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-review-evidence
+          path: |
+            work/v26/*.png
+            work/master/*.png
+          if-no-files-found: error
+          retention-days: 14
       - run: npm run build
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4

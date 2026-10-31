@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-11-01 — Operational audit follow-up
+
+- Preserve current main changes before applying audit fixes; reuse the weekly archive button rather than cloning its handler.
+- Fix mobile weekly card padding at the presentation owner. Browser diagnosis measured 777px for the first test row with inherited 12px/14px desktop cell padding; use 4px/0 mobile padding and preserve all existing fields and handlers.
+- Preserve proportional highway widths and increase vertical lane spacing to 56px to accommodate mobile target height without adjacent-lane overlap.
+- Upload browser screenshots from CI for 14 days; missing screenshots fail the artifact step. These are review evidence, not approved pixel baselines.
+- Validation: 171 unit tests and build passed. Mobile browser audit passed. Integrated desktop/tablet/mobile audit and schema verification are recorded in execution output.
+- Approved pixel baseline remains unavailable; do not represent skipped visual tests as passed or promote generated screenshots as approved references.
+- Rollback: revert the audit commits and regenerate runtime bundles using `node tools.mjs source`.
+
 ## 2026-10-27 — Tooling and workflow environment resilience (v27.3.4)
 
 **Context**

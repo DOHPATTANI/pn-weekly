@@ -644,7 +644,7 @@ function mountOperationalDock(){
  const settingsSave=app.querySelector('#settings-form [type=submit]');if(settingsSave){const shortcut=settingsSave.cloneNode(true);shortcut.setAttribute('form','settings-form');dock.append(shortcut);}if(dock.children.length){app.querySelector('.page-heading')?.after(dock);operationalDock=dock;}else operationalDock=null;
  for(const source of sources)if(!source.children.length)source.remove();
  // Put the weekly archival CTA beside Save, not inside a hidden menu.
- if(view==='weekly'){const primary=app.querySelector('[data-action=lock]');if(primary&&operationalDock){const shortcut=primary.cloneNode(true);shortcut.removeAttribute('data-action');shortcut.dataset.dockArchive='true';shortcut.classList.add('primary');shortcut.onclick=()=>withButtonLock(shortcut,()=>primary.onclick?.(),e=>toast(e.message,true));operationalDock.append(shortcut);}}
+ if(view==='weekly'){const primary=app.querySelector('[data-action=lock]');if(primary&&operationalDock)operationalDock.append(primary);}
  let eyebrow=$('.executive-eyebrow');if(!eyebrow){eyebrow=document.createElement('small');eyebrow.className='executive-eyebrow';eyebrow.textContent='EXECUTIVE OVERVIEW';$('#crumb').before(eyebrow);}eyebrow.hidden=view!=='dashboard';
  if(view==='dashboard'){const target=app.querySelector('.dashboard-search-field'),input=app.querySelector('#search');if(target&&input)target.append(input.closest('.search-field')||input);}
  operationalResizeObserver=new ResizeObserver(scheduleOperationalLayout);for(const el of [operationalDock,$('.topbar'),...app.querySelectorAll('.table-scroll')])if(el)operationalResizeObserver.observe(el);
