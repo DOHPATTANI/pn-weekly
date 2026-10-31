@@ -315,9 +315,10 @@
  #app.highways-ui:not([data-screen="dashboard"]){--ops-section-gap:16px;--ops-content-gap:12px;--ops-control-gap:8px}
  #app.highways-ui:not([data-screen="dashboard"]) .operational-dock{min-height:0;padding:8px 12px;box-shadow:none;gap:8px}
  #app.highways-ui:not([data-screen="dashboard"]) :is(.table-top,.table-density,.command-search-row){min-height:0!important;height:auto!important;padding:12px!important;gap:8px!important;box-shadow:none!important}
- #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-menu[open]{flex:1 1 100%;width:100%;min-width:0}
+ #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-menu[open]{display:block!important;flex:1 1 100%!important;width:100%!important;max-width:none!important;min-width:0}
+ #app.highways-ui .advanced-filter-menu:not([open])>.advanced-filter-panel{display:none!important}
  #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-panel{position:static!important;inset:auto!important;width:100%!important;max-width:none!important;margin-top:12px;box-shadow:none!important;max-height:none;overflow:visible}
- #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(44px,1fr));gap:12px}
  #app.highways-ui[data-screen="catalog"] .catalog-tabs{display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px!important}
  .highways-shell .catalog-tab-group{display:flex;flex-wrap:wrap;align-items:center;align-content:start;gap:8px;min-width:0}
  .highways-shell .catalog-tab-group .catalog-group-label{flex-basis:100%;max-width:none;font-size:13px;line-height:1.6}
@@ -336,5 +337,6 @@
  #app.highways-ui[data-screen="settings"] .grid2{align-items:start}
  #app.highways-ui:not([data-screen="dashboard"]) :is(.registry-controls,.weekly-controls){margin-bottom:12px!important}
  @media(max-width:850px){#app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+ @media(max-width:640px){#app.highways-ui :is(input,select,textarea){min-width:44px;min-height:44px}#app.highways-ui .row-select-target{flex-shrink:0;min-width:44px;min-height:44px}#app.highways-ui .row-select-target input{flex-shrink:0}}
  @media(max-width:560px){#app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{grid-template-columns:minmax(0,1fr)}}
 }
