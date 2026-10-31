@@ -22,6 +22,11 @@ import fs from 'node:fs/promises';import path from 'node:path';const root=proces
   if(view!=='dashboard')await nav(view);await p.waitForTimeout(200);
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,view+' page overflow at '+width);
   surfaces.push(view);
+  if(view==='weekly'){
+   const search=p.getByRole('searchbox',{name:'ค้นหาชื่องาน เลขสัญญา หรือผู้รับจ้าง',exact:true});
+   assert.equal(await search.count(),1,'Weekly search has a stable accessible name');
+   await search.focus();assert.equal(await search.evaluate(el=>el===document.activeElement),true);
+  }
   if(view==='dashboard'){
    assert.equal(await p.locator('.pipe .pills .pill-box').count(),5);
    const percentages=await p.locator('.pipe .pill-tag').allTextContents();assert(Math.abs(percentages.reduce((sum,text)=>sum+parseFloat(text),0)-100)<.03);

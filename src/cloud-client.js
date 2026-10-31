@@ -4,11 +4,34 @@ export async function writeOfflineBundle(state,outbox,expectedOutbox){const db=a
 export function deltaBase(s,delta){const base={settings:{}};for(const [key,d]of Object.entries(delta.collections||{})){const ids=new Set([...(d.remove||[]),...(d.upsert||[]).map(x=>x.id)]);base[key]=(s[key]||[]).filter(x=>ids.has(x.id)).map(clone);}for(const key of Object.keys(delta.values||{}))base[key]=key==='settings'?Object.fromEntries(Object.keys(delta.values.settings).map(k=>[k,s.settings?.[k]])):(s[key]===undefined?undefined:clone(s[key]));return base;}
 
 export function jsonImportPayload(payload){const {importHistory,importHistoryDeferred,importHistoryCached,loadedScope,...active}=payload;return active;}
+/** Share only pending reads. Each consumer owns a separate response object. */
+export function createReadCoalescer(){
+ const pending=new Map();
+ return async(key,load)=>{
+  let job=pending.get(key);
+  if(!job){job=Promise.resolve().then(load);pending.set(key,job);}
+  try{return structuredClone(await job);}finally{if(pending.get(key)===job)pending.delete(key);}
+ };
+}
+/** Reuse a complete immutable report only after the server confirms its revision. */
+export function reusableReportDetail(data,cached){
+ const scope=data?.loadedScope,prior=cached?.loadedScope;
+ if(data?.revision==null||data.revision!==cached?.revision||!scope||!prior||scope.funding!==prior.funding||scope.year!==prior.year||scope.reportId!==prior.reportId)return null;
+ const report=cached.reports?.find(r=>r.id===scope.reportId);
+ if(!report?.locked||report._unloaded||!Object.keys(report.snapshots||{}).length)return null;
+ if(Object.keys(report.entries||{}).some(id=>!Object.hasOwn(report.snapshots,id)))return null;
+ return structuredClone({report,revision:cached.revision,previousEntries:prior.previousEntries||{}});
+}
 export const cloud=(()=>{
 const DEFAULT_CONFIG={"url": "https://iiuearxdsbilcpsfzhyp.supabase.co", "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdWVhcnhkc2JpbGNwc2Z6aHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3ODAyMTksImV4cCI6MjEwNzM1NjIxOX0.NlmieOWIm9medTsUzHkQdEvUySj-tat4KwIDOsCVvxg"};let runtimeOverride;const KEY='pn-weekly-cloud';
 const config=()=>runtimeOverride===undefined?DEFAULT_CONFIG:runtimeOverride;
 function setConfig(url,key){url=url.trim().replace(/\/$/,'');key=key.trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url))throw Error('ใช้ URL รูปแบบ https://project.supabase.co');if(!key||key.startsWith('sb_secret_'))throw Error('ใช้ publishable key หรือ anon key');try{const claims=JSON.parse(atob(key.split('.')[1]));if(claims.role==='service_role')throw Error('ใช้ publishable / anon key ไม่ใช่ service-role key');}catch(e){if(e.message.includes('service-role'))throw e;}runtimeOverride={url,key};}
-async function request(name,body){
+const coalesceRead=createReadCoalescer();
+function request(name,body){
+ if(!/^pn2_load_/.test(name))return requestOnce(name,body);
+ return coalesceRead(JSON.stringify([config(),name,body]),()=>requestOnce(name,body));
+}
+async function requestOnce(name,body){
  const c=config();if(!c)throw Error('ยังไม่ได้ตั้งค่า Supabase');
  const read=/^pn2_load_/.test(name),quiet=name==='pn2_record_activity',token=Symbol(name);if(!quiet){request.close?.();request.current=token;}
  let close;const timer=setTimeout(()=>{if(!quiet&&request.current===token){close=operationFeedback('loading',{title:read?'กำลังโหลดข้อมูล':'กำลังบันทึกข้อมูล',detail:read?'กำลังรับข้อมูลล่าสุด':'กำลังส่งข้อมูลและรอฐานข้อมูลยืนยันผล'});request.close=close;}},350);

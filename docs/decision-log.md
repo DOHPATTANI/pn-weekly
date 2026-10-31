@@ -327,3 +327,18 @@ Actual local validation:168unit +3focused domain tests, sidebar interactions, au
 **Impact:** ไม่เพิ่ม schema, auth หรือข้อมูลจำลอง ไม่เปลี่ยนสูตรค่าเสื่อม
 
 **Rollback:** revert source changes แล้ว regenerate ผ่าน node tools.mjs source ไม่แก้ข้อมูลจริง
+
+## 2026-10-31 — Weekly read reuse and accessible search
+
+User approved A1: coalesce only in-flight identical read RPCs, clone results per
+consumer, and reuse complete locked-report snapshots only after the server confirms
+matching revision/funding/year/report. Completed requests are not cached. Writes,
+database schema, historical calculations and branding hash validation are unchanged.
+Existing scope-generation guards remain the owner of stale-response rejection.
+
+Weekly search now has an explicit accessible name and search input type. Browser
+regression checks its accessible role/name and focus at desktop/mobile widths.
+
+Evidence: 171 unit tests, source verification, build and browser audit at 1500/375px
+passed locally. Final CI/deployment and live-network measurement remain release
+gates; see docs/WEEKLY-READ-COALESCING.md for scope and rollback.

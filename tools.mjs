@@ -51,6 +51,25 @@ if(mode==='source'){await sourceBundles(true);console.log('Generated single runt
  const{test}=await import('node:test');const{default:assert}=await import('node:assert/strict');const App=await import('./app.js');
  const {amendReport,clone,createReport,effectiveDays,elapsed,expired,normalizeState,parsePaymentDate,paymentNote,rangeFor,reportHTML,reportTitle,rowsFor,statusKey,validateDates,validateEntry,xlsxBlob}=App;
 test('v26 review SHA-256 matches platform crypto for Unicode, long records and legacy reviews',async()=>{const {createHash}=await import('node:crypto');for(const record of [{},{id:'ทดสอบ',note:'ก'.repeat(3000)},{value:0,nested:{b:2,a:1}}]){assert.equal(App.reviewDigest(record),'sha256-v1:'+createHash('sha256').update(App.changeFingerprint(record)).digest('hex'));const state={settings:{dataReviews:{'contractors/x':{fingerprint:App.changeFingerprint(record)}}}};assert(App.recordIsReviewed(state,'contractors',{...record,id:'x'})=== (record.id==='x'));}const record={id:'x',name:'เดิม'},state={settings:{dataReviews:{'contractors/x':{fingerprint:App.changeFingerprint(record)}}}};assert(App.recordIsReviewed(state,'contractors',record));App.recordReview({...state,contractors:[record]},'contractors',['x']);assert.equal(state.settings.dataReviews['contractors/x'].fingerprint.length,74);assert(App.recordIsReviewed(state,'contractors',record));assert(App.recordIsReviewed(state,'contractors',{...record,updatedAt:'later',dataChange:{kind:'updated'}}));assert(!App.recordIsReviewed(state,'contractors',{...record,name:'ใหม่'}));});
+test('coalesced reads isolate responses, retry failures, and never cache completed requests',async()=>{
+ const read=App.createReadCoalescer();let calls=0,resolve;
+ const load=()=>{calls++;return new Promise(r=>resolve=r);};
+ const a=read('scope-A',load),b=read('scope-A',load);await Promise.resolve();assert.equal(calls,1);
+ resolve({rows:[{id:'A'}]});const [x,y]=await Promise.all([a,b]);x.rows[0].id='changed';assert.equal(y.rows[0].id,'A');
+ await read('scope-A',async()=>{calls++;return {};});assert.equal(calls,2);
+ await assert.rejects(read('scope-B',async()=>{throw Error('offline');}),/offline/);
+ assert.equal(await read('scope-B',async()=>42),42);
+ assert.deepEqual(await Promise.all([read('scope-A',async()=>1),read('scope-B',async()=>2)]),[1,2]);
+});
+test('report detail reuse requires matching revision, scope and complete snapshots',()=>{
+ const scope={funding:'DOH',year:2569,reportId:'R'},data={revision:7,loadedScope:scope};
+ const cached={revision:7,loadedScope:{...scope,previousEntries:{A:{actual:0}}},reports:[{id:'R',locked:true,entries:{A:{}},snapshots:{A:{id:'A'}}}]};
+ const reused=App.reusableReportDetail(data,cached);assert.equal(reused.report.id,'R');reused.report.snapshots.A.id='changed';assert.equal(cached.reports[0].snapshots.A.id,'A');
+ assert.equal(App.reusableReportDetail({...data,revision:8},cached),null);
+ assert.equal(App.reusableReportDetail({...data,loadedScope:{...scope,year:2568}},cached),null);
+ assert.equal(App.reusableReportDetail(data,{...cached,reports:[{...cached.reports[0],snapshots:{}}]}),null);
+ assert.equal(App.reusableReportDetail({...data,revision:undefined},cached),null);
+});
 test('v26 financial summaries use known actual costs and contract values without status or inferred amounts',()=>{
  const records=[{contractValue:200,actualCost:50,payment:'รอส่งมอบงาน'},{contractValue:100,actualCost:0,payment:'เบิกจ่ายแล้ว'},{contractValue:100,actualCost:''},{contractValue:100,actualCost:null}];
  assert.deepEqual(App.financialSummary(records),{contractValue:500,actualCost:50,known:2,missing:2,percent:10});
