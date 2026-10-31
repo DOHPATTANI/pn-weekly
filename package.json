@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node tools.mjs serve",
-    "test": "node tools.mjs test",
+    "test": "node --test tests/test-runtime.mjs && node tools.mjs test",
+    "test:runtime": "node --test tests/test-runtime.mjs",
     "build": "node tools.mjs build",
     "qa": "node tools.mjs qa",
     "migrate": "node tools.mjs migrate",

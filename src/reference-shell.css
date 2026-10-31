@@ -4,6 +4,12 @@
  --ref-line:#dbe4df;--ref-ink:#0d281e;--ref-muted:#526b62;
  --ref-shadow:0 1px 3px rgb(10 46 35 / 4%),0 6px 18px -4px rgb(10 46 35 / 6%);
  --ref-header:56px;--ref-radius:12px;
+ --ref-route:#135c47;
+}
+@media screen and (max-width:640px){
+ #app.highways-ui[data-screen=weekly] table.mobile-records>tbody>tr>td{padding:4px 0!important}
+ #app.highways-ui[data-screen=weekly] table.mobile-records>tbody>tr{gap:8px;align-content:start}
+ #app.highways-ui .reference-road-segment{min-height:44px}
 }
 @media screen{
  /* Resolve previous cascade variants at the shared reference owner. */
@@ -253,7 +259,7 @@
  #app.highways-ui .reference-road-year small{font-size:10px;color:var(--ref-muted)}
  #app.highways-ui .reference-road-track{position:relative;min-width:0;overflow:hidden;border:1px solid #445166;border-radius:8px;background-color:#202a39;background-image:linear-gradient(90deg,transparent calc(25% - 1px),#8992a444 25%,transparent calc(25% + 1px)),linear-gradient(90deg,transparent calc(50% - 1px),#8992a444 50%,transparent calc(50% + 1px)),linear-gradient(90deg,transparent calc(75% - 1px),#8992a444 75%,transparent calc(75% + 1px))}
  #app.highways-ui .reference-road-track::after{content:"";position:absolute;inset:50% 0 auto;border-top:1px dashed #d7dde455}
- #app.highways-ui .reference-road-segment{position:absolute;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:92px;height:34px;padding:0 8px;overflow:hidden;border:1px solid #e4b84a;border-radius:6px;background:#135c47;color:white;font-size:10px;white-space:nowrap;text-overflow:ellipsis;box-shadow:0 2px 5px #0004}
+ #app.highways-ui .reference-road-segment{position:absolute;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0;height:34px;padding:0;overflow:hidden;border:0;border-radius:3px;background:var(--ref-route);color:var(--ref-paper);font-size:10px;white-space:nowrap;text-overflow:ellipsis}
  #app.highways-ui .reference-road-segment b{overflow:hidden;text-overflow:ellipsis;font-size:11px}
  #app.highways-ui .reference-road-row.tone-1 .reference-road-segment{background:#9a4c1c}
  #app.highways-ui .reference-road-row.tone-2 .reference-road-segment{background:#2050a7;border-color:#91b6ff}

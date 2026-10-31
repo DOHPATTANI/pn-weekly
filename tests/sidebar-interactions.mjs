@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import http from 'node:http';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import { chromiumLaunchOptions } from '../tools/test-runtime.mjs';
 
 // Isolate shared shell interactions; full app/data regression remains owned by tools.mjs qa.
 const html = await fs.readFile('index.html', 'utf8');
@@ -13,7 +14,7 @@ const server = http.createServer((req, res) => {
   res.end(file === '/styles.css' ? css : file === '/app.js' ? js : html);
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const browser = await chromium.launch({headless:true,...(process.env.PN_CHROMIUM ? {executablePath:process.env.PN_CHROMIUM} : {})});
+const browser = await chromium.launch({headless:true,...chromiumLaunchOptions(chromium)});
 const base = 'http://127.0.0.1:' + server.address().port;
 try {
   const context = await browser.newContext({viewport:{width:1440,height:1000}});
