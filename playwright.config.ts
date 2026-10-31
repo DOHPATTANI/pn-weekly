@@ -1,4 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, chromium } from '@playwright/test';
+import { chromiumLaunchOptions } from './tools/test-runtime.mjs';
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:4173';
 
@@ -19,6 +20,7 @@ export default defineConfig({
     baseURL,
     browserName: 'chromium',
     headless: true,
+    launchOptions: chromiumLaunchOptions(chromium),
     viewport: { width: 2048, height: 1143 },
     deviceScaleFactor: 1,
     colorScheme: 'light',

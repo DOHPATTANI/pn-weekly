@@ -1,5 +1,14 @@
 # Decision log
 
+## 2026-11-01 — Remove recurring test-runtime blockers and classify access limits
+
+- User authorized fixing development/access blockers and controlling the connected computer for this project. Read-only device commands established Windows terminal access; no account permission, OS guard, database grant or firewall was changed.
+- Current Cloud status reports enforced package-manager-only egress. Keep proxy/TLS protections and request exact missing destinations through supported environment settings instead of attempting network workarounds.
+- Prefer connected GitHub workflow/job tools for CI: the latest PR checks succeeded. Earlier empty workflow results did not establish an authorization failure, and skipped PR deployment is expected.
+- Consolidate browser executable discovery in a test-only helper, preserve explicit overrides and Playwright's CI binary, and use a project-writable npm cache. No application runtime or business contract change is required.
+- Plan/acceptance, observed access results and the exact remaining owner action are recorded in `docs/ENVIRONMENT-READINESS.md`. Validation results are added after the toolchain checks finish. Rollback: revert the tooling commit; retain all production data and existing configuration.
+- Validation completed: `npm ci --prefer-offline` installed 88 packages using the project cache; `npm test` passed 6 resolver tests plus 171 application tests; source verification, build, cache verification and diff/syntax checks passed. With `PN_CHROMIUM` unset, sidebar interactions, 375px audit (9 screens) and the main 375px QA suite (including offline replay, amendments, exports/previews and no-op imports) passed with no browser errors. Visual config listing is not a pixel comparison.
+
 ## 2026-11-01 — Operational audit follow-up
 
 - Preserve current main changes before applying audit fixes; reuse the weekly archive button rather than cloning its handler.

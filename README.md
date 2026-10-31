@@ -8,6 +8,12 @@ Dashboard layouts are UI-only presets in `DASHBOARD_LAYOUT_PRESETS`: `operationa
 
 Checks: npm test, node --test tests/dashboard-contract.mjs, npm run qa, npm run qa:audit, node tools.mjs verify-schema, npm run build.
 
+### Local test runtime
+
+Browser checks share `tools/test-runtime.mjs`: an explicit `PN_CHROMIUM` executable takes priority, an installed Playwright browser keeps the pinned CI browser build, and otherwise a locally installed Chromium/Chrome is selected. The installed Playwright executable is selected explicitly so a missing separate headless-shell package does not prevent a full-browser installation from running. Missing browsers produce setup guidance without downloading anything or skipping tests. `npm run test:runtime` checks browser selection independently. Project npm cache is stored under ignored `work/npm-cache` so installation does not depend on a writable home-directory cache.
+
+See [environment readiness and access recovery](docs/ENVIRONMENT-READINESS.md) for confirmed access capabilities, exact network destinations and remaining owner-controlled configuration.
+
 ### Visual regression checks
 
 Use `npm run test:visual` to run the Playwright dashboard visual suite. Screenshot comparison is intentionally gated until an approved deterministic visual target and baseline are supplied:
