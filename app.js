@@ -1140,7 +1140,25 @@ function mountReferenceLayout({$,view,state,year,report,rowsFor,registryVisibleR
  if(view==='catalog'){
   const tabs=app.querySelector('.catalog-tabs');if(tabs){context.append(tabs);context.hidden=false;}
  }
+ // Keep commands beside the records they affect, without cloning their handlers.
+ if(view!=='dashboard'){
+  const dock=app.querySelector('.operational-dock'),toolbar=app.querySelector('.table-density');
+  if(dock&&toolbar&&['projects','p301','catalog'].includes(view)){dock.classList.add('record-actions-dock');toolbar.before(dock);}
+  for(const empty of app.querySelectorAll('.table-top,.command-search-row,.registry-control-tools,.weekly-control-tools'))if(!empty.textContent.trim()&&!empty.querySelector('input,select,button,details'))empty.remove();
+  if(view==='settings')app.querySelector('.operational-dock')?.remove();
+  if(view==='settings'){
+   const heading=app.querySelector('#theme-settings-title');if(heading)heading.textContent='การแสดงผลบนอุปกรณ์นี้';
+   const save=app.querySelector('#settings-form [type=submit]');if(save)save.textContent='บันทึกข้อมูลระบบส่วนกลาง';
+  }
+  if(view==='weekly'){
+   app.dataset.reportLocked=String(!!report().locked);
+   const batch=context.querySelector('.weekly-batch-tools');if(batch&&report().locked)batch.hidden=true;
+  }
+ }
  if(view==='assetHistory'&&!historyLoading&&!historyError){const panel=app.querySelector('.history-panel');if(panel){const template=document.createElement('template');template.innerHTML=renderReferenceHighway(selectHighwayReferenceTimeline(historyRows()),historyPayload?.asset);panel.before(template.content);for(const button of app.querySelectorAll('.reference-highway [data-history-contract]'))button.onclick=()=>{const record=historyPayload?.contractRegistry?.find(r=>r.id===button.dataset.historyContract);if(record)registryDetailDialog(record.id);};}}
+ if(view==='assetHistory'){
+  const chart=app.querySelector('.reference-highway');if(chart){const list=document.createElement('details');list.className='highway-readable-list';const summary=document.createElement('summary');summary.textContent='อ่านเลขสัญญาและช่วงกิโลเมตรทั้งหมด';list.append(summary);const rows=document.createElement('ul');for(const segment of chart.querySelectorAll('.reference-road-segment')){const row=document.createElement('li');row.textContent=segment.title;rows.append(row);}list.append(rows);chart.append(list);}
+ }
 }
 // ==================== 10. MASTER CSV / STABLE SIX-DIGIT CODES ====================
 export const masterLabels={contractors:'ผู้รับจ้าง',supervisors:'บุคลากร',workTypes:'ประเภทงาน',workNames:'ชื่องาน',workCodes:'รหัสงาน',budgetAccounts:'บัญชีงบประมาณ',years:'ปีงบประมาณ'};
@@ -1796,7 +1814,7 @@ function mountOperationalDock(){
 }
 function layoutOperationalChrome(){
  const topbar=$('.institutional-header')||$('.topbar'),shell=Math.max(0,topbar?.getBoundingClientRect().bottom||0);document.documentElement.style.setProperty('--operational-shell-top',shell+'px');
- const dock=operationalDock?.isConnected?operationalDock:null,dockBottom=dock?Math.max(shell,dock.getBoundingClientRect().bottom):shell;
+ const dock=operationalDock?.isConnected&&getComputedStyle(operationalDock).position==='sticky'?operationalDock:null,dockBottom=dock?Math.max(shell,dock.getBoundingClientRect().bottom):shell;
  document.documentElement.style.setProperty('--operational-header-top',dockBottom+'px');
  const candidates=innerWidth>640?[...$('#app').querySelectorAll('table')].filter(t=>operationalTable(t)&&!t.closest('[hidden]')&&t.getBoundingClientRect().top<dockBottom+(t.tHead?.getBoundingClientRect().height||0)&&t.getBoundingClientRect().bottom>dockBottom+(t.tHead?.getBoundingClientRect().height||0)):[];
  const table=candidates[0];if(!table){headerMirror?.source?.classList.remove('sticky-head-docked');headerMirror?.remove();headerMirror=null;return;}

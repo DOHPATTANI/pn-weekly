@@ -652,7 +652,7 @@ function mountOperationalDock(){
 }
 function layoutOperationalChrome(){
  const topbar=$('.institutional-header')||$('.topbar'),shell=Math.max(0,topbar?.getBoundingClientRect().bottom||0);document.documentElement.style.setProperty('--operational-shell-top',shell+'px');
- const dock=operationalDock?.isConnected?operationalDock:null,dockBottom=dock?Math.max(shell,dock.getBoundingClientRect().bottom):shell;
+ const dock=operationalDock?.isConnected&&getComputedStyle(operationalDock).position==='sticky'?operationalDock:null,dockBottom=dock?Math.max(shell,dock.getBoundingClientRect().bottom):shell;
  document.documentElement.style.setProperty('--operational-header-top',dockBottom+'px');
  const candidates=innerWidth>640?[...$('#app').querySelectorAll('table')].filter(t=>operationalTable(t)&&!t.closest('[hidden]')&&t.getBoundingClientRect().top<dockBottom+(t.tHead?.getBoundingClientRect().height||0)&&t.getBoundingClientRect().bottom>dockBottom+(t.tHead?.getBoundingClientRect().height||0)):[];
  const table=candidates[0];if(!table){headerMirror?.source?.classList.remove('sticky-head-docked');headerMirror?.remove();headerMirror=null;return;}

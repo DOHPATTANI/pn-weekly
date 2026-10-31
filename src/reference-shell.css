@@ -310,3 +310,31 @@
  @media(prefers-reduced-motion:reduce){#app.highways-ui[data-screen=dashboard] .dash-v25-kpi-card{transition:none}}
 }
 @media print{.institutional-header{display:none!important}}
+/* DOH operational surfaces: compact controls, in-flow filters, readable groups. */
+@media screen {
+ #app.highways-ui:not([data-screen="dashboard"]){--ops-section-gap:16px;--ops-content-gap:12px;--ops-control-gap:8px}
+ #app.highways-ui:not([data-screen="dashboard"]) .operational-dock{min-height:0;padding:8px 12px;box-shadow:none;gap:8px}
+ #app.highways-ui:not([data-screen="dashboard"]) :is(.table-top,.table-density,.command-search-row){min-height:0!important;height:auto!important;padding:12px!important;gap:8px!important;box-shadow:none!important}
+ #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-menu[open]{flex:1 1 100%;width:100%;min-width:0}
+ #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-panel{position:static!important;inset:auto!important;width:100%!important;max-width:none!important;margin-top:12px;box-shadow:none!important;max-height:none;overflow:visible}
+ #app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ #app.highways-ui[data-screen="catalog"] .catalog-tabs{display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px!important}
+ .highways-shell .catalog-tab-group{display:flex;flex-wrap:wrap;align-items:center;align-content:start;gap:8px;min-width:0}
+ .highways-shell .catalog-tab-group .catalog-group-label{flex-basis:100%;max-width:none;font-size:13px;line-height:1.6}
+ .highways-shell .topbar[data-screen="catalog"] .catalog-tabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px!important}
+ #app.highways-ui .record-actions-dock{position:static!important;flex:0 1 auto;margin:0!important;padding:8px 12px!important;border:0!important;box-shadow:none!important;background:transparent!important}
+ #app.highways-ui .p301-table-tools{display:flex!important;flex-wrap:wrap;align-items:center;min-height:0!important;padding:12px!important;gap:12px!important}
+ #app.highways-ui .reference-all-assets{min-height:44px!important;width:auto!important;display:inline-flex!important;align-items:center;gap:12px;padding:8px 12px!important;box-shadow:none!important}
+ #app.highways-ui .reference-all-assets strong{font-size:20px!important}
+ #app.highways-ui[data-screen="weekly"] .register-summary{gap:8px!important}
+ #app.highways-ui[data-screen="weekly"] .register-summary>button{min-height:0!important;padding:12px!important;box-shadow:none!important}
+ #app.highways-ui[data-screen="weekly"] .register-summary>button strong{font-size:24px!important}
+ .highways-shell [hidden]{display:none!important}
+ @media(max-width:850px){.highways-shell .topbar[data-screen="catalog"] .catalog-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+ @media(max-width:560px){.highways-shell .topbar[data-screen="catalog"] .catalog-tabs{grid-template-columns:minmax(0,1fr)}}
+ #app.highways-ui[data-screen="catalog"] .catalog-group-label{flex-basis:100%;max-width:none;font-size:13px;line-height:1.6;color:var(--ink)}
+ #app.highways-ui[data-screen="settings"] .grid2{align-items:start}
+ #app.highways-ui:not([data-screen="dashboard"]) :is(.registry-controls,.weekly-controls){margin-bottom:12px!important}
+ @media(max-width:850px){#app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+ @media(max-width:560px){#app.highways-ui:not([data-screen="dashboard"]) .advanced-filter-grid{grid-template-columns:minmax(0,1fr)}}
+}
