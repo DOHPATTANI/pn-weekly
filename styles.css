@@ -4352,6 +4352,11 @@ body:has(> main > #app) {
  --ref-header:56px;--ref-radius:12px;
  --ref-route:#135c47;
 }
+@media screen and (max-width:640px){
+ #app.highways-ui[data-screen=weekly] table.mobile-records>tbody>tr>td{padding:4px 0!important}
+ #app.highways-ui[data-screen=weekly] table.mobile-records>tbody>tr{gap:8px;align-content:start}
+ #app.highways-ui .reference-road-segment{min-height:44px}
+}
 @media screen{
  /* Resolve previous cascade variants at the shared reference owner. */
  .highways-shell{background:var(--ref-page)!important;background-image:none!important}

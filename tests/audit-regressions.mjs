@@ -23,6 +23,8 @@ import fs from 'node:fs/promises';import path from 'node:path';const root=proces
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,view+' page overflow at '+width);
   surfaces.push(view);
   if(view==='weekly'){
+   if(width<=640){const padding=await p.locator('.weekly-table.mobile-records tbody tr td:not(.management-column)').first().evaluate(el=>parseFloat(getComputedStyle(el).paddingTop));assert(padding<=4,'Mobile weekly cells must not inherit desktop table padding');}
+   assert.equal(await p.locator('[data-dock-archive]').count(),0,'Archive action must not be cloned');
    const search=p.getByRole('searchbox',{name:'ค้นหาชื่องาน เลขสัญญา หรือผู้รับจ้าง',exact:true});
    assert.equal(await search.count(),1,'Weekly search has a stable accessible name');
    await search.focus();assert.equal(await search.evaluate(el=>el===document.activeElement),true);
