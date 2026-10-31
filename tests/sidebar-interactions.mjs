@@ -28,7 +28,7 @@ try {
   await page.locator("#app").evaluate(el=>{el.dataset.screen="dashboard";el.innerHTML="<input id=search aria-label=Search>";});
   for(const key of ["Control+k","Meta+k"]){await page.keyboard.press(key);assert.equal(await page.locator("#search").evaluate(el=>document.activeElement===el),true);}
   assert.equal(await page.locator(".tour-overlay").count(),0);await page.locator("#sidebar-help").click();await page.locator(".tour-overlay").waitFor();await page.keyboard.press("Escape");assert.equal(await page.locator(".tour-overlay").count(),0);
-  await page.setViewportSize({width:375,height:812});await page.waitForFunction(()=>!document.querySelector('.sidebar').classList.contains('is-collapsed'));await page.locator(".sidebar").evaluate(el=>el.classList.add("open"));await toggle.click();assert.equal(await sidebar.evaluate(el=>el.classList.contains("open")),false);
+  await page.setViewportSize({width:375,height:812});await page.waitForFunction(()=>!document.querySelector('.sidebar').classList.contains('is-collapsed'));await page.locator('#mobile-menu').click();await page.waitForFunction(()=>!document.querySelector('.sidebar').inert);assert.equal(await page.locator('#sidebar-toggle').evaluate(el=>el===document.activeElement),true);await toggle.click();assert.equal(await sidebar.evaluate(el=>el.classList.contains('open')),false);assert.equal(await sidebar.evaluate(el=>el.inert),true);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
   await context.close();
   const restricted=await browser.newContext({viewport:{width:1200,height:850},reducedMotion:'reduce'});
